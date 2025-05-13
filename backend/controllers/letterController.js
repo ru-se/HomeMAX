@@ -1,37 +1,32 @@
-// お手紙機能
-const express = require("express");
-const app = express();
+// サインアアップ、ログイン機能とか
+const Letter = require("../models/Letter");
 
-//MySQL接続
-const connection = require("../config/db");
 
-//JSONの受け取り
-app.use(express.json());
+// //JSONの受け取り
+// app.use(express.json());
 
-//送られたお手紙をDBに保存
-app.post("/addLetter",(req,res)=>{
-    console.log(req.body);
-    //ログインしていない場合ユーザーIDは0
-    let user_id =req.body.user_id ;
-    if(user_id == null || user_id == undefined){
-        user_id = 0;
-    }  
-    const message = req.body.message;
-    if (message ==  null || message ==undefined ) {  // messageがない場合
-        return res.status(400).json({ error: "メッセージがありません" });
-    }
+module.exports={
+    signup : async function (req,res){
+        try{
+                //ログインしていない場合ユーザーIDは0
+                let user_id =req.body.user_id ;
+                if(user_id == null || user_id == undefined){
+                    user_id = 0;
+                }  
+                const message = req.body.message;
+                // if (message ==  null || message ==undefined ) {  // messageがない場合
+                //     return res.status(400).json({ error: "メッセージがありません" });
+                // }
+                // メッセージが空かどうかを確認
+                if (!message || message.trim() === "" ) {
+                    return res.status(400).json({ error: "メッセージがありません" });
+                }
 
-    const query = "INSERT INTO Letters(user_id, emessage) VALUES(?,?,?)";
-    connection.query(query,[user_id, message],(err,result)=>{
-        if(err){
+            const result = await Letter.addLetter(user_id,message);
+            res.status(200).json({message:"登録成功",result});
+        }catch(err){
             console.log(err);
-            res.status(500).json({error:"メッセージを追加できませんでした"});
-        }else{
-            res.status(200).json({message:"メッセージを追加できました！"});
-            console.log(result);
+            res.status(500).json({message:err.message})
         }
-    })
-});
-
-
-//メッセージが" "の場合もエラー出す？
+    },
+};
