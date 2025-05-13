@@ -5,7 +5,7 @@ USE Homemax;
 -- users テーブル
 CREATE TABLE IF NOT EXISTS users (
   user_id INT AUTO_INCREMENT PRIMARY KEY,
-  username TEXT NOT NULL UNIQUE,
+  username VARCHAR(100) NOT NULL UNIQUE,
   email VARCHAR(200) NOT NULL,
   password TEXT NOT NULL
 );
@@ -24,17 +24,17 @@ CREATE TABLE IF NOT EXISTS homemax (
 CREATE TABLE IF NOT EXISTS Letters (
   letter_id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
-  message VARCHAR(300)  NOT NULL,
-  created_at TEXT NOT NULL,
+  message VARCHAR(500)  NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 -- Tasks テーブル
-CREATE TABLE IF NOT EXISTS Letters (
+CREATE TABLE IF NOT EXISTS Tasks (
   task_id INT AUTO_INCREMENT PRIMARY KEY,
-  task_name TEXT NOT NULL,
-  task_type TEXT NOT NULL,
-  status TEXT NOT NULL,
+  task_name VARCHAR(100) NOT NULL,
+  task_type VARCHAR(100) NOT NULL,
+  status VARCHAR(100) NOT NULL,
   user_id INT,
   FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS Letters (
 CREATE TABLE IF NOT EXISTS Analysis (
   analysis_id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
-  average_compliments_per_day TEXT NOT NULL,
+  average_compliments_per_day INT NOT NULL,
   compliment_focus_area TEXT NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
