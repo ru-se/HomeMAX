@@ -64,6 +64,10 @@ const LoginForm = () => {
             placeholder='パスワード'
           />
         </div>
+        <button
+          type="submit">
+          ログイン
+        </button>
       </form>
     </div>
   )

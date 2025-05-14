@@ -49,6 +49,7 @@ const SignupForm = () => {
             onChange={handleChange}
             required
             autoComplete="name"
+            placeholder='ユーザー名'
           />
         </div>
         <div>
@@ -61,6 +62,7 @@ const SignupForm = () => {
             onChange={handleChange}
             required
             autoComplete="email"
+            placeholder='メールアドレス'
           />
         </div>
         <div>
@@ -73,6 +75,7 @@ const SignupForm = () => {
             onChange={handleChange}
             required
             autoComplete="password"
+            placeholder='パスワード'
           />
         </div>
         <button type='submit'>サインアップ</button>
