@@ -1,10 +1,11 @@
 // サインアップページ
 
 import React from 'react'
+import SignupForm from '../features/Auth/SignupForm'
 
 const Signup = () => {
   return (
-    <div>Signup</div>
+    <SignupForm />
   )
 }
 
