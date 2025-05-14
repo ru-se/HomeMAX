@@ -40,18 +40,6 @@ const SignupForm = () => {
       <form onSubmit={handleSubmit}>
         <h2>サインアップ</h2>
         <div>
-          <label htmlFor="userID">ユーザーID</label>
-          <input
-            type="text"
-            id='userID'
-            name='userID'
-            value={signupData.userID}
-            onChange={handleChange}
-            required
-            autoComplete="userID"
-          />
-        </div>
-        <div>
           <label htmlFor="username">ユーザー名</label>
           <input
             type="text"
