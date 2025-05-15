@@ -35,11 +35,11 @@ const LoginForm = () => {
   }
 
   return (
-    <div>
+    <div className="min-h-screen bg-white text-center pt-38 font-kiwi-maru">
       <form onSubmit={handleSubmit}>
-        <h2>ログイン</h2>
-        <div>
-          <label htmlFor="identifier">ユーザー名orメールアドレス</label>
+        <h2 className="text-8xl">ログイン</h2>
+        <div className="">
+          <label htmlFor="identifier" className="">ユーザー名orメールアドレス</label>
           <input
             type="text"
             id='identifier'
@@ -49,7 +49,7 @@ const LoginForm = () => {
             required
             autoComplete="username"
             placeholder='ユーザー名orメールアドレス'
-          />
+            className="border "/>
         </div>
         <div>
           <label htmlFor="password">パスワード</label>
