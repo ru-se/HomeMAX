@@ -2,9 +2,13 @@
 
 import React from 'react'
 
-const UserMessageBubble = () => {
+const UserMessageBubble = ({ message }) => {
   return (
-    <div>UserMessageBubble</div>
+    <div className='w-48 h-48 border-2 border-solid'>
+      <div>
+        {message}
+      </div>
+    </div>
   )
 }
 
