@@ -50,7 +50,7 @@ module.exports={
  },
 
      //ログアウト
-     logout: function (req, res) {
+    logout: function (req, res) {
         req.session.destroy(err => {
             if (err) {
                 return res.status(500).json({ message: "ログアウトに失敗しました" });
