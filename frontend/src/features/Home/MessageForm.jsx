@@ -10,21 +10,22 @@ const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCo
   
 
   return (
-    <div className='flex flex-col items-center justify-center'>
+    <div className='flex flex-col items-center justify-center space-y-4'>
       <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="メッセージを入力してください"
-          rows="4"
+          rows="3"
           cols="50"
       />
-      <div className='flex items-center justify-center'>
+      <div className='flex items-center justify-center space-x-4'>
         <button
           onClick={() => {
             onSend(text) 
             setText('') // メッセージ送信後にテキストエリアをクリア
             setIsMessageSent(true) // メッセージ送信状態を更新
           }}
+          className=""
         >
           送信
         </button>

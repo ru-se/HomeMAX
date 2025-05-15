@@ -4,8 +4,8 @@ import React from 'react'
 
 const UserMessageBubble = ({ message }) => {
   return (
-    <div className='w-48 h-48 border-2 border-solid'>
-      <div>
+    <div className='flex flex-col-reverse mb-10'>
+      <div className='w-48 h-48 border-2 border-solid'>
         {message}
       </div>
     </div>

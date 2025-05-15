@@ -3,8 +3,8 @@ import React from 'react'
 
 const HomemaxMessageBubble = ({ message }) => {
   return (
-    <div className='w-48 h-48 border-2 border-solid'>
-      <div>
+    <div className='h-full'>
+      <div className='w-48 h-9/10 border-2 border-solid'>
         <p>{ message }</p>
       </div>
     </div>

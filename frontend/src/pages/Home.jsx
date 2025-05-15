@@ -60,22 +60,26 @@ const Home = () => {
   }
 
   return (
-    <div>
-      {isMessageSent && (
-        <div className='absolute left-0 top-1/2'>
-          <HomemaxMessageBubble message={isLoading ? '生成中...' : compliment}/>
+    <div className='w-screen h-screen'>
+      <div className='flex min-h-3/4 w-full'>
+        <div className='basis-1/3 flex justify-center mt-10'>
+          {isMessageSent && (
+            <div className=''>
+              <HomemaxMessageBubble message={isLoading ? '生成中...' : compliment}/>
+            </div>
+          )}
         </div>
-      )}
-      {/* ほめマックス画像 */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <HomemaxImage />
-      </div>
-      {/* ユーザーの送信したメッセージ */}
-      <div className="absolute right-0 top-1/2">
-        <UserMessageBubble message={userMessage} />
+        {/* ほめマックス画像 */}
+        <div className=" basis-1/3 flex items-center justify-center ">
+          <HomemaxImage />
+        </div>
+        {/* ユーザーの送信したメッセージ */}
+        <div className=" basis-1/3 flex justify-center ">
+          <UserMessageBubble message={userMessage} />
+        </div>
       </div>
       {/* メッセージ送信フォーム */}
-      <div className="absolute bottom-0 left-0 right-0 ">
+      <div className="my-4 flex items-center justify-center">
         <MessageForm onSend={handleSend} isMessageSent={isMessageSent} setIsMessageSent={setIsMessageSent} OKCount={OKCount} setOKCount={setOKCount} />
       </div>
     </div>
