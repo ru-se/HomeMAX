@@ -1,0 +1,16 @@
+@import url("https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@500&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --color-blue: #789DBC;
+  --color-blue-dark:#6287a6;
+  --color-pink: #FFE3E3;
+  --color-pink-dark: #edd1d1;
+  --color-white: #FEF9F2;
+  --color-white-dark: #ede8e1;
+  --color-green: #C9E9D2;
+  --color-green-dark: #b8dbc2;
+
+  --font-kiwi-maru: "Kiwi Maru", sans-serif;  
+}
+  
