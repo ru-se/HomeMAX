@@ -1,13 +1,13 @@
 const express = require('express');
 const dotenv = require('dotenv');
-const cors = require('cors'); // 追加
+const cors = require('cors');
 const complimentRoutes = require('./routes/complimentRoutes');
 
 dotenv.config();
 
 const app = express();
 
-app.use(cors()); // 追加
+app.use(cors());
 app.use(express.json());
 
 app.use('/api/compliment', complimentRoutes);
