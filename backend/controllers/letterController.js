@@ -6,7 +6,7 @@ const Letter = require("../models/Letter");
 // app.use(express.json());
 
 module.exports={
-    signup : async function (req,res){
+    addLetter : async function (req,res){
         try{
                 //ログインしていない場合ユーザーIDは0
                 let user_id =req.body.user_id ;

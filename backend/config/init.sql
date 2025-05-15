@@ -14,9 +14,11 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS homemax (
   happiness_id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL ,
+  letter_id INT NOT NULL,
   compliment TEXT NOT NULL,
   positive_aspects TEXT NOT NULL,
-  FOREIGN KEY (user_id) REFERENCES users(user_id)
+  FOREIGN KEY (user_id) REFERENCES users(user_id),
+  FOREIGN KEY (letter_id) REFERENCES Letters(letter_id)
 );
 
 
@@ -29,15 +31,17 @@ CREATE TABLE IF NOT EXISTS Letters (
   FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
--- Tasks テーブル
-CREATE TABLE IF NOT EXISTS Tasks (
-  task_id INT AUTO_INCREMENT PRIMARY KEY,
-  task_name VARCHAR(100) NOT NULL,
-  task_type VARCHAR(100) NOT NULL,
-  status VARCHAR(100) NOT NULL,
-  user_id INT,
-  FOREIGN KEY (user_id) REFERENCES users(user_id)
-);
+-- -- Tasks テーブル
+-- CREATE TABLE IF NOT EXISTS Tasks (
+--   task_id INT AUTO_INCREMENT PRIMARY KEY,
+--   task_name VARCHAR(100) NOT NULL,
+--   task_type VARCHAR(100) NOT NULL,
+--   status VARCHAR(100) NOT NULL,
+--   user_id INT,
+--   FOREIGN KEY (user_id) REFERENCES users(user_id)
+-- );
+
+
 
 
 -- Analysis テーブル (分析用)
@@ -51,6 +55,6 @@ CREATE TABLE IF NOT EXISTS Analysis (
 
 
 -- 初期データを挿入
-INSERT INTO users (uswename, email, password) VALUES
+INSERT INTO users (username, email, password) VALUES
 ('田中', '58hack@kindai.ac.jp', '5858'),
 ('佐藤', '59hack@kindai.ac.jp', '5959');

@@ -8,7 +8,7 @@ module.exports = {
     //サインアップ
     signup: async function (username, email, password) {
         const hashedPassword = await bcrypt.hash(password, 10);
-
+        
             const query = "INSERT INTO users(username, email, password) VALUES(?,?,?)";
 
             return new Promise ((resolve, reject) => {
