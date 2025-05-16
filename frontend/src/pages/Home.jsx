@@ -1,6 +1,6 @@
 // ホームページ
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import MessageForm from '../features/Home/MessageForm'
 import UserMessageBubble from '../features/Home/UserMessageBubble'
 import HomemaxImage from '../features/Home/HomemaxImage'
@@ -9,18 +9,24 @@ import HomemaxMessageBubble from '../features/Home/HomemaxMessageBubble'
 
 const Home = () => {
   
-  // メッセージ送信状態の管理
   const [isMessageSent, setIsMessageSent] = useState(false) 
-
   const [userMessage, setUserMessage] = React.useState('')
-
   const [compliment, setCompliment] = useState('')
   const [isLoading, setIsLoading] = useState(false) 
-
-  // もう大丈夫押した回数の状態を管理
   const [OKCount, setOKCount] = useState(1) 
+  const [userId, setUserId] = useState(null)
 
-// ...existing code...
+ useEffect(() => {
+    fetch('http://localhost:8000/auth/me', {
+      credentials: 'include'
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.user && data.user.user_id) {
+          setUserId(data.user.user_id)
+        }
+      })
+  }, [])
 
 const handleSend = async (userMessage) => {
 
@@ -35,6 +41,7 @@ const handleSend = async (userMessage) => {
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
       body: JSON.stringify({
+        user_id: userId,
         message: userMessage,
       }),
     })
@@ -49,7 +56,8 @@ const handleSend = async (userMessage) => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        letter_id,
+        user_id: userId,
+        letter_id: letter_id,
         letter_message: userMessage,
       }),
     })
