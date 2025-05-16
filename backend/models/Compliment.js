@@ -3,10 +3,11 @@ const db = require('../config/db');
 // 褒め言葉を保存
 exports.saveCompliment = async ({ userId, letterId, compliment, positiveAspects }) => {
     const query = `
-        INSERT INTO Compliments (user_id, letter_id, compliment, positive_aspects, created_at)
+        INSERT INTO homemax (user_id, letter_id, compliment, positive_aspects, created_at)
         VALUES (?, ?, ?, ?, NOW())
     `;
-    const [result] = await db.execute(query, [userId, letterId, compliment, positiveAspects]);
+    const result = await db.execute(query, [userId, letterId, compliment, positiveAspects]);
+    console.log(result);
     return result.insertId;
 };
 
@@ -14,11 +15,11 @@ exports.saveCompliment = async ({ userId, letterId, compliment, positiveAspects 
 exports.getComplimentList = async (userId) => {
     const query = `
         SELECT happiness_id, compliment, positive_aspects, created_at
-        FROM Compliments
+        FROM homemax
         WHERE user_id = ?
         ORDER BY created_at DESC
     `;
-    const [rows] = await db.execute(query, [userId]);
+    const rows = await db.execute(query, [userId]);
     return rows;
 };
 
@@ -33,11 +34,11 @@ exports.getComplimentHistory = async (userId) => {
             l.letter_id,
             l.message AS letter_message,
             l.created_at AS letter_date
-        FROM Compliments c
+        FROM homemax c
         INNER JOIN Letters l ON c.letter_id = l.letter_id
         WHERE c.user_id = ?
         ORDER BY c.created_at DESC
     `;
-    const [rows] = await db.execute(query, [userId]);
+    const rows = await db.execute(query, [userId]);
     return rows;
 };

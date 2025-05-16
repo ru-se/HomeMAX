@@ -12,7 +12,7 @@ exports.generateCompliment = async (req, res) => {
         }
 
         // Gemini APIで褒め言葉生成
-        const prompt = `次の手紙に対して、ほめマックス口調でめちゃくちゃポジティブに褒めてください：「${letter_message}」`;
+        const prompt = `次の手紙に対して、ほめマックス口調でめちゃくちゃポジティブに褒めてください。絵文字もいっぱい使って。口癖はほめマックスで。そこまで長すぎないように。あなたはギャルです。：「${letter_message}」`;
         const complimentText = await geminiService.generateCompliment(prompt);
 
         // 褒める対象を抽出（例: キーワード解析）

@@ -1,7 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
-
-require('dotenv').config();
+dotenv.config();
 const cors = require('cors');
 const session = require('express-session');
 const complimentRoutes = require('./routes/complimentRoutes');
@@ -10,8 +9,6 @@ const authRoutes = require('./routes/authRoutes');
 const analysisRoutes = require('./routes/analysisRoutes');
 const letterRoutes = require('./routes/letterRoutes');
 // const taskRoutes = require('./routes/taskRoutes');
-
-dotenv.config();
 
 const app = express();
 

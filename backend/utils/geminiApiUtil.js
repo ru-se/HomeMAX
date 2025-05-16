@@ -19,7 +19,6 @@ async function geminiAPIRequest(promptText) {
     };
 
     const apiUrlWithKey = `${GEMINI_API_URL}?key=${GEMINI_API_KEY}`;
-    console.log('送信先 URL:', apiUrlWithKey); // この行を追加
 
     try {
         const response = await axios.post(apiUrlWithKey, requestBody, {

@@ -1,4 +1,4 @@
-- データベースの選択（または作成）
+-- データベースの選択（または作成）
 CREATE DATABASE IF NOT EXISTS Homemax;
 USE Homemax;
 
@@ -10,6 +10,16 @@ CREATE TABLE IF NOT EXISTS users (
   password TEXT NOT NULL
 );
 
+
+-- Letters テーブル
+CREATE TABLE IF NOT EXISTS Letters (
+  letter_id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  message VARCHAR(500)  NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
 -- ほめマックステーブル (AI設計に関連)
 CREATE TABLE IF NOT EXISTS homemax (
   happiness_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -19,16 +29,6 @@ CREATE TABLE IF NOT EXISTS homemax (
   positive_aspects TEXT NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users(user_id),
   FOREIGN KEY (letter_id) REFERENCES Letters(letter_id)
-);
-
-
--- Letters テーブル
-CREATE TABLE IF NOT EXISTS Letters (
-  letter_id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id INT NOT NULL,
-  message VARCHAR(500)  NOT NULL,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 -- -- Tasks テーブル

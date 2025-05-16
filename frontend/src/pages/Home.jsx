@@ -14,20 +14,55 @@ const Home = () => {
 
   const [userMessage, setUserMessage] = React.useState('')
 
+  const [compliment, setCompliment] = useState('')
+  const [isLoading, setIsLoading] = useState(false) 
+
   // もう大丈夫押した回数の状態を管理
   const [OKCount, setOKCount] = useState(1) 
 
-  const handleSend = (userMessage) => {
+  const handleSend = async (userMessage) => {
     // ここでメッセージを送信する処理を実装
     setUserMessage(userMessage)
     console.log('Sending message:', userMessage)
+
+    setIsLoading(true) // ローディング状態を開始
+    try {
+      // APIリクエストを送信
+      const response = await fetch('http://localhost:8000/api/compliment/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          letter_id: 1, // 仮のID
+          letter_message: userMessage,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      console.log('Received compliment:', data.compliment)
+
+      // 褒め言葉を状態に保存
+      setCompliment(data.compliment)
+      setIsMessageSent(true)
+    } catch (error) {
+      console.error('Error sending message:', error)
+    } finally {
+      setIsLoading(false) // ローディング状態を終了
+    }
   }
+  
 
   return (
     <div>
       {isMessageSent && (
         <div className='absolute left-0 top-1/2'>
-          <HomemaxMessageBubble />
+          {/* 褒め言葉を表示 */}
+          <HomemaxMessageBubble message={isLoading ? '生成中...' : compliment} />
         </div>
       )}
       {/* ほめマックス画像 */}
@@ -40,7 +75,13 @@ const Home = () => {
       </div>
       {/* メッセージ送信フォーム */}
       <div className="absolute bottom-0 left-0 right-0 ">
-        <MessageForm onSend={handleSend} isMessageSent={isMessageSent} setIsMessageSent={setIsMessageSent} OKCount={OKCount} setOKCount={setOKCount} />
+        <MessageForm
+          onSend={handleSend}
+          isMessageSent={isMessageSent}
+          setIsMessageSent={setIsMessageSent}
+          OKCount={OKCount}
+          setOKCount={setOKCount}
+        />
       </div>
     </div>
   )
