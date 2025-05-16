@@ -5,6 +5,7 @@ import MessageForm from '../features/Home/MessageForm'
 import UserMessageBubble from '../features/Home/UserMessageBubble'
 import HomemaxImage from '../features/Home/HomemaxImage'
 import HomemaxMessageBubble from '../features/Home/HomemaxMessageBubble'
+import Menu from '../components/menu/menu'
 
 
 const Home = () => {
@@ -94,6 +95,9 @@ const handleSend = async (userMessage) => {
           OKCount={OKCount}
           setOKCount={setOKCount}
         />
+      </div>
+      <div className='fixed bottom-6 right-16'>
+        <Menu />
       </div>
     </div>
   )
