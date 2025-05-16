@@ -2,19 +2,31 @@ import React, { useEffect, useState } from 'react'
 
 const History = () => {
   const [letters, setLetters] = useState([])
+  const [userId, setUserId] = useState(null)
 
   useEffect(() => {
+    // まず現在のユーザー情報を取得
+    fetch('http://localhost:8000/auth/me', {
+      credentials: 'include'
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.user && data.user.user_id) {
+          setUserId(data.user.user_id)
+        }
+      })
+  }, [])
+
+  useEffect(() => {
+    if (!userId) return
     fetch('http://localhost:8000/letter/allLetters', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
-      body: JSON.stringify({ user_id: 1 }) // テスト用にuser_id=1
+      body: JSON.stringify({ user_id: userId })
     })
       .then(res => res.json())
       .then(data => {
-        console.log('APIレスポンス:', data)
-
-        // 明確に型確認と空チェック
         if (Array.isArray(data.result)) {
           setLetters(data.result)
         } else if (data.result) {
@@ -24,7 +36,7 @@ const History = () => {
         }
       })
       .catch(err => console.error('Fetchエラー:', err))
-  }, [])
+  }, [userId])
 
   return (
     <div>
