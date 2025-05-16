@@ -1,22 +1,16 @@
-// サインアップフォーム
-
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom' 
 
 const SignupForm = () => {
-
-  // useNavigateフックを使用して、ページ遷移を管理
   const navigate = useNavigate()
-  
-  // ユーザー情報の状態を管理
   const [signupData, setSignupData] = useState({
-    userID: '',
     username: '',
     email: '',
     password: '',
   })
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
 
-  // フォームの変更を処理する関数
   const handleChange = (e) => {
     const { name, value } = e.target
     setSignupData({
@@ -25,14 +19,26 @@ const SignupForm = () => {
     })
   }
 
-  // フォームの送信を処理する関数
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log('Form submitted:', signupData)
-    // サーバーにデータを送信する処理をここに追加
-
-    //サインアップ成功後にhomeページにリダイレクトする処理
-    navigate('/home')
+    setError('')
+    setSuccess('')
+    try {
+      const response = await fetch('http://localhost:8000/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(signupData),
+      })
+      const data = await response.json()
+      if (response.ok) {
+        setSuccess('登録成功！ログインしてください')
+        setTimeout(() => navigate('/login'), 1000)
+      } else {
+        setError(data.message || '登録に失敗しました')
+      }
+    } catch (err) {
+      setError('通信エラーが発生しました')
+    }
   }
 
   return (
