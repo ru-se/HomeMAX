@@ -1,20 +1,14 @@
-// ログインフォーム
-
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 const LoginForm = () => {
-
-  //ページ遷移を行うための関数を取得
   const navigate = useNavigate()
-
-  // ログインデータの状態を管理するためのuseStateフックを使用
   const [loginData, setLoginData] = useState({
     identifier: '',
     password: '',
   })
+  const [error, setError] = useState('')
 
-  // フォームの変更を処理する関数
   const handleChange = (e) => {
     const { name, value } = e.target
     setLoginData({
@@ -23,15 +17,28 @@ const LoginForm = () => {
     })
   }
 
-  // フォームの送信を処理する関数
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log('Login data submitted:', loginData)
-    // サーバーにデータを送信する処理をここに追加
-    // 例: identifier がユーザー名かメールアドレスかをバックエンドで判別
-
-    // ログイン成功後にホームページに遷移
-    navigate('/home')
+    setError('')
+    try {
+      const response = await fetch('http://localhost:8000/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: loginData.identifier, // バックエンドはusernameで受け取る
+          password: loginData.password,
+        }),
+        credentials: 'include', // セッションを使う場合
+      })
+      const data = await response.json()
+      if (response.ok) {
+        navigate('/home')
+      } else {
+        setError(data.message || 'ログインに失敗しました')
+      }
+    } catch (err) {
+      setError('通信エラーが発生しました')
+    }
   }
 
   return (
@@ -49,7 +56,8 @@ const LoginForm = () => {
             required
             autoComplete="username"
             placeholder='ユーザー名orメールアドレス'
-            className="border "/>
+            className="border "
+          />
         </div>
         <div>
           <label htmlFor="password">パスワード</label>
@@ -64,10 +72,10 @@ const LoginForm = () => {
             placeholder='パスワード'
           />
         </div>
-        <button
-          type="submit">
+        <button type="submit">
           ログイン
         </button>
+        {error && <div style={{ color: 'red' }}>{error}</div>}
       </form>
     </div>
   )
