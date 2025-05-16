@@ -96,9 +96,6 @@ const handleSend = async (userMessage) => {
           setOKCount={setOKCount}
         />
       </div>
-      <div className='fixed bottom-6 right-16'>
-        <Menu />
-      </div>
     </div>
   )
 }
