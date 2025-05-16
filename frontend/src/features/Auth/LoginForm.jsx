@@ -41,42 +41,60 @@ const LoginForm = () => {
     }
   }
 
-  return (
-    <div className="min-h-screen bg-white text-center pt-38 font-kiwi-maru">
-      <form onSubmit={handleSubmit}>
-        <h2 className="text-8xl">ログイン</h2>
-        <div className="">
-          <label htmlFor="identifier" className="">ユーザー名orメールアドレス</label>
-          <input
-            type="text"
-            id='identifier'
-            name='identifier'
-            value={loginData.identifier}
-            onChange={handleChange}
-            required
-            autoComplete="username"
-            placeholder='ユーザー名orメールアドレス'
-            className="border "
-          />
-        </div>
-        <div>
-          <label htmlFor="password">パスワード</label>
-          <input
-            type="password"
-            id='password'
-            name='password'
-            value={loginData.password}
-            onChange={handleChange}
-            required
-            autoComplete="password"
-            placeholder='パスワード'
-          />
-        </div>
-        <button type="submit">
-          ログイン
-        </button>
-        {error && <div style={{ color: 'red' }}>{error}</div>}
-      </form>
+  return  (
+    <div className="flex min-h-screen bg-white text-center font-kiwi-maru justify-center">
+      <div className="w-2/5 my-10 mx-10 bg-white rounded shadow-xl/20">
+        <form onSubmit={handleSubmit} className='w-full max-w-md space-y-6 mx-auto'>
+
+          {/* タイトル */}
+          <h2 className="text-8xl mb-20 mt-10">ログイン</h2>
+          <div className="flex flex-col">
+
+            {/* ユーザー名orメールアドレス */}
+            <div className="flex flex-row items-center mb-10">
+              <label htmlFor="identifier" className="w-60">ユーザー名orメールアドレス</label>
+
+              {/*ユーザー名orメールアドレスの入力*/}
+              <input
+                type="text"
+                id='identifier'
+                name='identifier'
+                value={loginData.identifier}
+                onChange={handleChange}
+                required
+                autoComplete="username"
+                placeholder='ユーザー名orメールアドレス'
+                className="border-1 border-black focus:outline-1 focus:outline-blue-dark inline-block py-1"/>
+            </div>
+
+            {/* パスワード */}
+            <div className="flex flex-row items-center mb-10">
+              <label htmlFor="password" className="w-60">パスワード</label>
+              
+              {/*パスワードの入力*/}
+              <input
+                type="password"
+                id='password'
+                name='password'
+                value={loginData.password}
+                onChange={handleChange}
+                required
+                autoComplete="password"
+                placeholder='パスワード'
+                className="border-1 border-black focus:outline-1 focus:outline-blue-dark inline-block py-1"
+              />
+            </div>
+          </div>
+
+          {/* ログインボタン */}
+          <button
+            type="submit"
+            className="rounded-full bg-blue text-white px-16 py-4 font-kiwi-maru hover:bg-blue-dark">
+            ログイン
+          </button>
+        </form>
+      </div>
+
     </div>
   )
 }
