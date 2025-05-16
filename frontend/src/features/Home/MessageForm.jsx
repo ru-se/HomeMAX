@@ -33,11 +33,12 @@ const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCo
           rows="3"
           cols="50"
           maxLength={500}
+          className="border-1 border-black focus:outline-1 focus:outline-blue-dark inline-block py-1 resize-none"
       />
       <div className='flex items-center justify-center space-x-4'>
         <button
           onClick={handleSend}
-          className=""
+          className="rounded-full bg-blue text-white px-16 py-4 font-kiwi-maru hover:bg-blue-dark shadow-xl"
         >
           送信
         </button>
@@ -51,6 +52,7 @@ const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCo
                 setOKCount(0) // もう大丈夫を押したら回数をリセット
               } 
             }}
+            className="rounded-full bg-pink px-16 py-4 font-kiwi-maru hover:bg-pink-dark shadow-xl"
           >
             もう大丈夫
           </button>

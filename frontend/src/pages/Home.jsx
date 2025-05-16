@@ -76,7 +76,7 @@ const Home = () => {
         </div>
         {/* ユーザーの送信したメッセージ */}
         {isMessageSent && (
-          <div className=" basis-1/3 flex justify-center ">
+          <div className=" basis-1/3 flex justify-center mt-25">
             <UserMessageBubble message={userMessage} />
           </div>
         )}

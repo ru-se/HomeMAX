@@ -4,17 +4,16 @@ import React from 'react'
 
 const UserMessageBubble = ({ message }) => {
   return (
-    <div className='flex flex-col-reverse '>
+    <div className='mt-20 mr-20 flex-col-reverse '>
       <div className='
-        relative w-48 h-40 px-4 py-2 text-base border-2 rounded-4xl bg-pink before:absolute before:top-full before:right-10 before:translate-x-1/2 
-        before:border-x-10 before:border-t-25 before:border-x-transparent before:border-t-black-900
-        after:absolute after:top-full after:right-10 after:translate-x-1/2 
-        after:border-x-9 after:border-t-21 after:border-x-transparent after:border-t-pink 
+        relative w-90 h-85  px-4 py-2 text-base border-2 rounded-4xl bg-pink shadow-xl rounded-full
       '>
-        <div className='w-auto max-h-full overflow-y-auto'>
+        <div className='mt-12  w-64 mx-auto max-h-56 overflow-y-auto items-center text-center'>
           {message}
         </div>
       </div>
+      <div className="ml-10 w-20 h-20  px-4 py-2 text-base border-2 rounded-4xl bg-pink shadow-xl rounded-full"></div>
+      <div className="w-10 h-10  px-4 py-2 text-base border-2 rounded-4xl bg-pink shadow-xl rounded-full"></div>
     </div>
   )
 }
