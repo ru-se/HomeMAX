@@ -8,7 +8,7 @@ module.exports = {
     //送られたお手紙をDBに保存
     addLetter: async function (user_id,message) {
 
-        const query = "INSERT INTO Letters(user_id, emessage) VALUES(?,?,?)";
+        const query = "INSERT INTO Letters(user_id, message) VALUES(?,?)";
 
             return new Promise ((resolve, reject) => {
                 connection.query(query,[user_id, message],(err,result)=>{
@@ -17,8 +17,7 @@ module.exports = {
                         return reject({message:"メッセージを追加できませんでした"})
                     }else{
                         console.log(result);
-                        return resolve(result[0]);
-
+                        return resolve({ insertId: result.insertId });
                     }
                 })
             
@@ -37,7 +36,8 @@ module.exports = {
                     return reject({message:"検索できませんでした"})
                 }else{
                     console.log(result);
-                    return resolve(result[0]);
+                    console.log("------------------")
+                    return resolve(result);
 
                 }
             })
