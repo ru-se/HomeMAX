@@ -44,6 +44,8 @@ const SignupForm = () => {
           {/* ユーザー名 */}
           <div className="flex flex-row items-center mb-10">
             <label htmlFor="username" className="w-60">ユーザー名</label>
+
+            {/* ユーザー名の入力 */}
             <input
               type="text"
               id='username'
@@ -60,6 +62,8 @@ const SignupForm = () => {
           {/* メールアドレス */}
           <div className="flex flex-row items-center mb-10">
             <label htmlFor="email" className="w-60">メールアドレス</label>
+
+            {/* メールアドレスの入力 */}
             <input
               type="email"
               id='email'
@@ -76,6 +80,8 @@ const SignupForm = () => {
           {/* パスワード */}
           <div className="flex flex-row items-center mb-10">
             <label htmlFor="password" className="w-60">パスワード</label>
+
+            {/* パスワードの入力 */}
             <input
               type="password"
               id='password'
