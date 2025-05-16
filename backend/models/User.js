@@ -44,7 +44,8 @@ module.exports = {
                 .then(checkPassword =>{
                     if(checkPassword){
                         console.log("ログイン成功");
-                        return resolve(results[0])
+                        delete user.password;
+                        return resolve(user)
         
                     }else{
                         console.log("パスワードが違う");

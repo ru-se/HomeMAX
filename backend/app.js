@@ -12,15 +12,13 @@ const letterRoutes = require('./routes/letterRoutes');
 
 const app = express();
 
-app.use(cors());
+
+app.use(cors({
+  origin: 'http://localhost:5173', // 明示的にフロントのURLを指定
+  credentials: true                // Cookie やセッションを許可
+}));
+
 app.use(express.json());
-
-
-app.use('/api/compliment', complimentRoutes);
-app.use('/auth', authRoutes);
-app.use('/analysis', analysisRoutes);
-app.use('/letter', letterRoutes);
-// app.use('/task', taskRoutes);
 
 app.use(session({
     
@@ -32,6 +30,14 @@ app.use(session({
         maxAge: 1000 * 60 * 60  // 1時間
     }
 }));
+
+
+app.use('/api/compliment', complimentRoutes);
+app.use('/auth', authRoutes);
+app.use('/analysis', analysisRoutes);
+app.use('/letter', letterRoutes);
+// app.use('/task', taskRoutes);
+
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {

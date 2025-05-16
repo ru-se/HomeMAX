@@ -34,10 +34,7 @@ module.exports={
             }
 
             //  セッションにユーザー情報を保存
-            req.session.user = {
-                id: user.id,
-                username: user.username,
-            };
+            req.session.user = user;
             res.status(200).json({message:"ログイン成功",username:user.username})
 
 
