@@ -32,6 +32,12 @@ module.exports={
             if(!user){
                 return res.status(400).json({ message: "ユーザー名またはパスワードが正しくありません" })
             }
+
+            //  セッションにユーザー情報を保存
+            req.session.user = {
+                id: user.id,
+                username: user.username,
+            };
             res.status(200).json({message:"ログイン成功",username:user.username})
 
 
@@ -41,7 +47,19 @@ module.exports={
 
         }
 
- }
+ },
+
+     //ログアウト
+    logout: function (req, res) {
+        req.session.destroy(err => {
+            if (err) {
+                return res.status(500).json({ message: "ログアウトに失敗しました" });
+            }
+            res.clearCookie('connect.sid');
+            res.status(200).json({ message: "ログアウトしました" });
+        });
+    }
+
 };
 
 // //サインアップ
