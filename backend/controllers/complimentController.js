@@ -4,7 +4,7 @@ const geminiService = require('../services/geminiService');
 // 褒め言葉生成 & 保存 
 exports.generateCompliment = async (req, res) => {
     try {
-        const userId = req.user ? req.user.user_id : 0;
+        const user_id = req.session.user ? req.session.user.user_id : 1; 
         const { letter_id, letter_message } = req.body;
 
         if (!letter_id || !letter_message) {
@@ -19,12 +19,12 @@ exports.generateCompliment = async (req, res) => {
         const positiveAspects = await geminiService.extractPositiveAspects(letter_message);
 
         // DB保存(後で実装)
-        // const happinessId = await complimentModel.saveCompliment({
-        //     userId,
-        //     letterId: letter_id,
-        //     compliment: complimentText,
-        //     positiveAspects
-        // });
+        const happinessId = await complimentModel.saveCompliment({
+             userId: user_id,
+             letterId: letter_id,
+             compliment: complimentText,
+             positiveAspects
+         });
 
         //res.json({ happiness_id: happinessId, compliment: complimentText, positive_aspects: positiveAspects });
         res.json({ compliment: complimentText, positive_aspects: positiveAspects });
