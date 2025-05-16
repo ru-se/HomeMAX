@@ -60,8 +60,9 @@ const Home = () => {
   }
 
   return (
-    <div className='w-screen h-screen'>
-      <div className='flex min-h-3/4 w-full'>
+    <div className='w-full h-screen overflow-hidden bg-white flex flex-col'>
+      <div className='flex w-full h-3/4'>
+        {/* ほめマックスの吹き出し  */}
         <div className='basis-1/3 flex justify-center mt-10'>
           {isMessageSent && (
             <div className=''>
@@ -74,12 +75,14 @@ const Home = () => {
           <HomemaxImage OKCount={OKCount} />
         </div>
         {/* ユーザーの送信したメッセージ */}
-        <div className=" basis-1/3 flex justify-center ">
-          <UserMessageBubble message={userMessage} />
-        </div>
+        {isMessageSent && (
+          <div className=" basis-1/3 flex justify-center ">
+            <UserMessageBubble message={userMessage} />
+          </div>
+        )}
       </div>
       {/* メッセージ送信フォーム */}
-      <div className="my-4 flex items-center justify-center">
+      <div className="my-4 flex items-center justify-center h-1/4">
         <MessageForm onSend={handleSend} isMessageSent={isMessageSent} setIsMessageSent={setIsMessageSent} OKCount={OKCount} setOKCount={setOKCount} />
       </div>
     </div>
