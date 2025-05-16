@@ -21,7 +21,7 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(false) 
 
   // もう大丈夫押した回数の状態を管理
-  const [OKCount, setOKCount] = useState(1) 
+  const [OKCount, setOKCount] = useState(0) 
 
   const handleSend = async (userMessage) => {
     // ここでメッセージを送信する処理を実装
@@ -71,7 +71,7 @@ const Home = () => {
         </div>
         {/* ほめマックス画像 */}
         <div className=" basis-1/3 flex items-center justify-center ">
-          <HomemaxImage />
+          <HomemaxImage OKCount={OKCount} />
         </div>
         {/* ユーザーの送信したメッセージ */}
         <div className=" basis-1/3 flex justify-center ">

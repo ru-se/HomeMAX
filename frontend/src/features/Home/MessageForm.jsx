@@ -24,6 +24,7 @@ const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCo
             onSend(text) 
             setText('') // メッセージ送信後にテキストエリアをクリア
             setIsMessageSent(true) // メッセージ送信状態を更新
+            setOKCount(1) // メッセージ送信後にもう大丈夫を押した回数をリセット
           }}
           className=""
         >
@@ -33,12 +34,11 @@ const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCo
           <button
             onClick={() => {
               setOKCount(OKCount + 1) // もう大丈夫押した回数を増やす
-              if(OKCount >= 5) {
-                setIsMessageSent(false) // もう大丈夫を押したらメッセージ送信状態を更新
-                setOKCount(1) // もう大丈夫を押したら回数をリセット
-              } 
               console.log(`もう大丈夫を${OKCount}回押しました`);
-              
+              if(OKCount >= 6) {
+                setIsMessageSent(false) // もう大丈夫を押したらメッセージ送信状態を更新
+                setOKCount(0) // もう大丈夫を押したら回数をリセット
+              } 
             }}
           >
             もう大丈夫
