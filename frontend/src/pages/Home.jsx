@@ -20,41 +20,53 @@ const Home = () => {
   // もう大丈夫押した回数の状態を管理
   const [OKCount, setOKCount] = useState(1) 
 
-  const handleSend = async (userMessage) => {
-    // ここでメッセージを送信する処理を実装
-    setUserMessage(userMessage)
-    console.log('Sending message:', userMessage)
+// ...existing code...
 
-    setIsLoading(true) // ローディング状態を開始
-    try {
-      // APIリクエストを送信
-      const response = await fetch('http://localhost:8000/api/compliment/generate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          letter_id: 1, // 仮のID
-          letter_message: userMessage,
-        }),
-      })
+const handleSend = async (userMessage) => {
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
+  setUserMessage(userMessage)
+  setIsLoading(true)
+  setIsMessageSent(false)
 
-      const data = await response.json()
-      console.log('Received compliment:', data.compliment)
-
-      // 褒め言葉を状態に保存
-      setCompliment(data.compliment)
-      setIsMessageSent(true)
-    } catch (error) {
-      console.error('Error sending message:', error)
-    } finally {
-      setIsLoading(false) // ローディング状態を終了
+  try {
+    // 1. レター登録APIにPOST
+    const letterRes = await fetch('http://localhost:8000/letter/addLetter', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        message: userMessage,
+      }),
+    })
+    const letterData = await letterRes.json()
+    if (!letterRes.ok || !letterData.result?.insertId) {
+      throw new Error('レター登録に失敗しました')
     }
+    const letter_id = letterData.result.insertId
+
+    // 2. 褒め言葉生成APIにPOST
+    const response = await fetch('http://localhost:8000/api/compliment/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        letter_id,
+        letter_message: userMessage,
+      }),
+    })
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
+    const data = await response.json()
+    setCompliment(data.compliment)
+    setIsMessageSent(true)
+  } catch (error) {
+    console.error('Error sending message:', error)
+  } finally {
+    setIsLoading(false)
   }
+}
   
 
   return (
