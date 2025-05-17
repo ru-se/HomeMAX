@@ -17,7 +17,7 @@ const Home = () => {
   const [userId, setUserId] = useState(null)
 
  useEffect(() => {
-    fetch('http://localhost:8000/auth/me', {
+    fetch(`${import.meta.env.VITE_API_URL}/auth/me`, {
       credentials: 'include'
     })
       .then(res => res.json())
@@ -36,7 +36,7 @@ const handleSend = async (userMessage) => {
 
   try {
     // 1. レター登録APIにPOST
-    const letterRes = await fetch('http://localhost:8000/letter/addLetter', {
+    const letterRes = await fetch(`${import.meta.env.VITE_API_URL}/letter/addLetter,` {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -52,7 +52,7 @@ const handleSend = async (userMessage) => {
     const letter_id = letterData.result.insertId
 
     // 2. 褒め言葉生成APIにPOST
-    const response = await fetch('http://localhost:8000/api/compliment/generate', {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/compliment/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

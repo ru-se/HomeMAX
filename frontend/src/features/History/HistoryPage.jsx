@@ -8,7 +8,7 @@ const HistoryPage = () => {
 
   // ユーザーID取得
   useEffect(() => {
-    fetch('http://localhost:8000/auth/me', {
+    fetch(`${import.meta.env.VITE_API_URL}/auth/me`, {
       credentials: 'include'
     })
       .then(res => res.json())
@@ -30,8 +30,8 @@ const HistoryPage = () => {
   useEffect(() => {
     if (!userId) return
     const endpoint = selectedDate
-      ? `http://localhost:8000/api/compliment/history/by-date?user_id=${userId}&date=${getJSTDateString(selectedDate)}`
-      : `http://localhost:8000/api/compliment/history?user_id=${userId}`
+      ? `${import.meta.env.VITE_API_URL}/api/compliment/history/by-date?user_id=${userId}&date=${getJSTDateString(selectedDate)}`
+      : `${import.meta.env.VITE_API_URL}/api/compliment/history?user_id=${userId}`
 
     fetch(endpoint, {
       credentials: 'include'
