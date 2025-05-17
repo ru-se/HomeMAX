@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS homemax (
   letter_id INT NOT NULL,
   compliment TEXT NOT NULL,
   positive_aspects TEXT NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(user_id),
   FOREIGN KEY (letter_id) REFERENCES Letters(letter_id)
 );

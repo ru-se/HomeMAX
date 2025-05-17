@@ -1,6 +1,5 @@
 //MySQL接続
 const connection = require("../config/db");
-const { selectLetters } = require("../controllers/letterController");
 
 
 

@@ -62,6 +62,7 @@ module.exports={
                 return res.status(500).json({ message: "ログアウトに失敗しました" });
             }
             res.clearCookie('connect.sid');
+            console.log("ログアウト成功");
             res.status(200).json({ message: "ログアウトしました" });
         });
     }
