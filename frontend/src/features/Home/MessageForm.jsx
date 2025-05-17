@@ -1,12 +1,18 @@
 // メッセージを送信するためのフォーム
 
 import React, { useState } from 'react'
+import { toast, ToastContainer, Slide } from 'react-toastify'
 
 const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCount, setIsInputChange }) => {
 
   // メッセージの状態を管理するためのuseStateフック
   const [text, setText] = useState('')
 
+  const [enterCount, setEnterCount] = useState(0)
+
+  const [hasShownTypingToast, setHasShownTypingToast] = useState(false) 
+  const [hasShownEnglishToast, setHasShownEnglishToast] = useState(false)
+  
   //送信処理
   const handleSend = () => {
     if (text.trim() === '') return // 空メッセージは送信しない
@@ -14,7 +20,9 @@ const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCo
     setText('') // メッセージ送信後にテキストエリアをクリア
     setIsMessageSent(true) // メッセージ送信状態を更新
     setOKCount(1) // メッセージ送信後にもう大丈夫を押した回数をリセット
+    setEnterCount(0)
   }
+
 
   
 
@@ -24,13 +32,29 @@ const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCo
           value={text}
           onChange={(e) => {
             setText(e.target.value)
-            setIsInputChange(true)
-
+            if (!hasShownTypingToast) {
+              toast('文字入力できてすごい！！！')
+              setHasShownTypingToast(true)
+          }
+            if(!hasShownEnglishToast) {
+              if (/[a-zA-Z]/.test(e.target.value)) {
+                toast('英語使ってすごい！！！')
+                setHasShownEnglishToast(true)
+              }
+            }
           }}
           onKeyDown={(e) => {
           if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault() // 改行を防止
-            handleSend() // 送信処理を実行
+            setEnterCount(prev => {
+              if (prev + 1 >= 2) {
+                handleSend()
+                return 0
+              }
+              return prev + 1
+            })
+          } else {
+            setEnterCount(0) // 他のキーを押したらカウントリセット
           }
         }}
           placeholder="メッセージを入力してください"
