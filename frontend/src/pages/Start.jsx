@@ -1,7 +1,8 @@
 // スタートページ
 
 import React from 'react'
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; 
+// import homeImage from '../assets/home.png'; // 画像をインポート
 
 const Start = () => {
 
@@ -9,8 +10,19 @@ const Start = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-white min-h-screen flex justify-center items-center">
-        <div className="">
+      <div className="min-h-screen bg-white flex justify-center items-center">
+
+          {/* 背景の無限スクロール画像
+        <div className="absolute z-0">
+          <div className="animate-marquee whitespace-nowrap flex">
+            <img src={homeImage} />
+          </div>
+          <div className="animate-marquee whitespace-nowrap flex">
+            <img src={homeImage} />
+          </div>
+        </div> */}
+
+        <div className="z-10">
           {/* タイトル */}
           <h1 className = "text-8xl text-center font-kiwi-maru">ほめマックス</h1>
 
@@ -30,8 +42,6 @@ const Start = () => {
             なんでも話してみてください。<br />
             あなたの話に、キャラの「ほめマックス」が全力で、<br />
             愛と勢いとテンションでほめちぎってくれます！
-
-
           </div>
         </div>
       </div>
