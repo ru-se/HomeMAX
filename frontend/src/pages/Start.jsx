@@ -20,8 +20,9 @@ const Start = () => {
          <button onClick={() => navigate('/signup')} className="rounded-full  bg-blue text-white px-6 py-2 font-kiwi-maru hover:bg-blue-dark">新規登録</button>
          {/* ホームへボタン */}
           <button onClick={() => navigate('/home')} className="rounded-full bg-green-500 text-white px-6 py-2 font-kiwi-maru hover:bg-green-dark">ホームへ</button>
-           {/* 説明 */}
-          <div className="font-kiwi-maru text-center mt-16">
+        </div>
+
+      <div className="font-kiwi-maru text-center mt-16">
             ようこそ!<br />
             「ほめマックス」へ！<br />
             あなたの“がんばり”を全力で肯定してくれるほめマックス。<br />
@@ -30,7 +31,6 @@ const Start = () => {
             あなたの話に、キャラの「ほめマックス」が全力で、<br />
             愛と勢いとテンションでほめちぎってくれます！
           </div>
-        </div>
     </div>
 </>
   )
