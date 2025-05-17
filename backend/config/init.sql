@@ -31,15 +31,17 @@ CREATE TABLE IF NOT EXISTS homemax (
   FOREIGN KEY (letter_id) REFERENCES Letters(letter_id)
 );
 
--- -- Tasks テーブル
--- CREATE TABLE IF NOT EXISTS Tasks (
---   task_id INT AUTO_INCREMENT PRIMARY KEY,
---   task_name VARCHAR(100) NOT NULL,
---   task_type VARCHAR(100) NOT NULL,
---   status VARCHAR(100) NOT NULL,
---   user_id INT,
---   FOREIGN KEY (user_id) REFERENCES users(user_id)
--- );
+-- Tasks テーブル
+CREATE TABLE IF NOT EXISTS Tasks (
+  task_id INT AUTO_INCREMENT PRIMARY KEY,
+  task_title VARCHAR(100) NOT NULL,
+  task_name VARCHAR(100) NOT NULL,
+  task_type VARCHAR(100) NOT NULL,
+  status VARCHAR(100) NOT NULL,
+  user_id INT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
 
 
 

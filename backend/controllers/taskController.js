@@ -14,19 +14,6 @@ module.exports = {
         }
     },
 
-    // タスク進捗状況取得
-    getTaskProgress: async function(req, res) {
-        try {
-            const userId = req.query.user_id || req.body.user_id || (req.session.user && req.session.user.user_id);
-            if (!userId) return res.status(400).json({ error: "user_idが必要です" });
-            const progress = await Task.getTaskProgress(userId);
-            res.json(progress);
-        } catch (err) {
-            console.log(err);
-            res.status(500).json({ error: "進捗状況取得エラー" });
-        }
-    },
-
     // クリア済みタスク取得
     getClearedTasks: async function(req, res) {
         try {
@@ -43,9 +30,11 @@ module.exports = {
     // タスクのクリア状況を更新
     updateTaskStatus: async function(req, res) {
         try {
-            const { task_id, status } = req.body;
-            if (!task_id || !status) return res.status(400).json({ error: "task_idとstatusが必要です" });
-            await Task.updateTaskStatus(task_id, status);
+            const { task_name } = req.body;
+            if (!task_name) return res.status(400).json({ error: "task_nameが必要です" });
+
+            // statusをtrueに更新
+            await Task.updateTaskStatusByName(task_name, "true");
             res.json({ message: "タスクのステータスを更新しました" });
         } catch (err) {
             console.log(err);
