@@ -93,37 +93,47 @@ const handleSend = async (userMessage) => {
   
 
   return (
-    <div>
+    <div className='w-full h-screen overflow-hidden bg-white flex flex-col'>
+
       {/* 通知表示 */}
-      {toastMessage != null && (
-        <NotificationToast message={toastMessage} onClose={() => setToastMessage(null)} />
-      )}
-      
-      {isMessageSent && (
-        <div className='absolute left-0 top-1/2'>
-          {/* 褒め言葉を表示 */}
-          <HomemaxMessageBubble message={isLoading ? '生成中...' : compliment} />
+       {toastMessage != null && (
+         <NotificationToast message={toastMessage} onClose={() => setToastMessage(null)}/>
+        )}
+
+      <div className='flex w-full h-3/4'>
+        {/* ほめマックスの吹き出し  */}
+        <div className='basis-1/3 flex justify-center mt-10'>
+          {isMessageSent && (
+            <div className=''>
+              <HomemaxMessageBubble message={isLoading ? '生成中...' : compliment}/>
+            </div>
+          )}
         </div>
-      )}
-      {/* ほめマックス画像 */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <HomemaxImage />
-      </div>
-      {/* ユーザーの送信したメッセージ */}
-      <div className="absolute right-0 top-1/2">
-        <UserMessageBubble message={userMessage} />
+        {/* ほめマックス画像 */}
+        <div className=" basis-1/3 flex items-center justify-center ">
+          <HomemaxImage OKCount={OKCount} />
+        </div>
+        {/* ユーザーの送信したメッセージ */}
+        {isMessageSent && (
+          <div className=" basis-1/3 flex justify-center mt-25">
+            <UserMessageBubble message={userMessage} />
+          </div>
+        )}
       </div>
       {/* メッセージ送信フォーム */}
-      <div className="absolute bottom-0 left-0 right-0 ">
-        <MessageForm
-          onSend={handleSend}
-          isMessageSent={isMessageSent}
-          setIsMessageSent={setIsMessageSent}
-          OKCount={OKCount}
-          setOKCount={setOKCount}
+      <div className="my-4 flex items-center justify-center h-1/4">
+        <MessageForm 
+          onSend={handleSend} 
+          isMessageSent={isMessageSent} 
+          setIsMessageSent={setIsMessageSent} 
+          OKCount={OKCount} 
+          setOKCount={setOKCount} 
           setIsInputChange={setIsInputChange}
+
         />
       </div>
+      {/* メニューボタン */}
+      <Menu />
     </div>
   )
 }
