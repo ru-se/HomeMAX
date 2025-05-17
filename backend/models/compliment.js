@@ -6,9 +6,14 @@ exports.saveCompliment = async ({ userId, letterId, compliment, positiveAspects 
         INSERT INTO homemax (user_id, letter_id, compliment, positive_aspects, created_at)
         VALUES (?, ?, ?, ?, NOW())
     `;
-    const result = await db.execute(query, [userId, letterId, compliment, positiveAspects]);
-    console.log(result);
-    return result.insertId;
+    try {
+        const result = await db.execute(query, [userId, letterId, compliment, positiveAspects]);
+        console.log('クエリ成功:', result);
+        return result.insertId;
+    } catch (error) {
+        console.error('クエリ失敗:', error);
+        throw error;
+    }
 };
 
 // 褒め言葉一覧取得
