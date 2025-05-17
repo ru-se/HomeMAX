@@ -19,26 +19,34 @@ exports.getComplimentList = async (userId) => {
         WHERE user_id = ?
         ORDER BY created_at DESC
     `;
-    const rows = await db.execute(query, [userId]);
-    return rows;
+    return new Promise((resolve, reject) => {
+        db.query(query, [userId], (err, rows) => {
+            if (err) {
+                console.log(err);
+                return reject(err);
+            }
+            resolve(rows);
+        });
+    });
 };
 
 // 手紙と褒め言葉の履歴取得
 exports.getComplimentHistory = async (userId) => {
     const query = `
-        SELECT 
-            c.happiness_id,
-            c.compliment,
-            c.positive_aspects,
-            c.created_at AS compliment_date,
-            l.letter_id,
-            l.message AS letter_message,
-            l.created_at AS letter_date
-        FROM homemax c
-        INNER JOIN Letters l ON c.letter_id = l.letter_id
-        WHERE c.user_id = ?
-        ORDER BY c.created_at DESC
+        SELECT h.happiness_id, h.compliment, h.positive_aspects, h.created_at AS compliment_date,
+               l.letter_id, l.message AS letter_message, l.created_at AS letter_date
+        FROM homemax h
+        JOIN Letters l ON h.letter_id = l.letter_id
+        WHERE h.user_id = ?
+        ORDER BY h.created_at DESC
     `;
-    const rows = await db.execute(query, [userId]);
-    return rows;
+    return new Promise((resolve, reject) => {
+        db.query(query, [userId], (err, rows) => {
+            if (err) {
+                console.log(err);
+                return reject(err);
+            }
+            resolve(rows);
+        });
+    });
 };
