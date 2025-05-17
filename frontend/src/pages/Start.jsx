@@ -18,6 +18,8 @@ const Start = () => {
          <button onClick={() => navigate('/login')} className="rounded-full bg-blue text-white px-6 py-2 font-kiwi-maru hover:bg-blue-dark">ログイン</button> 
           {/* 新規登録ボタン */}
          <button onClick={() => navigate('/signup')} className="rounded-full  bg-blue text-white px-6 py-2 font-kiwi-maru hover:bg-blue-dark">新規登録</button>
+         {/* ホームへボタン */}
+          <button onClick={() => navigate('/home')} className="rounded-full bg-green-500 text-white px-6 py-2 font-kiwi-maru hover:bg-green-dark">ホームへ</button>
         </div>
 
       {/* 説明 */}
