@@ -5,8 +5,8 @@ import MessageForm from '../features/Home/MessageForm'
 import UserMessageBubble from '../features/Home/UserMessageBubble'
 import HomemaxImage from '../features/Home/HomemaxImage'
 import HomemaxMessageBubble from '../features/Home/HomemaxMessageBubble'
-import NotificationToast from '../components/naturallyTask/NotificationToast'
 import Menu from '../components/menu/menu'
+import { ToastContainer, toast, Slide } from 'react-toastify';
 
 
 const Home = () => {
@@ -15,12 +15,6 @@ const Home = () => {
   //入力状態の管理
   const [isInputChange, setIsInputChange] = useState(false)
   
-  useEffect(() => {
-    // なにか入力したら
-    if(isInputChange) {
-      setToastMessage('文字入力できてすごい！！');
-    }
-  }, [isInputChange])
   
 
   
@@ -67,6 +61,11 @@ const handleSend = async (userMessage) => {
       throw new Error('レター登録に失敗しました')
     }
     const letter_id = letterData.result.insertId
+    toast('メッセージ送信できてすごい', {
+                  style: {
+                    background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
+                  }
+                })
 
     // 2. 褒め言葉生成APIにPOST
     console.log('Mode:', modeName); // 修正: 正しい変数名を使用
@@ -88,6 +87,11 @@ const handleSend = async (userMessage) => {
     const data = await response.json()
     setCompliment(data.compliment)
     setIsMessageSent(true)
+    toast('ホメられてえらい！！！', {
+                  style: {
+                    background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
+                  }
+                })
   } catch (error) {
     console.error('Error sending message:', error)
   } finally {
@@ -99,10 +103,23 @@ const handleSend = async (userMessage) => {
   return (
     <div className='w-full h-screen overflow-hidden bg-white flex flex-col'>
 
-      {/* 通知表示 */}
-       {toastMessage != null && (
-         <NotificationToast message={toastMessage} onClose={() => setToastMessage(null)}/>
-        )}
+      {/* 通知表示 */} 
+      {/* <NotificationToast/> */}
+       <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          limit={5}
+          hideProgressBar
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          transition={Slide}
+      />
+      
 
       <div className='flex w-full h-3/4'>
         {/* ほめマックスの吹き出し  */}
