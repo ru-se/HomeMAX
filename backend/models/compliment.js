@@ -29,7 +29,7 @@ exports.getComplimentHistory = async (userId) => {
         SELECT h.happiness_id, h.compliment, h.positive_aspects, h.created_at AS compliment_date,
                l.letter_id, l.message AS letter_message, l.created_at AS letter_date
         FROM homemax h
-        JOIN Letters l ON h.letter_id = l.letter_id
+        JOIN letters l ON h.letter_id = l.letter_id
         WHERE h.user_id = $1
         ORDER BY h.created_at DESC
     `;
@@ -43,7 +43,7 @@ exports.getComplimentHistoryByDate = async (userId, date) => {
         SELECT h.happiness_id, h.compliment, h.positive_aspects, h.created_at AS compliment_date,
                l.letter_id, l.message AS letter_message, l.created_at AS letter_date
         FROM homemax h
-        JOIN Letters l ON h.letter_id = l.letter_id
+        JOIN letters l ON h.letter_id = l.letter_id
         WHERE h.user_id = $1 AND h.created_at::date = $2
         ORDER BY h.created_at DESC
     `;

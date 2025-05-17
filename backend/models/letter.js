@@ -4,7 +4,7 @@ module.exports = {
     // 送られたお手紙をDBに保存
     addLetter: async function (user_id, message) {
         const query = `
-            INSERT INTO "Letters"(user_id, message)
+            INSERT INTO "letters"(user_id, message)
             VALUES ($1, $2)
             RETURNING letter_id
         `;
@@ -20,7 +20,7 @@ module.exports = {
     // ユーザーIDを指定して全てのLetterを返す
     allLetters: async function (user_id) {
         const query = `
-            SELECT * FROM "Letters"
+            SELECT * FROM "letters"
             WHERE user_id = $1
             ORDER BY created_at DESC
         `;
@@ -36,7 +36,7 @@ module.exports = {
     // 指定された日付のユーザーのLetterを返す
     selectLetters: async function (user_id, created_at) {
         const query = `
-            SELECT * FROM "Letters"
+            SELECT * FROM "letters"
             WHERE user_id = $1 AND created_at::date = $2
             ORDER BY created_at DESC
         `;

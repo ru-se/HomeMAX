@@ -5,7 +5,7 @@ module.exports = {
     dailyLetterCount: function () {
         const query = `
             SELECT created_at::date as date, COUNT(*) as count
-            FROM "Letters"
+            FROM "letters"
             WHERE created_at::date = CURRENT_DATE
             GROUP BY created_at::date
         `;
