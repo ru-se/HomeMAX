@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { useNavigate } from "react-router-dom"; 
-// import homeImage from '../assets/home.png'; // 画像をインポート
+import homeImage from '../assets/home.png'; // 画像をインポート
 
 const Start = () => {
 
@@ -12,7 +12,7 @@ const Start = () => {
     <>
       <div className="min-h-screen bg-white flex justify-center items-center">
 
-          {/* 背景の無限スクロール画像
+          {/* 背景の無限スクロール画像 */}
         <div className="absolute z-0">
           <div className="animate-marquee whitespace-nowrap flex">
             <img src={homeImage} />
@@ -20,11 +20,22 @@ const Start = () => {
           <div className="animate-marquee whitespace-nowrap flex">
             <img src={homeImage} />
           </div>
-        </div> */}
+        </div>
 
         <div className="z-10">
           {/* タイトル */}
           <h1 className = "text-8xl text-center font-kiwi-maru">ほめマックス</h1>
+
+            {/* 説明 */}
+            <div className="font-kiwi-maru text-center mt-16">
+              ようこそ!<br />
+              「ほめマックス」へ！<br />
+              あなたの“がんばり”を全力で肯定してくれるほめマックス。<br />
+              日常のこと、仕事のこと、恋愛のこと、悩んでること——<br />
+              なんでも話してみてください。<br />
+              あなたの話に、キャラの「ほめマックス」が全力で、<br />
+              愛と勢いとテンションでほめちぎってくれます！
+            </div>
 
             <div className="flex gap-8 justify-center mt-20">
               {/* ログインボタン */}
