@@ -55,6 +55,7 @@ const handleSend = async (userMessage) => {
     const response = await fetch(`${import.meta.env.VITE_API_URL}/api/compliment/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({
         user_id: userId,
         letter_id: letter_id,
