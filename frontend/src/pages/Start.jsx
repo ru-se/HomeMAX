@@ -10,46 +10,16 @@ const Start = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-white flex  justify-center items-center">
+      <div className="min-h-screen bg-white flex  justify-center items-center relative overflow-hidden">
 
           {/* 背景の無限スクロール画像 */}
-        <div className="absolute z-0 flex">
-          <div className="animate-marquee whitespace-nowrap flex">
-            <img src={homeImage} />
+        <div className="absolute z-0">
+          <div className="marquee">
           </div>
-          {/* <div className="animate-marquee whitespace-nowrap flex">
-            <div className="">
-              <img src={homeImage} />
-            </div>
-          </div>
-          <div className="animate-marquee whitespace-nowrap flex">
-            <div className="">
-              <img src={homeImage} />
-            </div>
-          </div>
-          <div className="animate-marquee whitespace-nowrap flex">
-            <div className="">
-              <img src={homeImage} />
-            </div>
-          </div>
-          <div className="animate-marquee whitespace-nowrap flex">
-            <div className="">
-              <img src={homeImage} />
-            </div>
-          </div>
-          <div className="animate-marquee whitespace-nowrap flex">
-            <div className="">
-              <img src={homeImage} />
-            </div>
-          </div>
-          <div className="animate-marquee whitespace-nowrap flex">
-            <div className="">
-              <img src={homeImage} />
-            </div> */}
-          {/* </div> */}
         </div>
+        
 
-        <div className="z-10">
+        <div className="z-10 w-2/5 py-16 bg-white rounded border-1 border-white-dark shadow-lg">
           {/* タイトル */}
           <h1 className = "text-8xl text-center font-kiwi-maru">ほめマックス</h1>
 
@@ -60,11 +30,12 @@ const Start = () => {
               あなたの“がんばり”を全力で肯定してくれるほめマックス。<br />
               日常のこと、仕事のこと、恋愛のこと、悩んでること——<br />
               なんでも話してみてください。<br />
+              <br />
               あなたの話に、キャラの「ほめマックス」が全力で、<br />
               愛と勢いとテンションでほめちぎってくれます！
             </div>
 
-            <div className="flex gap-8 justify-center mt-20">
+            <div className="flex gap-8 justify-center mt-12">
               {/* ログインボタン */}
             <button onClick={() => navigate('/login')} className="rounded-full bg-blue text-white px-6 py-2 font-kiwi-maru hover:bg-blue-dark">ログイン</button> 
               {/* 新規登録ボタン */}
