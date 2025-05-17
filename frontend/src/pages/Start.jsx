@@ -19,7 +19,7 @@ const Start = () => {
         </div>
         
 
-        <div className="z-10 w-2/5 py-16 bg-white rounded border-1 border-white-dark shadow-lg">
+        <div className="z-10 w-1/2 py-36 bg-white rounded border-1 border-white-dark shadow-lg">
           {/* タイトル */}
           <h1 className = "text-8xl text-center font-kiwi-maru">ほめマックス</h1>
 
@@ -27,6 +27,7 @@ const Start = () => {
             <div className="font-kiwi-maru text-center mt-16">
               ようこそ!<br />
               「ほめマックス」へ！<br />
+              <br />
               あなたの“がんばり”を全力で肯定してくれるほめマックス。<br />
               日常のこと、仕事のこと、恋愛のこと、悩んでること——<br />
               なんでも話してみてください。<br />
