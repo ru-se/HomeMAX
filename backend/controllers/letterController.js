@@ -1,5 +1,5 @@
 // サインアアップ、ログイン機能とか
-const Letter = require("../models/Letter");
+const Letter = require("../models/letter");
 
 
 // //JSONの受け取り
