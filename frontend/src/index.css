@@ -5,11 +5,11 @@
 
   /* 要素を translateX(100%) で右端の外（画面外）からスタート */
   0% {
-    transform: translateX(100%);
+    transform: translateX(0);
   }
   /* translateX(-100%) で左端の外（画面外）まで移動 */
   100% {
-    transform: translateX(-100%);
+    transform: translateX(calc(calc(-1 * 20vmin * 30) + 76.5%));
   }
 }
 
@@ -18,6 +18,28 @@
   display: inline-block;
   white-space: nowrap;
   animation: marquee 10s linear infinite;
+}
+
+.marquee {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  top: -80px;
+}
+
+.marquee::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -50vw;
+  width: calc(20vmin * 30);
+  height: 500px;
+  background-image: url("/src/assets/home.png");
+  background-repeat: repeat-x;        /* 横方向リピート */
+  background-size: 20vmin 20vmin; /* 縦横100% */
+  animation: marquee 10s linear infinite;
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 
