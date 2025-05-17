@@ -1,5 +1,5 @@
 // サインアアップ、ログイン機能とか
-const Letter = require("../models/Letter");
+const Letter = require("../models/letter");
 
 
 // //JSONの受け取り
@@ -38,7 +38,7 @@ module.exports={
         }
 
     },
-     //ユーザの指定されたLetterを返す
+     //ユーザの日付指定されたLetterを返す
      selectLetters : async function (req,res) {
         try{
             const user_id = req.body.user_id;

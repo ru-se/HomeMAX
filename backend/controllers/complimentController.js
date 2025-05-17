@@ -4,8 +4,8 @@ const geminiService = require('../services/geminiService');
 // 褒め言葉生成 & 保存 
 exports.generateCompliment = async (req, res) => {
     try {
-        const userId = req.user ? req.user.user_id : 0;
-        const { letter_id, letter_message } = req.body;
+        //　　const user_id = req.session.user ? req.session.user.user_id : 1; 
+        const { user_id, letter_id, letter_message } = req.body;
 
         if (!letter_id || !letter_message) {
             return res.status(400).json({ error: 'letter_id と letter_message が必要です' });
@@ -19,12 +19,12 @@ exports.generateCompliment = async (req, res) => {
         const positiveAspects = await geminiService.extractPositiveAspects(letter_message);
 
         // DB保存(後で実装)
-        // const happinessId = await complimentModel.saveCompliment({
-        //     userId,
-        //     letterId: letter_id,
-        //     compliment: complimentText,
-        //     positiveAspects
-        // });
+        const happinessId = await complimentModel.saveCompliment({
+             userId: user_id,
+             letterId: letter_id,
+             compliment: complimentText,
+             positiveAspects
+         });
 
         //res.json({ happiness_id: happinessId, compliment: complimentText, positive_aspects: positiveAspects });
         res.json({ compliment: complimentText, positive_aspects: positiveAspects });
@@ -49,11 +49,35 @@ exports.getComplimentList = async (req, res) => {
 // 手紙と褒め言葉の履歴取得
 exports.getComplimentHistory = async (req, res) => {
     try {
-        const userId = req.user ? req.user.user_id : 0;
+        // クエリパラメータからuser_idを取得
+        const userId = req.query.user_id || req.body.user_id || (req.user && req.user.user_id);
+        if (!userId) {
+            return res.status(400).json({ error: 'user_idが必要です' });
+        }
         const history = await complimentModel.getComplimentHistory(userId);
         res.json(history);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: '履歴取得エラー' });
+    }
+};
+
+// 日付指定で手紙と褒め言葉の履歴取得
+exports.getComplimentHistoryByDate = async (req, res) => {
+    try {
+        const userId = req.query.user_id || req.body.user_id || (req.user && req.user.user_id);
+        const date = req.query.date || req.body.date; // 追加
+
+        if (!userId) {
+            return res.status(400).json({ error: 'user_idが必要です' });
+        }
+        if (!date) {
+            return res.status(400).json({ error: 'dateが必要です' });
+        }
+        const history = await complimentModel.getComplimentHistory(userId, date);
+        res.json(history);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: '日付指定履歴取得エラー' });
     }
 };
