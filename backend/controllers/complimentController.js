@@ -5,7 +5,8 @@ const geminiService = require('../services/geminiService');
 exports.generateCompliment = async (req, res) => {
     try {
         //　　const user_id = req.session.user ? req.session.user.user_id : 1; 
-        const { user_id, letter_id, letter_message } = req.body;
+        const user_id = req.session.user?.user_id;
+        const { letter_id, letter_message } = req.body;
 
         if (!letter_id || !letter_message) {
             return res.status(400).json({ error: 'letter_id と letter_message が必要です' });
