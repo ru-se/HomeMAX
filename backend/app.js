@@ -13,7 +13,7 @@ const letterRoutes = require('./routes/letterRoutes');
 const app = express();
 
 
-app.use('*', cors({
+app.use(cors({
   origin: 'https://homemax-frontend.onrender.com', // 明示的にフロントのURLを指定
   credentials: true                // Cookie やセッションを許可
 }));
