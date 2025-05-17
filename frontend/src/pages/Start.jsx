@@ -10,16 +10,43 @@ const Start = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-white flex justify-center items-center">
+      <div className="min-h-screen bg-white flex  justify-center items-center">
 
           {/* 背景の無限スクロール画像 */}
-        <div className="absolute z-0">
+        <div className="absolute z-0 flex">
           <div className="animate-marquee whitespace-nowrap flex">
             <img src={homeImage} />
           </div>
-          <div className="animate-marquee whitespace-nowrap flex">
-            <img src={homeImage} />
+          {/* <div className="animate-marquee whitespace-nowrap flex">
+            <div className="">
+              <img src={homeImage} />
+            </div>
           </div>
+          <div className="animate-marquee whitespace-nowrap flex">
+            <div className="">
+              <img src={homeImage} />
+            </div>
+          </div>
+          <div className="animate-marquee whitespace-nowrap flex">
+            <div className="">
+              <img src={homeImage} />
+            </div>
+          </div>
+          <div className="animate-marquee whitespace-nowrap flex">
+            <div className="">
+              <img src={homeImage} />
+            </div>
+          </div>
+          <div className="animate-marquee whitespace-nowrap flex">
+            <div className="">
+              <img src={homeImage} />
+            </div>
+          </div>
+          <div className="animate-marquee whitespace-nowrap flex">
+            <div className="">
+              <img src={homeImage} />
+            </div> */}
+          {/* </div> */}
         </div>
 
         <div className="z-10">

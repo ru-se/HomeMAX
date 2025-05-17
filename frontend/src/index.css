@@ -5,11 +5,11 @@
 
   /* 要素を translateX(100%) で右端の外（画面外）からスタート */
   0% {
-    transform: translateX(100%);
+    transform: translateX(200%);
   }
   /* translateX(-100%) で左端の外（画面外）まで移動 */
   100% {
-    transform: translateX(-100%);
+    transform: translateX(-200%);
   }
 }
 
