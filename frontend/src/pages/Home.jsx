@@ -30,6 +30,8 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(false) 
   const [OKCount, setOKCount] = useState(1) 
   const [userId, setUserId] = useState(null)
+  const [modeName, setModeName] = useState(null)  // モード名を格納するステート
+
 
  useEffect(() => {
     fetch('http://localhost:8000/auth/me', {
@@ -67,6 +69,7 @@ const handleSend = async (userMessage) => {
     const letter_id = letterData.result.insertId
 
     // 2. 褒め言葉生成APIにPOST
+    console.log('Mode:', modeName); // 修正: 正しい変数名を使用
     const response = await fetch('http://localhost:8000/api/compliment/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -74,6 +77,7 @@ const handleSend = async (userMessage) => {
         user_id: userId,
         letter_id: letter_id,
         letter_message: userMessage,
+        mode: modeName,  // モード名を指定
       }),
     })
 
@@ -119,6 +123,53 @@ const handleSend = async (userMessage) => {
             <UserMessageBubble message={userMessage} />
           </div>
         )}
+      </div>
+      {/* ほめマックスのモード選択 */}
+      <div className="my-4 flex items-center justify-center h-1/4">
+        <label style={{ marginRight: '20px' }}> {/* 間隔設定 */}
+          <input 
+            type="radio" 
+            name="mode" 
+            value="homemax"
+            checked={modeName === 'ほめマックス'} // 修正: 値を一致させる
+            onChange={() => setModeName('ほめマックス')} 
+            style={{ accentColor: 'pink' }} 
+          />
+          ほめマックス
+        </label>
+        <label style={{ marginRight: '20px' }}> {/* 間隔設定 */}
+          <input 
+            type="radio" 
+            name="mode" 
+            value="galmax" 
+            checked={modeName === 'ギャルです。ギャル語を使って話します。絵文字をたくさん使います。'} 
+            onChange={() => setModeName('ギャルです。ギャル語を使って話します。絵文字をたくさん使います。')} 
+            style={{ accentColor: 'pink' }} 
+          />
+          ぎゃるマックス
+        </label>
+        <label style={{ marginRight: '20px' }}> {/* 最後のラベルには間隔を設定しない */}
+          <input 
+            type="radio" 
+            name="mode" 
+            value="yamimax" 
+            checked={modeName === '病んでる人です。ネガティブなことを言います。人のこのは褒めるけど自分と比べてさらに病みます。'} 
+            onChange={() => setModeName('病んでる人です。ネガティブなことを言います。人のこのは褒めるけど自分と比べてさらに病みます。')} 
+            style={{ accentColor: 'pink' }} 
+          />
+          病みマックス
+        </label>
+        <label> 
+          <input 
+            type="radio" 
+            name="mode" 
+            value="yamimax" 
+            checked={modeName === 'オタクです。語尾は「ござる」や「でござるよ」です。Twitterで使われるネットミームを使います。'} 
+            onChange={() => setModeName('オタクです。語尾は「ござる」や「でござるよ」です。Twitterで使われるネットミームを使います。')} 
+            style={{ accentColor: 'pink' }} 
+          />
+          おたマックス
+        </label>
       </div>
       {/* メッセージ送信フォーム */}
       <div className="my-4 flex items-center justify-center h-1/4">

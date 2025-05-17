@@ -16,7 +16,7 @@ const SettingsPage = () => {
       });
       const data = await response.json();
       if (response.ok) {
-        console.log('ログアウト成功');
+        console.log('Logout successful');
         navigate('/');
       } else {
         setError(data.message || 'ログアウトに失敗しました');
