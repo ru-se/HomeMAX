@@ -61,3 +61,23 @@ exports.getComplimentHistory = async (req, res) => {
         res.status(500).json({ error: '履歴取得エラー' });
     }
 };
+
+// 日付指定で手紙と褒め言葉の履歴取得
+exports.getComplimentHistoryByDate = async (req, res) => {
+    try {
+        const userId = req.query.user_id || req.body.user_id || (req.user && req.user.user_id);
+        const date = req.query.date || req.body.date; // 追加
+
+        if (!userId) {
+            return res.status(400).json({ error: 'user_idが必要です' });
+        }
+        if (!date) {
+            return res.status(400).json({ error: 'dateが必要です' });
+        }
+        const history = await complimentModel.getComplimentHistory(userId, date);
+        res.json(history);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: '日付指定履歴取得エラー' });
+    }
+};

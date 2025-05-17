@@ -11,4 +11,7 @@ router.get('/list', complimentController.getComplimentList);
 // GET: 手紙＋褒め言葉 履歴
 router.get('/history', complimentController.getComplimentHistory);
 
+// GET: 手紙＋褒め言葉 履歴（特定の日付）
+router.get('/history/by-date', complimentController.getComplimentHistoryByDate);
+
 module.exports = router;
