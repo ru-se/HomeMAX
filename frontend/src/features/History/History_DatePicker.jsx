@@ -15,6 +15,7 @@ const History_DatePicker = ({ selectedDate, setSelectedDate }) => {
         onChange={handleChange}
         id="date"
         dateFormat="yyyy/MM/dd"
+        className="border-1 border-black focus:outline-1 focus:outline-blue-dark inline-block py-0.5"
       />
     </div>
   )
