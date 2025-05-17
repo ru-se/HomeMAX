@@ -36,7 +36,7 @@ const handleSend = async (userMessage) => {
 
   try {
     // 1. レター登録APIにPOST
-    const letterRes = await fetch(`${import.meta.env.VITE_API_URL}/letter/addLetter,` {
+    const letterRes = await fetch(`${import.meta.env.VITE_API_URL}/letter/addLetter`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
