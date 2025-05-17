@@ -1,6 +1,27 @@
 @import url("https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@500&display=swap");
 @import "tailwindcss";
 
+@keyframes marquee {
+
+  /* 要素を translateX(100%) で右端の外（画面外）からスタート */
+  0% {
+    transform: translateX(100%);
+  }
+  /* translateX(-100%) で左端の外（画面外）まで移動 */
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* アニメーションの動き */
+.animate-marquee {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee 10s linear infinite;
+}
+
+
+/* 色、フォントの読み込み */
 @theme {
   --color-blue: #789DBC;
   --color-blue-dark:#6287a6;
@@ -11,6 +32,6 @@
   --color-green: #C9E9D2;
   --color-green-dark: #b8dbc2;
 
-  --font-kiwi-maru: "Kiwi Maru", sans-serif;  
+  --font-kiwi-maru: "Kiwi Maru", sans-serif;
 }
   
