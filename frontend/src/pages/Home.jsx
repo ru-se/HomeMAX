@@ -1,13 +1,27 @@
 // ホームページ
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import MessageForm from '../features/Home/MessageForm'
 import UserMessageBubble from '../features/Home/UserMessageBubble'
 import HomemaxImage from '../features/Home/HomemaxImage'
 import HomemaxMessageBubble from '../features/Home/HomemaxMessageBubble'
+import NotificationToast from '../components/naturallyTask/NotificationToast'
 
 
 const Home = () => {
+  const [toastMessage, setToastMessage] = useState(null);
+
+  //入力状態の管理
+  const [isInputChange, setIsInputChange] = useState(false)
+  
+  useEffect(() => {
+    // なにか入力したら
+    if(isInputChange) {
+      setToastMessage('文字入力できてすごい！！');
+    }
+  }, [isInputChange])
+  
+
   
   // メッセージ送信状態の管理
   const [isMessageSent, setIsMessageSent] = useState(false) 
@@ -71,6 +85,11 @@ const handleSend = async (userMessage) => {
 
   return (
     <div>
+      {/* 通知表示 */}
+      {toastMessage != null && (
+        <NotificationToast message={toastMessage} onClose={() => setToastMessage(null)} />
+      )}
+      
       {isMessageSent && (
         <div className='absolute left-0 top-1/2'>
           {/* 褒め言葉を表示 */}
@@ -93,6 +112,7 @@ const handleSend = async (userMessage) => {
           setIsMessageSent={setIsMessageSent}
           OKCount={OKCount}
           setOKCount={setOKCount}
+          setIsInputChange={setIsInputChange}
         />
       </div>
     </div>

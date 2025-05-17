@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 
-const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCount }) => {
+const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCount, setIsInputChange }) => {
 
   // メッセージの状態を管理するためのuseStateフック
   const [text, setText] = useState('')
@@ -13,7 +13,10 @@ const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCo
     <div className='flex flex-col items-center justify-center'>
       <textarea
           value={text}
-          onChange={(e) => setText(e.target.value)}
+          onChange={(e) => {
+           setText(e.target.value) 
+           setIsInputChange(true)
+          }}
           placeholder="メッセージを入力してください"
           rows="4"
           cols="50"
