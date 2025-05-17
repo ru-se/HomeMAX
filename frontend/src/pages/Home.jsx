@@ -59,7 +59,11 @@ const handleSend = async (userMessage) => {
       throw new Error('レター登録に失敗しました')
     }
     const letter_id = letterData.result.insertId
-    toast('メッセージ送信できてすごい')
+    toast('メッセージ送信できてすごい', {
+                  style: {
+                    background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
+                  }
+                })
 
     // 2. 褒め言葉生成APIにPOST
     const response = await fetch('http://localhost:8000/api/compliment/generate', {
@@ -79,7 +83,11 @@ const handleSend = async (userMessage) => {
     const data = await response.json()
     setCompliment(data.compliment)
     setIsMessageSent(true)
-    toast('ホメられてえらい！！！')
+    toast('ホメられてえらい！！！', {
+                  style: {
+                    background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
+                  }
+                })
   } catch (error) {
     console.error('Error sending message:', error)
   } finally {

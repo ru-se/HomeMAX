@@ -33,12 +33,20 @@ const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCo
           onChange={(e) => {
             setText(e.target.value)
             if (!hasShownTypingToast) {
-              toast('文字入力できてすごい！！！')
+              toast('文字入力できてすごい！！！', {
+                  style: {
+                    background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
+                  }
+                })
               setHasShownTypingToast(true)
           }
             if(!hasShownEnglishToast) {
               if (/[a-zA-Z]/.test(e.target.value)) {
-                toast('英語使ってすごい！！！')
+                toast('英語使ってすごい！！！', {
+                  style: {
+                    background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
+                  }
+                })
                 setHasShownEnglishToast(true)
               }
             }
