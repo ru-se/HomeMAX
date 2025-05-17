@@ -9,6 +9,8 @@ import Tasks from '../pages/Tasks';
 import History from '../pages/History';
 import Settings from '../pages/Settings';
 import Login from '../pages/Login';
+import Analysis from '../pages/Analysis' ;
+
 
 const AppRoutes = () => {
 
@@ -30,6 +32,8 @@ const AppRoutes = () => {
           <Route path="/tasks" element={<Tasks />} />
           <Route path="/history" element={<History />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/analysis" element={<Analysis />} />
+          {/* ログイン後にリダイレクトするページ */}
         </>
       ) : (
         <>
@@ -38,6 +42,7 @@ const AppRoutes = () => {
           <Route path="/tasks" element={<Navigate to="/" />} />
           <Route path="/history" element={<Navigate to="/" />} />
           <Route path="/settings" element={<Navigate to="/" />} />
+          <Route path="/analysis" element={<Navigate to="/" />} />
         </>
       )}
       {/* その他の場合はStartにリダイレクト */}
