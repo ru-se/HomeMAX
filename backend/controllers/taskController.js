@@ -1,4 +1,4 @@
-const Task = require("../models/Task");
+const Task = require("../models/task");
 
 module.exports = {
     // タスク一覧取得

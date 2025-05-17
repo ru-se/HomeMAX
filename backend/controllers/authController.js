@@ -1,5 +1,5 @@
 // サインアアップ、ログイン機能とか
-const User = require("../models/User");
+const User = require("../models/user");
 
 // //JSONの受け取り
 // app.use(express.json());
@@ -9,7 +9,7 @@ const User = require("../models/User");
 module.exports={
     signup : async function (req,res){
         try{
-            console.log(req.body);
+            //console.log(req.body);
             const username = req.body.username;
             const email = req.body.email;
             const password = req.body.password;

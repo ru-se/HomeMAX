@@ -1,14 +1,14 @@
-const db = require('../config/db');
+const pool = require('../config/db');
 
 // 褒め言葉を保存
 exports.saveCompliment = async ({ userId, letterId, compliment, positiveAspects }) => {
     const query = `
         INSERT INTO homemax (user_id, letter_id, compliment, positive_aspects, created_at)
-        VALUES (?, ?, ?, ?, NOW())
+        VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP)
+        RETURNING happiness_id
     `;
-    const result = await db.execute(query, [userId, letterId, compliment, positiveAspects]);
-    console.log(result);
-    return result.insertId;
+    const result = await pool.query(query, [userId, letterId, compliment, positiveAspects]);
+    return result.rows[0]?.happiness_id;
 };
 
 // 褒め言葉一覧取得
@@ -16,67 +16,37 @@ exports.getComplimentList = async (userId) => {
     const query = `
         SELECT happiness_id, compliment, positive_aspects, created_at
         FROM homemax
-        WHERE user_id = ?
+        WHERE user_id = $1
         ORDER BY created_at DESC
     `;
-    return new Promise((resolve, reject) => {
-        db.query(query, [userId], (err, rows) => {
-            if (err) {
-                console.log(err);
-                return reject(err);
-            }
-            resolve(rows);
-        });
-    });
+    const result = await pool.query(query, [userId]);
+    return result.rows;
 };
 
-// 手紙と褒め言葉の履歴取得
+// 手紙と褒め言葉の履歴取得（日付指定なし）
 exports.getComplimentHistory = async (userId) => {
     const query = `
         SELECT h.happiness_id, h.compliment, h.positive_aspects, h.created_at AS compliment_date,
                l.letter_id, l.message AS letter_message, l.created_at AS letter_date
         FROM homemax h
         JOIN Letters l ON h.letter_id = l.letter_id
-        WHERE h.user_id = ?
+        WHERE h.user_id = $1
         ORDER BY h.created_at DESC
     `;
-    return new Promise((resolve, reject) => {
-        db.query(query, [userId], (err, rows) => {
-            if (err) {
-                console.log(err);
-                return reject(err);
-            }
-            resolve(rows);
-        });
-    });
+    const result = await pool.query(query, [userId]);
+    return result.rows;
 };
 
 // 日付指定で手紙と褒め言葉の履歴取得
-exports.getComplimentHistory = async (userId, date) => {
-    let query = `
+exports.getComplimentHistoryByDate = async (userId, date) => {
+    const query = `
         SELECT h.happiness_id, h.compliment, h.positive_aspects, h.created_at AS compliment_date,
                l.letter_id, l.message AS letter_message, l.created_at AS letter_date
         FROM homemax h
         JOIN Letters l ON h.letter_id = l.letter_id
-        WHERE h.user_id = ?
+        WHERE h.user_id = $1 AND h.created_at::date = $2
+        ORDER BY h.created_at DESC
     `;
-    const params = [userId];
-
-    if (date) {
-        // 日付部分だけで比較（時刻は無視）
-        query += " AND DATE(h.created_at) = ?";
-        params.push(date);
-    }
-
-    query += " ORDER BY h.created_at DESC";
-
-    return new Promise((resolve, reject) => {
-        db.query(query, params, (err, rows) => {
-            if (err) {
-                console.log(err);
-                return reject(err);
-            }
-            resolve(rows);
-        });
-    });
+    const result = await pool.query(query, [userId, date]);
+    return result.rows;
 };

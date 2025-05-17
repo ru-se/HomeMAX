@@ -1,4 +1,4 @@
-const Analysis = require("../models/Analysis");
+const Analysis = require("../models/analysis");
 
 module.exports = {
     // 1日に送信された全お手紙の総数
