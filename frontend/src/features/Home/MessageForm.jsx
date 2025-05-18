@@ -23,6 +23,52 @@ const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCo
     setEnterCount(0)
   }
 
+  const handleInputWord = async (e) => {
+
+    try {
+    const taskRes = await fetch('http://localhost:8000/task/update', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ task_title: "キーボード入力" }),
+    });
+    const taskData = await taskRes.json();
+
+    if (!hasShownTypingToast) {
+      toast(`「${taskData.task_name}」タスク達成！すごい！`, {
+        style: {
+          background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
+        }
+      });
+      setHasShownTypingToast(true)
+    }
+  } catch (e) {
+    // エラー時は何もしない or 必要ならエラートースト
+  }
+  }
+  const handleInputEnglish = async (e) => {
+    try {
+    const taskRes = await fetch('http://localhost:8000/task/update', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ task_title: "（英語？アルファベット？）使用" }),
+    });
+    const taskData = await taskRes.json();
+
+    if (!hasShownTypingToast) {
+      toast(`「${taskData.task_name}」タスク達成！すごい！`, {
+        style: {
+          background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
+        }
+      });
+      setHasShownTypingToast(true)
+    }
+  } catch (e) {
+    // エラー時は何もしない or 必要ならエラートースト
+  }
+}
+
 
   
 
@@ -32,24 +78,9 @@ const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCo
           value={text}
           onChange={(e) => {
             setText(e.target.value)
-            if (!hasShownTypingToast) {
-              toast('文字入力できてすごい！！！', {
-                  style: {
-                    background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
-                  }
-                })
-              setHasShownTypingToast(true)
-          }
-            if(!hasShownEnglishToast) {
-              if (/[a-zA-Z]/.test(e.target.value)) {
-                toast('英語使ってすごい！！！', {
-                  style: {
-                    background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
-                  }
-                })
-                setHasShownEnglishToast(true)
-              }
-            }
+            handleInputWord(e)
+            handleInputEnglish(e)
+
           }}
           onKeyDown={(e) => {
           if (e.key === 'Enter' && !e.shiftKey) {

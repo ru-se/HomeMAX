@@ -32,16 +32,27 @@ exports.getClearedTasks = async (userId) => {
 };
 
 // タスクのクリア状況（ステータス）を更新
-exports.updateTaskStatusByName = async (taskName, status) => {
+exports.updateTaskStatusByName = async (task_title, status) => {
     const query = `
         UPDATE Tasks
         SET status = ?
-        WHERE task_name = ?
+        WHERE task_title = ?
     `;
     return new Promise((resolve, reject) => {
-        db.query(query, [status, taskName], (err, result) => {
+        db.query(query, [status, task_title], (err, result) => {
             if (err) return reject(err);
             resolve(result);
+        });
+    });
+};
+
+exports.getTaskNameByTitle = async (task_title) => {
+    const query = "SELECT task_name, status FROM Tasks WHERE task_title = ? LIMIT 1";
+    return new Promise((resolve, reject) => {
+        db.query(query, [task_title], (err, rows) => {
+            if (err) return reject(err);
+            // task_nameとstatusの両方を返す
+            resolve(rows[0] ? { task_name: rows[0].task_name, status: rows[0].status } : { task_name: "", status: "" });
         });
     });
 };
