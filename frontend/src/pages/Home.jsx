@@ -114,6 +114,13 @@ useEffect(() => {
 
 const handleSend = async (userMessage) => {
 
+  if (OKCount >= 6 && userMessage.trim() !== 'ごめんね') {
+    toast('ほめマックスは拗ねています…', {
+      style: { background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)' }
+    });
+    return;
+  }
+
   setUserMessage(userMessage)
   setIsLoading(true)
   setIsMessageSent(false)
