@@ -92,6 +92,7 @@ const Tasks = () => {
           ))
         )}
       </div>
+      <Menu />
     </div>
   )
 }
