@@ -30,12 +30,16 @@ module.exports = {
     // タスクのクリア状況を更新
     updateTaskStatus: async function(req, res) {
         try {
-            const { task_name } = req.body;
-            if (!task_name) return res.status(400).json({ error: "task_nameが必要です" });
+            const { task_title } = req.body;
+            if (!task_title) return res.status(400).json({ error: "task_titleが必要です" });
 
             // statusをtrueに更新
-            await Task.updateTaskStatusByName(task_name, "true");
-            res.json({ message: "タスクのステータスを更新しました" });
+            await Task.updateTaskStatusByName(task_title, "true");
+
+            // model経由でtask_nameとstatusを取得
+            const { task_name, status } = await Task.getTaskNameByTitle(task_title);
+
+            res.json({ message: "タスクのステータスを更新しました", task_name, status });
         } catch (err) {
             console.log(err);
             res.status(500).json({ error: "タスクステータス更新エラー" });

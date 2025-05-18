@@ -24,7 +24,9 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(false) 
   const [OKCount, setOKCount] = useState(1) 
   const [userId, setUserId] = useState(null)
-  const [modeName, setModeName] = useState(null)  // モード名を格納するステート
+  const [modeName, setModeName] = useState(null)
+  const [hasShownLetterToast, setHasShownLetterToast] = useState(false) 
+  const [hasShownComplimentToast, setHasShownComplimentToast] = useState(false)
 
 
  useEffect(() => {
@@ -61,11 +63,25 @@ const handleSend = async (userMessage) => {
       throw new Error('レター登録に失敗しました')
     }
     const letter_id = letterData.result.insertId
-    toast('メッセージ送信できてすごい', {
-                  style: {
-                    background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
-                  }
-                })
+
+    // ★ここでタスクを更新（例: task_title: "お手紙書いた"）
+    const taskRes = await fetch('http://localhost:8000/task/update', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ task_title: "お手紙書いた" }),
+    });
+    const taskData = await taskRes.json();
+
+    // 返ってきたtask_titleでトースト
+    if(!hasShownLetterToast){
+    toast(`${taskData.task_name}えらい！！`, {
+      style: {
+                background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
+            }
+    })
+    setHasShownLetterToast(true);
+  }
 
     // 2. 褒め言葉生成APIにPOST
     console.log('Mode:', modeName); // 修正: 正しい変数名を使用
@@ -87,11 +103,24 @@ const handleSend = async (userMessage) => {
     const data = await response.json()
     setCompliment(data.compliment)
     setIsMessageSent(true)
-    toast('ホメられてえらい！！！', {
-                  style: {
-                    background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
-                  }
-                })
+    // ★ここでタスクを更新（例: task_title: "お手紙書いた"）
+    const taskRes_compliment = await fetch('http://localhost:8000/task/update', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ task_title: "褒められた" }),
+    });
+    const taskData_compliment = await taskRes_compliment.json();
+
+    if(!hasShownComplimentToast){
+    // 返ってきたtask_titleでトースト
+    toast(`${taskData_compliment.task_name}すごい！！`, {
+      style: {
+                background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
+            }
+    })
+    setHasShownComplimentToast(true);
+  }
   } catch (error) {
     console.error('Error sending message:', error)
   } finally {
