@@ -1,10 +1,10 @@
 import React from 'react'
 import AnalysisPage from '../features/Analysis/AnalysisPage'
 
-const History = () => {
+const Analysis = () => {
   return (
     <AnalysisPage />
   )
 }
 
-export default History
+export default Analysis
