@@ -23,6 +23,29 @@ const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCo
     setEnterCount(0)
   }
 
+  const handleInputWord = async (e) => {
+    if (!hasShownTypingToast) {
+      toast('文字入力できてすごい！！！', {
+      style: {
+        background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
+        }
+      })
+        setHasShownTypingToast(true)
+    }
+  }
+  const handleInputEnglish = async (e) => {
+    if(!hasShownEnglishToast) {
+      if (/[a-zA-Z]/.test(e.target.value)) {
+        toast('英語使ってすごい！！！', {
+          style: {
+            background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
+          }
+          })
+        setHasShownEnglishToast(true)
+        }
+            }
+  }
+
 
   
 
@@ -32,24 +55,9 @@ const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCo
           value={text}
           onChange={(e) => {
             setText(e.target.value)
-            if (!hasShownTypingToast) {
-              toast('文字入力できてすごい！！！', {
-                  style: {
-                    background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
-                  }
-                })
-              setHasShownTypingToast(true)
-          }
-            if(!hasShownEnglishToast) {
-              if (/[a-zA-Z]/.test(e.target.value)) {
-                toast('英語使ってすごい！！！', {
-                  style: {
-                    background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
-                  }
-                })
-                setHasShownEnglishToast(true)
-              }
-            }
+            handleInputWord(e)
+            handleInputEnglish(e)
+
           }}
           onKeyDown={(e) => {
           if (e.key === 'Enter' && !e.shiftKey) {

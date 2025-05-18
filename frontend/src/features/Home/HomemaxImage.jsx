@@ -34,27 +34,93 @@ const HomemaxImage = ({ OKCount }) => {
   enter: 'animate__animated animate__bounceIn',
   exit: 'animate__animated animate__bounceOut',
 });
-  const handleMouseEnter = () => {
-    setHoverCount(prev => {
-      const newCount = prev + 1
-      if (newCount >= 6 && !notified) {
-        toast('撫でてくれてありがとう！すごい！！✨', {
-           transition:bounce,
-           style: {
-            background: 'linear-gradient(90deg, #ff8a00, #e52e71, #00c3ff)',
-            color: '#fff',
-            fontWeight: 'bold',
-            fontSize: '1.2rem',
-            boxShadow: '0 0 20px #ff8a00, 0 0 40px #e52e71',
-            border: '2px solid #fff',
-            textShadow: '0 2px 8px #e52e71',
-          }
-        } )
-        setNotified(true)
+  const handleMouseEnter = async () => {
+    // setHoverCount(prev => {
+    //   const newCount = prev + 1
+    //   if (newCount >= 6 && !notified) {
+    //     const taskRes = await fetch('http://localhost:8000/task/update', {
+    //           method: 'POST',
+    //           headers: { 'Content-Type': 'application/json' },
+    //           credentials: 'include',
+    //           body: JSON.stringify({ task_title: "褒められた" }),
+    //         });
+    //         const taskData_ = await taskRes.json();
+        
+    //         if(!taskRes_compliment.status){
+    //         // 返ってきたtask_titleでトースト
+    //         toast(`${taskData_compliment.task_name}すごい！！`, {
+    //           transition:bounce,
+    //        style: {
+    //         background: 'linear-gradient(90deg, #ff8a00, #e52e71, #00c3ff)',
+    //         color: '#fff',
+    //         fontWeight: 'bold',
+    //         fontSize: '1.2rem',
+    //         boxShadow: '0 0 20px #ff8a00, 0 0 40px #e52e71',
+    //         border: '2px solid #fff',
+    //         textShadow: '0 2px 8px #e52e71',
+    //       }
+    //         })
+    //       }
+    //     toast('撫でてくれてありがとう！すごい！！✨', {
+    //        transition:bounce,
+    //        style: {
+    //         background: 'linear-gradient(90deg, #ff8a00, #e52e71, #00c3ff)',
+    //         color: '#fff',
+    //         fontWeight: 'bold',
+    //         fontSize: '1.2rem',
+    //         boxShadow: '0 0 20px #ff8a00, 0 0 40px #e52e71',
+    //         border: '2px solid #fff',
+    //         textShadow: '0 2px 8px #e52e71',
+    //       }
+    //     } )
+    //     setNotified(true)
+    //   }
+    //   return newCount
+    // })
+    if (notified) return;
+  const newCount = hoverCount + 1;
+  setHoverCount(newCount);
+
+  if (newCount >= 6) {
+    const taskRes = await fetch('http://localhost:8000/task/update', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ task_title: "ほめマックスを撫でる" }),
+    });
+    const taskData = await taskRes.json();
+    
+    // 10回繰り返す
+    for(let i = 0; i < 5; i++) {
+    toast(`${taskData.task_name}すごい！！`, {
+      transition: bounce,
+      style: {
+        background: 'linear-gradient(90deg, #ff8a00, #e52e71, #00c3ff)',
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: '1.2rem',
+        boxShadow: '0 0 20px #ff8a00, 0 0 40px #e52e71',
+        border: '2px solid #fff',
+        textShadow: '0 2px 8px #e52e71',
       }
-      return newCount
-    })
+    });
   }
+
+    // toast('撫でてくれてありがとう！すごい！！✨', {
+    //   transition: bounce,
+    //   style: {
+    //     background: 'linear-gradient(90deg, #ff8a00, #e52e71, #00c3ff)',
+    //     color: '#fff',
+    //     fontWeight: 'bold',
+    //     fontSize: '1.2rem',
+    //     boxShadow: '0 0 20px #ff8a00, 0 0 40px #e52e71',
+    //     border: '2px solid #fff',
+    //     textShadow: '0 2px 8px #e52e71',
+    //   }
+    // });
+    setNotified(true);
+  }
+}
 
   return (
     <div>
