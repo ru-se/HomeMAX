@@ -3,7 +3,7 @@
 import React, { useState , useRef} from 'react'
 import { toast, ToastContainer, Slide } from 'react-toastify'
 
-const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCount, setIsInputChange }) => {
+const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCount, setIsInputChange, isSulking }) => {
 
   // メッセージの状態を管理するためのuseStateフック
   const [text, setText] = useState('')
@@ -18,10 +18,29 @@ const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCo
   //送信処理
   const handleSend = () => {
     if (text.trim() === '') return // 空メッセージは送信しない
+
+    if (text.trim() === 'いつもありがとう') {
+    toast('ありがとう” が届きました。あなたの心意気、世界をあたためるね！', {
+      style: {
+        background: 'linear-gradient(90deg, #ff8a00, #e52e71, #00c3ff)',
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: '1.2rem',
+        boxShadow: '0 0 20px #ff8a00, 0 0 40px #e52e71',
+        border: '2px solid #fff',
+        textShadow: '0 2px 8px #e52e71',
+      }
+    })
+  }
+    if (isSulking && text.trim() === 'ごめんね') {
+      setOKCount(0)
+      setIsMessageSent(false)
+      setText('')
+      return
+    }
     onSend(text)
     setText('') // メッセージ送信後にテキストエリアをクリア
     setIsMessageSent(true) // メッセージ送信状態を更新
-    setOKCount(1) // メッセージ送信後にもう大丈夫を押した回数をリセット
     setEnterCount(0)
   }
 
@@ -127,7 +146,8 @@ const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCo
                 setOKCount(0) // もう大丈夫を押したら回数をリセット
               } 
             }}
-            className="rounded-full bg-pink px-16 py-4 font-kiwi-maru hover:bg-pink-dark shadow-xl"
+            className={`rounded-full bg-pink px-16 py-4 font-kiwi-maru hover:bg-pink-dark shadow-xl ${isSulking ? 'opacity-50 cursor-not-allowed' : ''}`}
+            disabled={isSulking}
           >
             もう大丈夫
           </button>

@@ -11,6 +11,7 @@ import { ToastContainer, toast, Slide } from 'react-toastify';
 
 
 const Home = () => {
+  const [timer, setTimer] = useState(30 * 60) // 30分(秒単位)
   const [toastMessage, setToastMessage] = useState(null);
 
   //入力状態の管理
@@ -68,6 +69,48 @@ const Home = () => {
         }
       })
   }, [])
+
+
+  // 分:秒表示用
+  const formatTime = (sec) => {
+    const m = Math.floor(sec / 60)
+    const s = sec % 60
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}` 
+  }
+  const timerRef = useRef(null)
+
+  // OKCountが6以上になったらタイマーをスタートし、OKCountがリセットされたらタイマーもリセット
+useEffect(() => {
+  if (OKCount >= 6) {
+    setTimer(30 * 60) // 30分リセット
+    if (timerRef.current) clearInterval(timerRef.current)
+    timerRef.current = setInterval(() => {
+      setTimer(prev => {
+        if (prev <= 1) {
+          clearInterval(timerRef.current)
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+  } else {
+    // すね状態解除時はタイマーもリセット
+    setTimer(30 * 60)
+    if (timerRef.current) {
+      clearInterval(timerRef.current)
+      timerRef.current = null
+    }
+  }
+  // クリーンアップ
+  return () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current)
+      timerRef.current = null
+    }
+  }
+}, [OKCount])
+
+  
 
 const handleSend = async (userMessage) => {
 
@@ -189,7 +232,17 @@ const handleSend = async (userMessage) => {
         </div>
         {/* ほめマックス画像 */}
         <div className=" basis-1/3 flex items-center justify-center ">
-          <HomemaxImage OKCount={OKCount} />
+          {OKCount >= 6 ? (
+            <div className="text-3xl font-bold flex flex-col items-center justify-center">
+              <p>すねてしまいました</p>
+              <div className="mt-4 text-2xl text-blue-500">
+                {formatTime(timer)}
+              </div>
+
+            </div>
+          ) : (
+            <HomemaxImage OKCount={OKCount} />
+          )}
         </div>
         {/* ユーザーの送信したメッセージ */}
         {isMessageSent && (
@@ -254,6 +307,7 @@ const handleSend = async (userMessage) => {
           OKCount={OKCount} 
           setOKCount={setOKCount} 
           setIsInputChange={setIsInputChange}
+          isSulking={OKCount >= 6}
 
         />
       </div>
