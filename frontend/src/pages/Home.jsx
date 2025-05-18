@@ -1,6 +1,7 @@
 // ホームページ
 
 import React, { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import MessageForm from '../features/Home/MessageForm'
 import UserMessageBubble from '../features/Home/UserMessageBubble'
 import HomemaxImage from '../features/Home/HomemaxImage'
@@ -14,8 +15,26 @@ const Home = () => {
 
   //入力状態の管理
   const [isInputChange, setIsInputChange] = useState(false)
+
+  const location = useLocation()
   
-  
+  // ログイン時の通知
+  useEffect(() => {
+    if (location.state && location.state.signupSuccess) {
+      const messages = Array.isArray(location.state.signupSuccess)
+        ? location.state.signupSuccess
+        : [location.state.signupSuccess]
+      messages.forEach(msg => {
+        toast(msg, {
+          style: {
+            background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
+          }
+        })
+      })
+      // 表示後にstateをクリア（戻るボタンで再表示されないように）
+      window.history.replaceState({}, document.title)
+    }
+  }, [location.state])
 
   
   const [isMessageSent, setIsMessageSent] = useState(false) 

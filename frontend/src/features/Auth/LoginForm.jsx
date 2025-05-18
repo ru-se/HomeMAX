@@ -110,9 +110,9 @@ const showPraiseToast = (message) => {
                 id='identifier'
                 name='identifier'
                 value={loginData.identifier}
-                onChange={() => {
-                  handleChange(e)
-                }}
+                onChange={
+                  handleChange
+                }
                 required
                 autoComplete="username"
                 placeholder='ユーザー名orメールアドレス'
