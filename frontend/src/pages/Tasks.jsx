@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import Menu from '../components/menu/menu'
 
 const Tasks = () => {
   const [tasks, setTasks] = useState([])
