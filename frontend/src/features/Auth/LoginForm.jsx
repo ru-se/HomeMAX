@@ -1,13 +1,41 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { ToastContainer, toast, Slide } from 'react-toastify';
 
 const LoginForm = () => {
   const navigate = useNavigate()
+  const location = useLocation()
+
   const [loginData, setLoginData] = useState({
     identifier: '',
     password: '',
   })
   const [error, setError] = useState('')
+
+
+  // 通知を出す共通関数
+const showPraiseToast = (message) => {
+  toast(message, {
+    style: {
+      background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
+    }
+  })
+}
+
+
+  // サインアップ時に渡されたメッセージ
+  useEffect(() => {
+    if (location.state && location.state.signupSuccess) {
+      toast(location.state.signupSuccess, {
+        style: {
+          background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
+        }
+  })
+  // 表示後にstateをクリア（戻るボタンで再表示されないように）
+      navigate(location.pathname, { replace: true, state: {} })
+    }
+  }, [location, navigate])
+
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -32,7 +60,14 @@ const LoginForm = () => {
       })
       const data = await response.json()
       if (response.ok) {
-        navigate('/home')
+        // ログイン成功時にホーム画面に通知する内容をnavigateで送る
+        navigate('/home', {
+          state: {signupSuccess: [
+            'ログインしたあなた、今日もこの世界に確かに存在しています！', 
+            '名前を入力したあなた、その一行がこの物語の主役の証！', 
+            'パスワードをしっかり入力できたあなた、セキュリティも気持ちも完璧です！'
+          ]}
+        })
       } else {
         setError(data.message || 'ログインに失敗しました')
       }
@@ -44,11 +79,26 @@ const LoginForm = () => {
   return  (
     <div className="flex min-h-screen bg-white text-center font-kiwi-maru justify-center">
       <div className="w-2/5 my-10 mx-10 bg-white rounded shadow-xl/20">
+        <ToastContainer
+                  position="top-right"
+                  autoClose={5000}
+                  limit={5}
+                  hideProgressBar
+                  newestOnTop={false}
+                  closeOnClick
+                  rtl={false}
+                  pauseOnFocusLoss
+                  draggable
+                  pauseOnHover
+                  theme="light"
+                  transition={Slide}
+              />
         <form onSubmit={handleSubmit} className='w-full max-w-md space-y-6 mx-auto'>
 
           {/* タイトル */}
           <h2 className="text-8xl mb-20 mt-10">ログイン</h2>
           <div className="flex flex-col">
+
 
             {/* ユーザー名orメールアドレス */}
             <div className="flex flex-row items-center mb-10">
@@ -60,7 +110,9 @@ const LoginForm = () => {
                 id='identifier'
                 name='identifier'
                 value={loginData.identifier}
-                onChange={handleChange}
+                onChange={() => {
+                  handleChange(e)
+                }}
                 required
                 autoComplete="username"
                 placeholder='ユーザー名orメールアドレス'

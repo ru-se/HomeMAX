@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom' 
+import { ToastContainer, toast, Slide } from 'react-toastify';
 
 const SignupForm = () => {
   const navigate = useNavigate()
@@ -32,7 +33,13 @@ const SignupForm = () => {
       const data = await response.json()
       if (response.ok) {
         setSuccess('登録成功！ログインしてください')
-        setTimeout(() => navigate('/login'), 1000)
+        
+        setTimeout(() => {
+          navigate('/login', {
+            state: {signupSuccess: 'サインアップを完了したあなた、もう新世界の住人です！'}
+          }) 
+          //サインアップ時に通知
+        } , 1000)
       } else {
         setError(data.message || '登録に失敗しました')
       }
