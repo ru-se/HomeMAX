@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import History_DatePicker from './History_DatePicker'
-import Menu from '../../components/menu/Menu'
+import Menu from '../../components/menu/menu'
 
 const HistoryPage = () => {
   const [history, setHistory] = useState([])
@@ -70,34 +70,34 @@ const HistoryPage = () => {
         {/* テキストエリア */}
         <div
           className="absolute top-[25px] left-[55px] right-[10px] bottom-[10px] font-[Indie_Flower] leading-[25px] overflow-y-auto outline-none"
-          contentEditable
-          spellCheck={false}
-        >
-        {history.length === 0 ? (
-          <div className="text-center text-lg text-gray-500">履歴はまだありません。</div>
-        ) : (
-          history.map((item, idx) => (
-            <div key={item.happiness_id || idx} className="flex flex-col items-end mb-8">
-              {/* お手紙（右側・上） */}
-              <div className="custom-box relative bg-pink">
-                <div className="font-bold pt-4">お手紙</div>
-                <div>{item.letter_message}</div>
-                <div className="text-xs text-gray-400">{item.letter_date?.slice(0, 10)}</div>
-                <div className="before-shape"></div>
-                <div className="after-shape"></div>
-              </div>
-              {/* 褒め言葉（左側・下） */}
-              <div className="custom-box relative self-start mt-4 bg-green">
-                <div className="font-bold pt-4">褒め言葉</div>
-                <div>{item.compliment}</div>
-                <div className="before-shape"></div>
-                <div className="after-shape"></div>
-                <div className="text-xs text-gray-400">{item.compliment_date?.slice(0, 10)}</div>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
+          contentEditable={false} // contentEditableを無効化
+          dangerouslySetInnerHTML={{
+            __html: history.length === 0
+              ? '<div class="text-center text-lg text-gray-500">履歴はまだありません。</div>'
+              : history.map((item, idx) => {
+                  const letterDate = new Date(item.letter_date).toLocaleDateString("ja-JP", { timeZone: "Asia/Tokyo" }); // JSTに変換
+                  const complimentDate = new Date(item.compliment_date).toLocaleDateString("ja-JP", { timeZone: "Asia/Tokyo" }); // JSTに変換
+                  return `
+                    <div key="${item.happiness_id || idx}" class="flex flex-col items-end mb-8">
+                      <div class="custom-box relative bg-pink">
+                        <div class="font-bold pt-4">お手紙</div>
+                        <div>${item.letter_message}</div>
+                        <div class="text-xs text-gray-400">${letterDate}</div>
+                        <div class="before-shape"></div>
+                        <div class="after-shape"></div>
+                      </div>
+                      <div class="custom-box relative self-start mt-4 bg-green">
+                        <div class="font-bold pt-4">褒め言葉</div>
+                        <div>${item.compliment}</div>
+                        <div class="before-shape"></div>
+                        <div class="after-shape"></div>
+                        <div class="text-xs text-gray-400">${complimentDate}</div>
+                      </div>
+                    </div>
+                  `;
+                }).join('')
+          }}
+        ></div>
         </div>
       </div>
     </div>
