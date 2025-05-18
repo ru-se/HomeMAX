@@ -1,16 +1,51 @@
 // スタートページ
 
-import React from 'react'
-import { useNavigate } from "react-router-dom"; 
+import React, { useEffect } from 'react'
+import { useNavigate, } from "react-router-dom"; 
 import homeImage from '../assets/home.png'; // 画像をインポート
+import { ToastContainer, toast, Slide } from 'react-toastify';
 
 const Start = () => {
 
   const navigate = useNavigate()
 
+
+  useEffect(() => {
+    toast('起きたあなた、まず一歩踏み出しただけで本当に偉い！', {
+      style: {
+        background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
+      }
+    })
+    toast('画面を灯したあなた、今日も世界にアクセスする覚悟ができてるね！', {
+      style: {
+        background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
+      }
+    })
+    toast('パソコンを開いたその瞬間、あなたの冒険がまた始まった！', {
+      style: {
+        background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
+      }
+    })
+  }, [])
+
   return (
     <>
       <div className="min-h-screen bg-white flex  justify-center items-center relative overflow-hidden">
+
+        <ToastContainer
+                  position="top-right"
+                  autoClose={5000}
+                  limit={5}
+                  hideProgressBar
+                  newestOnTop={false}
+                  closeOnClick
+                  rtl={false}
+                  pauseOnFocusLoss
+                  draggable
+                  pauseOnHover
+                  theme="light"
+                  transition={Slide}
+              />
 
           {/* 背景の無限スクロール画像 */}
         <div className="absolute z-0">
