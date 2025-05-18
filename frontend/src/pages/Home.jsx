@@ -1,6 +1,6 @@
 // ホームページ
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect , useRef} from 'react'
 import { useLocation } from 'react-router-dom'
 import MessageForm from '../features/Home/MessageForm'
 import UserMessageBubble from '../features/Home/UserMessageBubble'
@@ -17,20 +17,29 @@ const Home = () => {
   const [isInputChange, setIsInputChange] = useState(false)
 
   const location = useLocation()
+    const hasRun = useRef(false);
   
   // ログイン時の通知
   useEffect(() => {
     if (location.state && location.state.signupSuccess) {
-      const messages = Array.isArray(location.state.signupSuccess)
-        ? location.state.signupSuccess
-        : [location.state.signupSuccess]
-      messages.forEach(msg => {
-        toast(msg, {
-          style: {
-            background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
-          }
-        })
-      })
+      if(hasRun.current) return;
+            hasRun.current = true;
+      (async () => {
+      try {
+        const taskRes1 = await fetch('http://localhost:8000/task/update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ task_title: "ログイン" }),
+        });
+        const taskData1 = await taskRes1.json();
+        toast(`${taskData1.task_name}えらい！！`, {
+          style: { background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)' }
+        });
+      } catch (e) {
+        // エラー時は何もしない
+      }
+    })();
       // 表示後にstateをクリア（戻るボタンで再表示されないように）
       window.history.replaceState({}, document.title)
     }
