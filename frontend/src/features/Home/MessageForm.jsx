@@ -1,6 +1,6 @@
 // メッセージを送信するためのフォーム
 
-import React, { useState } from 'react'
+import React, { useState , useRef} from 'react'
 import { toast, ToastContainer, Slide } from 'react-toastify'
 
 const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCount, setIsInputChange }) => {
@@ -12,6 +12,8 @@ const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCo
 
   const [hasShownTypingToast, setHasShownTypingToast] = useState(false) 
   const [hasShownEnglishToast, setHasShownEnglishToast] = useState(false)
+  const hasRun = useRef(false);
+  const hasRun_english = useRef(false);
   
   //送信処理
   const handleSend = () => {
@@ -24,7 +26,8 @@ const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCo
   }
 
   const handleInputWord = async (e) => {
-
+    if(hasRun.current) return;
+      hasRun.current = true;
     try {
     const taskRes = await fetch('http://localhost:8000/task/update', {
       method: 'POST',
@@ -34,19 +37,23 @@ const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCo
     });
     const taskData = await taskRes.json();
 
-    if (!hasShownTypingToast) {
+    if (hasShownTypingToast && hasRun.current) return;
+     
       toast(`「${taskData.task_name}」タスク達成！すごい！`, {
         style: {
           background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
         }
       });
       setHasShownTypingToast(true)
-    }
+      hasRun.current = true;
   } catch (e) {
     // エラー時は何もしない or 必要ならエラートースト
   }
   }
+
   const handleInputEnglish = async (e) => {
+    if(hasRun_english.current) return;
+      hasRun_english.current = true;
     try {
     const taskRes = await fetch('http://localhost:8000/task/update', {
       method: 'POST',
@@ -56,13 +63,14 @@ const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCo
     });
     const taskData = await taskRes.json();
 
-    if (!hasShownTypingToast) {
+    if (hasShownTypingToast || hasRun_english.current) {
       toast(`「${taskData.task_name}」タスク達成！すごい！`, {
         style: {
           background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
         }
       });
       setHasShownTypingToast(true)
+      hasRun_english.current = true;
     }
   } catch (e) {
     // エラー時は何もしない or 必要ならエラートースト

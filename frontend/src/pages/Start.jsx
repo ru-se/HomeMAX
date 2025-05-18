@@ -1,6 +1,6 @@
 // スタートページ
 
-import React, { useEffect } from 'react'
+import React, { useEffect , useRef} from 'react'
 import { useNavigate, } from "react-router-dom"; 
 import homeImage from '../assets/home.png'; // 画像をインポート
 import { ToastContainer, toast, Slide } from 'react-toastify';
@@ -8,25 +8,68 @@ import { ToastContainer, toast, Slide } from 'react-toastify';
 const Start = () => {
 
   const navigate = useNavigate()
-
-
+const hasRun = useRef(false);
   useEffect(() => {
-    toast('起きたあなた、まず一歩踏み出しただけで本当に偉い！', {
-      style: {
-        background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
+     if (hasRun.current) return;
+    hasRun.current = true;
+  let called = false;
+  if (!called) {
+    called = true;
+    (async () => {
+      try {
+        // 起床
+        const taskRes1 = await fetch('http://localhost:8000/task/update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ task_title: "起床" }),
+        });
+        const taskData1 = await taskRes1.json();
+        toast(`${taskData1.task_name}えらい！！`, {
+          style: { background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)' }
+        });
+
+        // パソコン開く
+        const taskRes2 = await fetch('http://localhost:8000/task/update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ task_title: "パソコン開く" }),
+        });
+        const taskData2 = await taskRes2.json();
+        toast(`${taskData2.task_name}すごい！！`, {
+          style: { background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)' }
+        });
+
+        // パソコン画面開く
+        const taskRes3 = await fetch('http://localhost:8000/task/update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ task_title: "パソコン画面開く" }),
+        });
+        const taskData3 = await taskRes3.json();
+        toast(`${taskData3.task_name}頑張った！！`, {
+          style: { background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)' }
+        });
+
+        // アプリ起動
+        const taskRes4 = await fetch('http://localhost:8000/task/update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ task_title: "アプリ起動" }),
+        });
+        const taskData4 = await taskRes4.json();
+        toast(`${taskData4.task_name}凄すぎる！！`, {
+          style: { background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)' }
+        });
+      } catch (e) {
+        // エラー時は何もしない
       }
-    })
-    toast('画面を灯したあなた、今日も世界にアクセスする覚悟ができてるね！', {
-      style: {
-        background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
-      }
-    })
-    toast('パソコンを開いたその瞬間、あなたの冒険がまた始まった！', {
-      style: {
-        background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
-      }
-    })
-  }, [])
+    })();
+  }
+}, [])
 
   return (
     <>
