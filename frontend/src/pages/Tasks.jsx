@@ -84,12 +84,12 @@ const Tasks = () => {
           <span className="text-red-600 font-bold">未完了</span>
         )}
       </div>
-      <Menu />
     </div>
   ))
 )}
       
       </div>
+      <Menu />
     </div>
   )
 }

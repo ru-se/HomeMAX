@@ -90,7 +90,7 @@ const HomemaxImage = ({ OKCount }) => {
     });
     const taskData = await taskRes.json();
     
-    // 10回繰り返す
+    // 6回繰り返す
     for(let i = 0; i < 5; i++) {
     toast(`${taskData.task_name}すごい！！`, {
       transition: bounce,
@@ -119,7 +119,7 @@ const HomemaxImage = ({ OKCount }) => {
     //   }
     // });
     setNotified(true);
-  }
+  } 
 }
 
   return (
