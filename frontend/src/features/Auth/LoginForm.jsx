@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect , useRef} from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { ToastContainer, toast, Slide } from 'react-toastify';
 
@@ -11,6 +11,7 @@ const LoginForm = () => {
     password: '',
   })
   const [error, setError] = useState('')
+  const hasRun = useRef(false);
 
 
   // 通知を出す共通関数
@@ -26,11 +27,25 @@ const showPraiseToast = (message) => {
   // サインアップ時に渡されたメッセージ
   useEffect(() => {
     if (location.state && location.state.signupSuccess) {
-      toast(location.state.signupSuccess, {
-        style: {
-          background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
-        }
-  })
+      if(hasRun.current) return;
+      hasRun.current = true;
+      (async () => {
+      try {
+        const taskRes1 = await fetch('http://localhost:8000/task/update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ task_title: "サインアップ完了" }),
+        });
+        const taskData1 = await taskRes1.json();
+        toast(`${taskData1.task_name}えらい！！`, {
+          style: { background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)' }
+        });
+      } catch (e) {
+        // エラー時は何もしない
+      }
+    })();
+
   // 表示後にstateをクリア（戻るボタンで再表示されないように）
       navigate(location.pathname, { replace: true, state: {} })
     }
