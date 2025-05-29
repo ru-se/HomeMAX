@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Menu from '../../components/menu/menu';
+import Menu from '../../components/menu/Menu';
 
 const SettingsPage = () => {
   const [error, setError] = useState('');

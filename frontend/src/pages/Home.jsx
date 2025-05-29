@@ -6,7 +6,7 @@ import MessageForm from '../features/Home/MessageForm'
 import UserMessageBubble from '../features/Home/UserMessageBubble'
 import HomemaxImage from '../features/Home/HomemaxImage'
 import HomemaxMessageBubble from '../features/Home/HomemaxMessageBubble'
-import Menu from '../components/menu/menu'
+import Menu from '../components/menu/Menu'
 import { ToastContainer, toast, Slide } from 'react-toastify';
 
 

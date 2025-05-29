@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import History_DatePicker from './History_DatePicker'
-import Menu from '../../components/menu/menu'
+import Menu from '../../components/menu/Menu'
 
 const HistoryPage = () => {
   const [history, setHistory] = useState([])
