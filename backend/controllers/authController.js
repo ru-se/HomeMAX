@@ -1,5 +1,5 @@
 // サインアアップ、ログイン機能とか
-const User = require("../models/User");
+const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const connection = require("../config/db");
 
