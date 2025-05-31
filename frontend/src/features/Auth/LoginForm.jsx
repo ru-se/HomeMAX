@@ -31,7 +31,7 @@ const showPraiseToast = (message) => {
       hasRun.current = true;
       (async () => {
       try {
-        const taskRes1 = await fetch('http://localhost:8000/task/update', {
+        const taskRes1 = await fetch(`${import.meta.env.VITE_API_BASE_URL}/task/update`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
@@ -64,7 +64,7 @@ const showPraiseToast = (message) => {
     e.preventDefault()
     setError('')
     try {
-      const response = await fetch('http://localhost:8000/auth/login', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

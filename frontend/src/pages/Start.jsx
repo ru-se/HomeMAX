@@ -18,7 +18,7 @@ const hasRun = useRef(false);
     (async () => {
       try {
         // 起床
-        const taskRes1 = await fetch('http://localhost:8000/task/update', {
+        const taskRes1 = await fetch(`${import.meta.env.VITE_API_BASE_URL}/task/update`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
@@ -30,7 +30,7 @@ const hasRun = useRef(false);
         });
 
         // パソコン開く
-        const taskRes2 = await fetch('http://localhost:8000/task/update', {
+        const taskRes2 = await fetch(`${import.meta.env.VITE_API_BASE_URL}/task/update`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
@@ -42,7 +42,7 @@ const hasRun = useRef(false);
         });
 
         // パソコン画面開く
-        const taskRes3 = await fetch('http://localhost:8000/task/update', {
+        const taskRes3 = await fetch(`${import.meta.env.VITE_API_BASE_URL}/task/update`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
@@ -54,7 +54,7 @@ const hasRun = useRef(false);
         });
 
         // アプリ起動
-        const taskRes4 = await fetch('http://localhost:8000/task/update', {
+        const taskRes4 = await fetch(`${import.meta.env.VITE_API_BASE_URL}/task/update`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',

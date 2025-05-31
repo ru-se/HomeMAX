@@ -27,7 +27,7 @@ const Home = () => {
             hasRun.current = true;
       (async () => {
       try {
-        const taskRes1 = await fetch('http://localhost:8000/task/update', {
+        const taskRes1 = await fetch(`${import.meta.env.VITE_API_BASE_URL}/task/update`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
@@ -59,7 +59,7 @@ const Home = () => {
 
 
  useEffect(() => {
-    fetch('http://localhost:8000/auth/me', {
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/me`, {
       credentials: 'include'
     })
       .then(res => res.json())
@@ -127,7 +127,7 @@ const handleSend = async (userMessage) => {
 
   try {
     // 1. レター登録APIにPOST
-    const letterRes = await fetch('http://localhost:8000/letter/addLetter', {
+    const letterRes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/letter/addLetter`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -143,7 +143,7 @@ const handleSend = async (userMessage) => {
     const letter_id = letterData.result.insertId
 
     // ★ここでタスクを更新（例: task_title: "お手紙書いた"）
-    const taskRes = await fetch('http://localhost:8000/task/update', {
+    const taskRes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/task/update`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -163,7 +163,7 @@ const handleSend = async (userMessage) => {
 
     // 2. 褒め言葉生成APIにPOST
     console.log('Mode:', modeName); // 修正: 正しい変数名を使用
-    const response = await fetch('http://localhost:8000/api/compliment/generate', {
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/compliment/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -182,7 +182,7 @@ const handleSend = async (userMessage) => {
     setCompliment(data.compliment)
     setIsMessageSent(true)
     // ★ここでタスクを更新（例: task_title: "お手紙書いた"）
-    const taskRes_compliment = await fetch('http://localhost:8000/task/update', {
+    const taskRes_compliment = await fetch(`${import.meta.env.VITE_API_BASE_URL}/task/update`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',

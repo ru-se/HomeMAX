@@ -10,7 +10,7 @@ const SettingsPage = () => {
     e.preventDefault();
     setError('');
     try {
-      const response = await fetch('http://localhost:8000/auth/logout', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/logout`, {
         method: 'POST',
         credentials: 'include', // セッションを使う場合
       });

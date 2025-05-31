@@ -9,7 +9,7 @@ const AnalysisPage = () => {
 
 
     useEffect(() => {
-        const endpoint = `http://localhost:8000/analysis/letters/dailyCount`;
+        const endpoint = `${import.meta.env.VITE_API_BASE_URL}/analysis/letters/dailyCount`;
 
         fetch(endpoint, {
             credentials: 'include'
@@ -40,7 +40,7 @@ const AnalysisPage = () => {
     }, []);
 
     useEffect(() => {
-        const endpoint = `http://localhost:8000/analysis/homemax/positiveAspects`;
+        const endpoint = `${import.meta.env.VITE_API_BASE_URL}/analysis/homemax/positiveAspects`;
 
         fetch(endpoint, {
             credentials: 'include'

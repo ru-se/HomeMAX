@@ -82,7 +82,7 @@ const HomemaxImage = ({ OKCount }) => {
   setHoverCount(newCount);
 
   if (newCount >= 6) {
-    const taskRes = await fetch('http://localhost:8000/task/update', {
+    const taskRes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/task/update`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',

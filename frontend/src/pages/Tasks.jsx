@@ -9,7 +9,7 @@ const Tasks = () => {
 
   // ユーザーID取得
   useEffect(() => {
-    fetch('http://localhost:8000/auth/me', { credentials: 'include' })
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/me`, { credentials: 'include' })
       .then(res => res.json())
       .then(data => {
         if (data.user && data.user.user_id) {
@@ -23,7 +23,7 @@ const Tasks = () => {
   useEffect(() => {
     if (!userId) return
     setLoading(true)
-    fetch(`http://localhost:8000/task/list?user_id=${userId}`, { credentials: 'include' })
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/task/list?user_id=${userId}`, { credentials: 'include' })
       .then(res => res.json())
       .then(data => {
         setTasks(data)
@@ -38,7 +38,7 @@ const Tasks = () => {
   // タスクのステータス更新
   const handleUpdate = async (task_name) => {
     try {
-      const res = await fetch('http://localhost:8000/task/update', {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/task/update`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

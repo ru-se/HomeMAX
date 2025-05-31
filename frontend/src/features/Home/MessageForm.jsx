@@ -48,7 +48,7 @@ const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCo
     if(hasRun.current) return;
       hasRun.current = true;
     try {
-    const taskRes = await fetch('http://localhost:8000/task/update', {
+    const taskRes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/task/update`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -74,7 +74,7 @@ const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCo
     if(hasRun_english.current) return;
       hasRun_english.current = true;
     try {
-    const taskRes = await fetch('http://localhost:8000/task/update', {
+    const taskRes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/task/update`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
