@@ -14,7 +14,10 @@ const app = express();
 
 
 app.use(cors({
-  origin: 'http://localhost:5173', // 明示的にフロントのURLを指定
+  origin: [
+    'http://localhost:5173', // 明示的にフロントのURLを指定
+    'https://homemax-frontend.onrender.com'
+  ],
   credentials: true                // Cookie やセッションを許可
 }));
 
