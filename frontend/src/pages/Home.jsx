@@ -241,8 +241,8 @@ const handleSend = async (userMessage) => {
         <div className=" basis-1/3 flex items-center justify-center ">
           {OKCount >= 6 ? (
             <div className="text-3xl font-bold flex flex-col items-center justify-center">
-              <p>すねてしまいました</p>
-              <div className="mt-4 text-2xl text-blue-500">
+              <p className="font-kiwi-maru">すねてしまいました . . .</p>
+              <div className="Josefin Sans mt-4 text-2xl text-blue-500">
                 {formatTime(timer)}
               </div>
 
