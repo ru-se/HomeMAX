@@ -12,22 +12,22 @@ exports.generateCompliment = async (req, res) => {
         }
 
         // Gemini APIで褒め言葉生成
-        const prompt = `次の手紙に対して褒めてください。口癖はほめマックスで。そこまで長すぎないようにしてください。あなたは、${mode}：「${letter_message}」`;
-        console.log("[DEBUG] Generated prompt for Gemini API:", prompt); // 明確なログメッセージに変更
+        const prompt = `次の手紙に対してめちゃくちゃ褒めてください。口癖はほめマックスで。${mode}になる切ってください。：「${letter_message}」`;
+        //console.log("[DEBUG] Generated prompt for Gemini API:", prompt); // 明確なログメッセージに変更
         const complimentText = await geminiService.generateCompliment(prompt);
 
         // 褒める対象を抽出（例: キーワード解析）
         const positiveAspects = await geminiService.extractPositiveAspects(letter_message);
-        console.log("[DEBUG] Positive aspects extracted:", positiveAspects); // ポジティブ要素ログ
+        //console.log("[DEBUG] Positive aspects extracted:", positiveAspects); // ポジティブ要素ログ
 
         // DB保存(後で実装)
-        const happinessId = await complimentModel.saveCompliment({
-             userId: user_id,
-             letterId: letter_id,
-             compliment: complimentText,
-             positiveAspects
-         });
-        console.log("[DEBUG] Compliment saved with ID:", happinessId); // 保存ログ
+        // const happinessId = await complimentModel.saveCompliment({
+        //      userId: user_id,
+        //      letterId: letter_id,
+        //      compliment: complimentText,
+        //      positiveAspects
+        //  });
+        //console.log("[DEBUG] Compliment saved with ID:", happinessId); // 保存ログ
 
         //res.json({ happiness_id: happinessId, compliment: complimentText, positive_aspects: positiveAspects });
         res.json({ compliment: complimentText, positive_aspects: positiveAspects });

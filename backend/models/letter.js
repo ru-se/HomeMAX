@@ -1,77 +1,54 @@
-//MySQL接続
-const connection = require("../config/db");
-
-
+const supabase = require("../config/db");
 
 module.exports = {
-    //送られたお手紙をDBに保存
-    addLetter: async function (user_id,message) {
+    // お手紙をDBに保存
+    addLetter: async function (user_id, message) {
+        const { data, error } = await supabase
+            .from('letters')
+            .insert([{ user_id, message }])
+            .select('letter_id')  // insertId を代替
+            .single();
 
-        const query = "INSERT INTO Letters(user_id, message) VALUES(?,?)";
+        if (error) {
+            console.log(error);
+            throw { message: "メッセージを追加できませんでした" };
+        }
 
-            return new Promise ((resolve, reject) => {
-                connection.query(query,[user_id, message],(err,result)=>{
-                    if(err){
-                        console.log(err);
-                        return reject({message:"メッセージを追加できませんでした"})
-                    }else{
-                        console.log(result);
-                        return resolve({ insertId: result.insertId });
-                    }
-                })
-            
-            });
+        return { insertId: data.letter_id };
     },
 
-    //ユーザー名を指定して全てのLetterを返す
-    allLetters:function (user_id){
+    // 指定ユーザーの全てのLetterを取得
+    allLetters: async function (user_id) {
+        const { data, error } = await supabase
+            .from('letters')
+            .select('*')
+            .eq('user_id', user_id);
 
-        const query= "SELECT * FROM Letters WHERE user_id = ?"
+        if (error) {
+            console.log(error);
+            throw { message: "検索できませんでした" };
+        }
 
-        return new Promise ((resolve, reject) => {
-            connection.query(query,[user_id],(err,result)=>{
-                if(err){
-                    console.log(err);
-                    return reject({message:"検索できませんでした"})
-                }else{
-                    console.log(result);
-                    console.log("------------------")
-                    return resolve(result);
-
-                }
-            })
-        
-        });
-
-
-
+        console.log(data);
+        console.log("------------------");
+        return data;
     },
 
-    //指定された日付のユーザーのLetterを返す
-    selectLetters: function(user_id,created_at){
-        const query= "SELECT * FROM Letters WHERE user_id = ? AND DATE(created_at) = ?"
-        return new Promise ((resolve, reject) => {
-            connection.query(query,[user_id,created_at],(err,result)=>{
-                if(err){
-                    console.log(err);
-                    return reject({message:"検索できませんでした"});
-                }
+    // 指定日付のLetterを取得（1件目）
+    selectLetters: async function (user_id, created_at) {
+        const { data, error } = await supabase
+            .from('letters')
+            .select('*')
+            .eq('user_id', user_id)
+            .eq('created_at', created_at) // created_at に時間が含まれていると一致しない場合あり
+            .limit(1)
+            .single();
 
-                if (result.length === 0) {
-                    // 見つからなかったときの処理
-                    return resolve(null);
-                }else{
-                    console.log(result);
-                    return resolve(result[0]);
+        if (error && error.code !== 'PGRST116') {
+            console.log(error);
+            throw { message: "検索できませんでした" };
+        }
 
-                }
-
-                   
-            })
-        
-        });
-
-
+        return data || null;
     }
-
-}
+};

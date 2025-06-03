@@ -1,6 +1,4 @@
-// ホームページ
-
-import React, { useState, useEffect , useRef} from 'react'
+import React, { useState, useEffect , useRef, useContext} from 'react'
 import { useLocation } from 'react-router-dom'
 import MessageForm from '../features/Home/MessageForm'
 import UserMessageBubble from '../features/Home/UserMessageBubble'
@@ -8,23 +6,27 @@ import HomemaxImage from '../features/Home/HomemaxImage'
 import HomemaxMessageBubble from '../features/Home/HomemaxMessageBubble'
 import Menu from '../components/menu/Menu'
 import { ToastContainer, toast, Slide } from 'react-toastify';
+import { useTasks } from '../contexts/TasksContext';
+import { HistoryContext } from '../App'
 
 
 const Home = () => {
   const [timer, setTimer] = useState(30 * 60) // 30分(秒単位)
   const [toastMessage, setToastMessage] = useState(null);
+  const { completeTaskByTitle } = useTasks();
+  const { history, setHistory } = useContext(HistoryContext);
+
 
   //入力状態の管理
   const [isInputChange, setIsInputChange] = useState(false)
 
   const location = useLocation()
     const hasRun = useRef(false);
-  
   // ログイン時の通知
   useEffect(() => {
     if (location.state && location.state.signupSuccess) {
       if(hasRun.current) return;
-            hasRun.current = true;
+          hasRun.current = true;
       (async () => {
       try {
         const taskRes1 = await fetch(`${import.meta.env.VITE_API_BASE_URL}/task/update`, {
@@ -58,17 +60,17 @@ const Home = () => {
   const [hasShownComplimentToast, setHasShownComplimentToast] = useState(false)
 
 
- useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/me`, {
-      credentials: 'include'
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.user && data.user.user_id) {
-          setUserId(data.user.user_id)
-        }
-      })
-  }, [])
+//  useEffect(() => {
+//     fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/me`, {
+//       credentials: 'include'
+//     })
+//       .then(res => res.json())
+//       .then(data => {
+//         if (data.user && data.user.user_id) {
+//           setUserId(data.user.user_id)
+//         }
+//       })
+//   }, [])
 
 
   // 分:秒表示用
@@ -153,11 +155,12 @@ const handleSend = async (userMessage) => {
 
     // 返ってきたtask_titleでトースト
     if(!hasShownLetterToast){
-    toast(`${taskData.task_name}えらい！！`, {
+    toast(`手紙を書いたあなた、ちゃんと誰かを思えるってすごい力だよ。えらい！！`, {
       style: {
                 background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
             }
     })
+    completeTaskByTitle("お手紙書いた");
     setHasShownLetterToast(true);
   }
 
@@ -192,13 +195,25 @@ const handleSend = async (userMessage) => {
 
     if(!hasShownComplimentToast){
     // 返ってきたtask_titleでトースト
-    toast(`${taskData_compliment.task_name}すごい！！`, {
+    toast(`褒められたあなた、その実力と優しさは本物だね！すごい！！`, {
       style: {
                 background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
             }
     })
+    completeTaskByTitle("褒められた");
     setHasShownComplimentToast(true);
   }
+
+  setHistory(prev => [
+        ...prev,
+        {
+          letter_message: userMessage,
+          compliment: data.compliment,
+          letter_date: new Date().toISOString(),
+          compliment_date: new Date().toISOString()
+        }
+      ]);
+
   } catch (error) {
     console.error('Error sending message:', error)
   } finally {

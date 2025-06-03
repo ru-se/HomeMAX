@@ -10,6 +10,7 @@ import homemaxImg6 from '../../assets/homemax_06.png';
 import homemaxImg7 from '../../assets/homemax_07.png';
 import { toast, cssTransition } from 'react-toastify'
 import 'animate.css/animate.min.css';
+import { useTasks } from '../../contexts/TasksContext';
 
 const HomemaxImage = ({ OKCount }) => {
 
@@ -29,6 +30,7 @@ const HomemaxImage = ({ OKCount }) => {
   
   const [hoverCount, setHoverCount] = useState(0)
   const [notified, setNotified] = useState(false)
+  const { completeTaskByTitle } = useTasks();
 
   const bounce = cssTransition({
   enter: 'animate__animated animate__bounceIn',
@@ -92,7 +94,7 @@ const HomemaxImage = ({ OKCount }) => {
     
     // 6回繰り返す
     for(let i = 0; i < 5; i++) {
-    toast(`${taskData.task_name}すごい！！`, {
+    toast(`やさしく撫でられたほめマックスは、今、幸せゲージ MAX！すごい！！`, {
       transition: bounce,
       style: {
         background: 'linear-gradient(90deg, #ff8a00, #e52e71, #00c3ff)',
@@ -118,6 +120,7 @@ const HomemaxImage = ({ OKCount }) => {
     //     textShadow: '0 2px 8px #e52e71',
     //   }
     // });
+    completeTaskByTitle("ほめマックスを撫でる");
     setNotified(true);
   } 
 }

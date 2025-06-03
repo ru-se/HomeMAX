@@ -2,6 +2,7 @@
 
 import React, { useState , useRef} from 'react'
 import { toast, ToastContainer, Slide } from 'react-toastify'
+import { useTasks } from '../../contexts/TasksContext';
 
 const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCount, setIsInputChange, isSulking }) => {
 
@@ -14,6 +15,7 @@ const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCo
   const [hasShownEnglishToast, setHasShownEnglishToast] = useState(false)
   const hasRun = useRef(false);
   const hasRun_english = useRef(false);
+  const { completeTaskByTitle } = useTasks();
   
   //送信処理
   const handleSend = () => {
@@ -31,6 +33,7 @@ const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCo
         textShadow: '0 2px 8px #e52e71',
       }
     })
+    completeTaskByTitle("いつもありがとうと言う");
   }
     if (isSulking && text.trim() === 'ごめんね') {
       setOKCount(0)
@@ -58,11 +61,12 @@ const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCo
 
     if (hasShownTypingToast && hasRun.current) return;
      
-      toast(`「${taskData.task_name}」タスク達成！すごい！`, {
+      toast(`一文字打ったあなたの手、確かに未来を動かしてるよ。タスク達成！すごい！`, {
         style: {
           background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
         }
       });
+      completeTaskByTitle("キーボード入力");
       setHasShownTypingToast(true)
       hasRun.current = true;
   } catch (e) {
@@ -83,11 +87,12 @@ const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCo
     const taskData = await taskRes.json();
 
     if (hasShownTypingToast || hasRun_english.current) {
-      toast(`「${taskData.task_name}」タスク達成！すごい！`, {
+      toast(`アルファベットを使えたあなた、もはや言語の魔法使いだね！タスク達成！すごい！`, {
         style: {
           background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)'
         }
       });
+      completeTaskByTitle("（英語？アルファベット？）使用");
       setHasShownTypingToast(true)
       hasRun_english.current = true;
     }
