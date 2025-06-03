@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Kiwi+Maru:wght@500&display=swap");
 @import "tailwindcss";
 
 @keyframes marquee {
@@ -91,5 +92,6 @@
   --color-green-dark: #b8dbc2;
 
   --font-kiwi-maru: "Kiwi Maru", sans-serif;
+  --font-josefin-sans: "Josefin Sans", sans-serif;  
 }
   

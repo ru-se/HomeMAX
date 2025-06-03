@@ -6,9 +6,9 @@ const UserMessageBubble = ({ message }) => {
   return (
     <div className='mt-10 mr-20 flex-col-reverse '>
       <div className='
-        relative w-90 h-85  px-4 py-2 text-base border-2  bg-pink shadow-xl rounded-full
+        relative w-90 h-85  px-4 py-2 text-base border-2  bg-pink shadow-xl rounded-full flex items-center justify-center
       '>
-        <div className='mt-12  w-64 mx-auto max-h-56 overflow-y-auto items-center text-center'>
+        <div className='mx-auto max-h-56 overflow-y-auto items-center text-center'>
           {message}
         </div>
       </div>
