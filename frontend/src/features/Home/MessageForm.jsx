@@ -128,11 +128,11 @@ const MessageForm = ({ onSend, isMessageSent, setIsMessageSent, OKCount, setOKCo
             setEnterCount(0) // 他のキーを押したらカウントリセット
           }
         }}
-          placeholder="メッセージを入力してください"
+          placeholder="褒めて欲しい出来事を具体的に教えてください"
           rows="3"
           cols="50"
           maxLength={500}
-          className="border-1 border-black focus:outline-1 focus:outline-blue-dark inline-block py-1 resize-none"
+          className="border-3 border-blue rounded-lg focus:outline-blue-dark inline-block py-1 resize-none border-bottom-4 font-kiwi-maru"
       />
       <div className='flex items-center justify-center space-x-4'>
         <button
