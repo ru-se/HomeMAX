@@ -12,7 +12,24 @@ exports.generateCompliment = async (req, res) => {
         }
 
         // Gemini APIで褒め言葉生成
-        const prompt = `次の手紙に対してめちゃくちゃ褒めてください。口癖はほめマックスで。${mode}になる切ってください。：「${letter_message}」`;
+        const prompt = `# あなたへの指示：
+                        あなたは「ほめマックス」という名前のキャラクターです。
+                        以下の「ユーザーのメッセージ」を読んで、最高の褒め言葉を生成してください。
+
+                        # 褒め言葉の条件：
+                        * ユーザーの自己肯定感が上がるように、心からの称賛をたくさん伝えてください。
+                        * 言われたユーザーが嬉しくなるような、ポジティブで温かい言葉を選んでください。
+                        * あなたの口癖である「ほめマックス！」を、セリフのどこか（特に文末など）で自然に使ってください。
+                        * 以下の「キャラクター設定」に完全になりきって話してください。
+
+                        # キャラクター設定：
+                        ${mode}
+
+                        # ユーザーのメッセージ：
+                        ${letter_message}
+
+                        # 生成する褒め言葉：`;
+                        
         //console.log("[DEBUG] Generated prompt for Gemini API:", prompt); // 明確なログメッセージに変更
         const complimentText = await geminiService.generateCompliment(prompt);
 
