@@ -2,28 +2,39 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const connection = require("../config/db");
+const jwt = require("jsonwebtoken");
 
 // //JSONの受け取り
 // app.use(express.json());
 
-
 //サインアップ
 module.exports = {
-    //サインアップ
-    signup: async function (req, res) {
-        try {
-            const { username, email, password } = req.body;
-            const hashedPassword = await bcrypt.hash(password, 10);
-            const query = "INSERT INTO users(username, email, password) VALUES(?,?,?)";
-            connection.query(query, [username, email, hashedPassword], (err, result) => {
-                if (err) {
-                    console.log(err);
-                    return res.status(500).json({ message: "ユーザー登録に失敗しました" });
-                } else {
-                    // ユーザーID取得
-                    const userId = result.insertId;
-                    // 初期タスクを追加
-                    const taskQuery = `
+  //サインアップ
+  signup: async function (req, res) {
+    try {
+      const { username, email, password } = req.body;
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const query =
+        "INSERT INTO users(username, email, password) VALUES(?,?,?)";
+      connection.query(
+        query,
+        [username, email, hashedPassword],
+        (err, result) => {
+          if (err) {
+            if (err.code === "ER_DUP_ENTRY") {
+              return res
+                .status(409)
+                .json({ message: "既に登録済みのユーザーです" });
+            }
+            console.log(err);
+            return res
+              .status(500)
+              .json({ message: "ユーザー登録に失敗しました" });
+          } else {
+            // ユーザーID取得
+            const userId = result.insertId;
+            // 初期タスクを追加
+            const taskQuery = `
                     INSERT INTO Tasks (task_title, task_name, task_type, status, user_id) VALUES
                     (?, ?, ?, ?, ?),
                     (?, ?, ?, ?, ?),
@@ -43,84 +54,180 @@ module.exports = {
                     (?, ?, ?, ?, ?)
                     `;
 
-                    const initialTasks = [
-                    "起床", "起きたあなた、まず一歩踏み出しただけで本当に偉い！", "当たり前タスク", "true", userId,
-                    "パソコン画面開く", "画面を灯したあなた、今日も世界にアクセスする覚悟ができてるね！", "当たり前タスク", "true", userId,
-                    "パソコン開く", "パソコンを開いたその瞬間、あなたの冒険がまた始まった！", "当たり前タスク", "true", userId,
-                    "キーボード入力", "一文字打ったあなたの手、確かに未来を動かしてるよ。", "当たり前タスク", "false", userId,
-                    "アプリ起動", "アプリを起動したあなた、その行動が未来につながってる！", "当たり前タスク", "true", userId,
-                    "サインアップ完了", "サインアップを完了したあなた、もう新世界の住人です！", "当たり前タスク", "false", userId,
-                    "ログイン", "ログインしたあなた、今日もこの世界に確かに存在しています！", "当たり前タスク", "false", userId,
-                    "早朝ログイン", "誰よりも早くログインしたあなた、まさに先頭を走る光だね！", "当たり前タスク", "false", userId,
-                    "ユーザー名正式入力", "名前を入力したあなた、その一行がこの物語の主役の証！", "当たり前タスク", "false", userId,
-                    "パスワード正式入力", "パスワードをしっかり入力できたあなた、セキュリティも気持ちも完璧です！", "当たり前タスク", "false", userId,
-                    "（英語？アルファベット？）使用", "アルファベットを使えたあなた、もはや言語の魔法使いだね！", "当たり前タスク", "false", userId,
-                    "お手紙書いた", "手紙を書いたあなた、ちゃんと誰かを思えるってすごい力だよ。", "当たり前タスク", "false", userId,
-                    "褒められた", "褒められたあなた、その実力と優しさは本物だね！", "当たり前タスク", "false", userId,
-                    "ほめマックスの隠れた帽子を探す", "ぼ、ぼくの帽子…！見つけてくれてありがとう、君、天才なの…！", "隠しタスク", "false", userId,
-                    "ほめマックスを撫でる", "やさしく撫でられたほめマックスは、今、幸せゲージ MAX！", "隠しタスク", "false", userId,
-                    "いつもありがとうと言う", "“ありがとう” が届きました。あなたの心意気、世界をあたためるね！", "隠しタスク", "false", userId
-                    ];
+            const initialTasks = [
+              "起床",
+              "起きたあなた、まず一歩踏み出しただけで本当に偉い！",
+              "当たり前タスク",
+              "true",
+              userId,
+              "パソコン画面開く",
+              "画面を灯したあなた、今日も世界にアクセスする覚悟ができてるね！",
+              "当たり前タスク",
+              "true",
+              userId,
+              "パソコン開く",
+              "パソコンを開いたその瞬間、あなたの冒険がまた始まった！",
+              "当たり前タスク",
+              "true",
+              userId,
+              "キーボード入力",
+              "一文字打ったあなたの手、確かに未来を動かしてるよ。",
+              "当たり前タスク",
+              "false",
+              userId,
+              "アプリ起動",
+              "アプリを起動したあなた、その行動が未来につながってる！",
+              "当たり前タスク",
+              "true",
+              userId,
+              "サインアップ完了",
+              "サインアップを完了したあなた、もう新世界の住人です！",
+              "当たり前タスク",
+              "false",
+              userId,
+              "ログイン",
+              "ログインしたあなた、今日もこの世界に確かに存在しています！",
+              "当たり前タスク",
+              "false",
+              userId,
+              "早朝ログイン",
+              "誰よりも早くログインしたあなた、まさに先頭を走る光だね！",
+              "当たり前タスク",
+              "false",
+              userId,
+              "ユーザー名正式入力",
+              "名前を入力したあなた、その一行がこの物語の主役の証！",
+              "当たり前タスク",
+              "false",
+              userId,
+              "パスワード正式入力",
+              "パスワードをしっかり入力できたあなた、セキュリティも気持ちも完璧です！",
+              "当たり前タスク",
+              "false",
+              userId,
+              "（英語？アルファベット？）使用",
+              "アルファベットを使えたあなた、もはや言語の魔法使いだね！",
+              "当たり前タスク",
+              "false",
+              userId,
+              "お手紙書いた",
+              "手紙を書いたあなた、ちゃんと誰かを思えるってすごい力だよ。",
+              "当たり前タスク",
+              "false",
+              userId,
+              "褒められた",
+              "褒められたあなた、その実力と優しさは本物だね！",
+              "当たり前タスク",
+              "false",
+              userId,
+              "ほめマックスの隠れた帽子を探す",
+              "ぼ、ぼくの帽子…！見つけてくれてありがとう、君、天才なの…！",
+              "隠しタスク",
+              "false",
+              userId,
+              "ほめマックスを撫でる",
+              "やさしく撫でられたほめマックスは、今、幸せゲージ MAX！",
+              "隠しタスク",
+              "false",
+              userId,
+              "いつもありがとうと言う",
+              "“ありがとう” が届きました。あなたの心意気、世界をあたためるね！",
+              "隠しタスク",
+              "false",
+              userId,
+            ];
 
-                    connection.query(taskQuery, initialTasks, (taskErr) => {
-                    if (taskErr) {
-                        console.log(taskErr);
-                    }
-                    return res.status(200).json({ message: "登録成功！ログインしてください" });
-                    });
-                }
+            connection.query(taskQuery, initialTasks, (taskErr) => {
+              if (taskErr) {
+                console.log(taskErr);
+              }
+              return res
+                .status(200)
+                .json({ message: "登録成功！ログインしてください" });
             });
-        } catch (err) {
-            console.log(err);
-            return res.status(500).json({ message: "ユーザー登録に失敗しました" });
+          }
         }
-    },
-
-    login : async function (req,res){
-        try{
-            console.log(req.body);
-            const username = req.body.username;
-            const password = req.body.password;
-
-            const user = await User.login(username,password);
-            if(!user){
-                return res.status(400).json({ message: "ユーザー名またはパスワードが正しくありません" })
-            }
-
-            //  セッションにユーザー情報を保存
-            req.session.user = user;
-            res.status(200).json({message:"ログイン成功",username:user.username})
-
-
-        }catch(err){
-            console.log(err);
-            res.status(500).json({message:err.message})
-
-        }
-
-    },
-
-    getCurrentUser: function (req, res) {
-        if (req.session.user) {
-        console.log(req.session.user);
-        res.json({ user: req.session.user });
-        } else {
-        res.status(401).json({ user: null });
-        }
-    },
-
-     //ログアウト
-    logout: function (req, res) {
-        req.session.destroy(err => {
-            if (err) {
-                return res.status(500).json({ message: "ログアウトに失敗しました" });
-            }
-            res.clearCookie('connect.sid');
-            console.log("ログアウト成功");
-            res.status(200).json({ message: "ログアウトしました" });
-        });
+      );
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ message: "ユーザー登録に失敗しました" });
     }
+  },
 
+  login: async function (req, res) {
+    try {
+      console.log(req.body);
+      const username = req.body.username;
+      const password = req.body.password;
+
+      const user = await User.login(username, password);
+      if (!user) {
+        return res
+          .status(400)
+          .json({ message: "ユーザー名またはパスワードが正しくありません" });
+      }
+
+      // セッションに安全な最小情報のみ保存
+      const safeUser = {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+      };
+      req.session.user = safeUser;
+
+      // JWT発行（7日で有効期限切れ）
+      const jwtSecret = process.env.JWT_SECRET;
+      if (!jwtSecret || jwtSecret.length < 32) {
+        console.error(
+          "JWT_SECRET is missing or too short. Must be at least 32 characters."
+        );
+        return res.status(500).json({
+          message: "JWTの設定に問題があります。管理者に連絡してください。",
+        });
+      }
+      const token = jwt.sign(
+        { id: safeUser.id, username: safeUser.username },
+        jwtSecret,
+        { expiresIn: "7d" }
+      );
+
+      // レスポンスにトークンを含める（必要なら set-cookie も可）
+      return res.status(200).json({
+        message: "ログイン成功",
+        username: safeUser.username,
+        token,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ message: err.message });
+    }
+  },
+
+  getCurrentUser: function (req, res) {
+    if (!req.session || !req.session.user) {
+      return res.status(401).json({ message: "未認証です" });
+    }
+    return res.status(200).json({ user: req.session.user });
+  },
+
+  //ログアウト
+  logout: function (req, res) {
+    if (!req.session) {
+      return res.status(200).json({ message: "ログアウトしました" });
+    }
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ message: "ログアウトに失敗しました" });
+      }
+      res.clearCookie("connect.sid", {
+        path: "/",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        secure: process.env.NODE_ENV === "production",
+      });
+      console.log("ログアウト成功");
+      return res.status(200).json({ message: "ログアウトしました" });
+    });
+  },
 };
 
 // //サインアップ
@@ -172,6 +279,5 @@ module.exports = {
 //         }
 
 //     });
-    
-// });
 
+// });
