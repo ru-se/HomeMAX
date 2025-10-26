@@ -176,9 +176,18 @@ module.exports = {
       req.session.user = safeUser;
 
       // JWT発行（7日で有効期限切れ）
+      const jwtSecret = process.env.JWT_SECRET;
+      if (!jwtSecret || jwtSecret.length < 32) {
+        console.error(
+          "JWT_SECRET is missing or too short. Must be at least 32 characters."
+        );
+        return res.status(500).json({
+          message: "JWTの設定に問題があります。管理者に連絡してください。",
+        });
+      }
       const token = jwt.sign(
         { id: safeUser.id, username: safeUser.username },
-        process.env.JWT_SECRET,
+        jwtSecret,
         { expiresIn: "7d" }
       );
 
@@ -195,7 +204,10 @@ module.exports = {
   },
 
   getCurrentUser: function (req, res) {
-    return res.status(200).json({ user: req.session.user || null });
+    if (!req.session || !req.session.user) {
+      return res.status(401).json({ message: "未認証です" });
+    }
+    return res.status(200).json({ user: req.session.user });
   },
 
   //ログアウト
