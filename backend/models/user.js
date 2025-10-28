@@ -1,72 +1,61 @@
 //MySQL接続
-const connection = require("../config/db");
+const pool = require("../config/db");
 
 const bcrypt = require("bcrypt");
 
-
 module.exports = {
-    //サインアップ
-    signup: async function (username, email, password) {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        
-            const query = "INSERT INTO users(username, email, password) VALUES(?,?,?)";
+  //サインアップ
+  signup: async function (username, email, password) {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const query = "INSERT INTO users(username, email, password) VALUES(?,?,?)";
 
-            return new Promise ((resolve, reject) => {
-                connection.query(query,[username, email, hashedPassword],(err,result)=>{
-                    if(err){
-                        console.log(err);
-                        reject({message:"ユーザー登録に失敗しました"});
-                    }else{
-                        console.log(result);
-                        resolve(result);
-                    }
-                });
-            });
-    },
-
-    //ログイン
-    login:  function (username,password) {
-        // DBへの登録確認
-        const checkQuery = "SELECT * FROM users WHERE username = ? ";
-
-        return new Promise ((resolve, reject) => {
-            connection.query(checkQuery, [username], (err, results) => {
-                if (err) {
-                    console.log(err);
-                    return reject({message:"データベース確認中にエラーが発生しました"});
-                }
-                if(results.length == 0){
-                    console.log("ユーザーが見つからない");
-                    return reject({ message: "該当するユーザーが見つかりませんでした" });
-                } 
-                const user = results[0];    
-                bcrypt.compare(password, user.password)
-                .then(checkPassword =>{
-                    if(checkPassword){
-                        console.log("ログイン成功");
-                        delete user.password;
-                        return resolve(user)
-        
-                    }else{
-                        console.log("パスワードが違う");
-                        return reject({ message: "パスワードが間違っています" });
-                    }
-    
-
-                })
-                .catch(err => {
-                    console.log(err);
-                    return reject({ message: "パスワードの検証中にエラーが発生しました" });
-                })
-             });       
-    
-
-        });
-
-    
+    try {
+      const [result] = await pool.execute(query, [
+        username,
+        email,
+        hashedPassword,
+      ]);
+      console.log(result);
+      return result;
+    } catch (error) {
+    //   console.log(error);
+      throw error;
     }
+  },
 
+  //ログイン
+  login: async function (username, password) {
+    // DBへの登録確認
+    const checkQuery = "SELECT * FROM users WHERE username = ? ";
+
+    try {
+      // ★ pool.execute でユーザーを検索
+      const [results] = await pool.execute(checkQuery, [username]);
+
+      if (results.length == 0) {
+        console.log("ユーザーが見つからない");
+        throw { message: "該当するユーザーが見つかりませんでした" };
+      }
+
+      const user = results[0];
+
+      // ★ bcrypt.compare も await で待つ
+      const checkPassword = await bcrypt.compare(password, user.password);
+
+      if (checkPassword) {
+        console.log("ログイン成功");
+        delete user.password;
+        return user; // 成功したユーザー情報を返す
+      } else {
+        console.log("パスワードが違う");
+        throw { message: "パスワードが間違っています" };
+      }
+    } catch (err) {
+      console.log(err);
+      // bcrypt のエラーもここでキャッチされる
+      throw {
+        message: "データベースまたはパスワード検証中にエラーが発生しました",
+      };
+    }
+  },
 };
-
-
-
