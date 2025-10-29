@@ -4,18 +4,12 @@ const geminiService = require('../services/geminiService');
 // 褒め言葉生成 & 保存 
 exports.generateCompliment = async (req, res) => {
     try {
-        console.log("[DEBUG] Starting generateCompliment function");
+        console.log("[DEBUG] Starting generateCompliment function"); // デバッグ開始ログ
         const { user_id, letter_id, letter_message, mode } = req.body;
 
         if (!letter_id || !letter_message) {
             return res.status(400).json({ error: 'letter_id と letter_message が必要です' });
         }
-
-        // 過去の成長を取得
-        const pastCompliments = await complimentModel.getComplimentHistory(user_id);
-        const growthContext = pastCompliments.length > 0 
-            ? `過去にこんなことを褒めました: ${pastCompliments.slice(0, 3).map(c => c.positive_aspects).join('、')}` 
-            : '';
 
         // Gemini APIで褒め言葉生成
         const prompt = `# あなたへの指示：
@@ -29,9 +23,6 @@ exports.generateCompliment = async (req, res) => {
                         * 言われたユーザーが嬉しくなるような、ポジティブで温かい言葉を選んでください。
                         * あなたの口癖である「ほめマックス！」を、セリフのどこか（特に文末など）で自然に使ってください。
                         * 以下の「キャラクター設定」に完全になりきって話してください。
-                        * 文章は200文字以内で簡潔に、でも心を込めて。
-
-                        ${growthContext ? `# 成長の記録：\n${growthContext}\n上記と比較して成長している点があれば、それも褒めてください。` : ''}
 
                         # キャラクター設定：
                         ${mode}
@@ -41,26 +32,26 @@ exports.generateCompliment = async (req, res) => {
 
                         # 生成する褒め言葉：`;
 
+        //console.log("[DEBUG] Generated prompt for Gemini API:", prompt); // 明確なログメッセージに変更
         const complimentText = await geminiService.generateCompliment(prompt);
 
-        // 褒める対象を抽出
+        // 褒める対象を抽出（例: キーワード解析）
         const positiveAspects = await geminiService.extractPositiveAspects(letter_message);
+        //console.log("[DEBUG] Positive aspects extracted:", positiveAspects); // ポジティブ要素ログ
 
-        // DB保存
-        const happinessId = await complimentModel.saveCompliment({
-            userId: user_id,
-            letterId: letter_id,
-            compliment: complimentText,
-            positiveAspects
-        });
+        // DB保存(後で実装)
+        // const happinessId = await complimentModel.saveCompliment({
+        //      userId: user_id,
+        //      letterId: letter_id,
+        //      compliment: complimentText,
+        //      positiveAspects
+        //  });
+        //console.log("[DEBUG] Compliment saved with ID:", happinessId); // 保存ログ
 
-        res.json({ 
-            happiness_id: happinessId, 
-            compliment: complimentText, 
-            positive_aspects: positiveAspects 
-        });
+        //res.json({ happiness_id: happinessId, compliment: complimentText, positive_aspects: positiveAspects });
+        res.json({ compliment: complimentText, positive_aspects: positiveAspects });
     } catch (err) {
-        console.error("[ERROR] generateCompliment error:", err);
+        console.error("[ERROR] generateCompliment error:", err); // エラーログ
         res.status(500).json({ error: '褒め言葉生成エラー' });
     }
 };
@@ -80,6 +71,7 @@ exports.getComplimentList = async (req, res) => {
 // 手紙と褒め言葉の履歴取得
 exports.getComplimentHistory = async (req, res) => {
     try {
+        // クエリパラメータからuser_idを取得
         const userId = req.query.user_id || req.body.user_id || (req.user && req.user.user_id);
         if (!userId) {
             return res.status(400).json({ error: 'user_idが必要です' });
@@ -96,7 +88,7 @@ exports.getComplimentHistory = async (req, res) => {
 exports.getComplimentHistoryByDate = async (req, res) => {
     try {
         const userId = req.query.user_id || req.body.user_id || (req.user && req.user.user_id);
-        const date = req.query.date || req.body.date;
+        const date = req.query.date || req.body.date; // 追加
 
         if (!userId) {
             return res.status(400).json({ error: 'user_idが必要です' });
@@ -109,45 +101,5 @@ exports.getComplimentHistoryByDate = async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: '日付指定履歴取得エラー' });
-    }
-};
-
-// 統計情報取得（AIとの差別化）
-exports.getStats = async (req, res) => {
-    try {
-        const userId = req.query.user_id || (req.user && req.user.user_id);
-        if (!userId) {
-            return res.status(400).json({ error: 'user_idが必要です' });
-        }
-
-        const history = await complimentModel.getComplimentHistory(userId);
-        
-        // カテゴリ別の集計
-        const categoryCount = {};
-        history.forEach(item => {
-            if (item.positive_aspects) {
-                const aspects = item.positive_aspects.split('、');
-                aspects.forEach(aspect => {
-                    categoryCount[aspect] = (categoryCount[aspect] || 0) + 1;
-                });
-            }
-        });
-
-        // 成長の分析
-        const recentCompliments = history.slice(0, 10);
-        const oldCompliments = history.slice(10, 20);
-        
-        res.json({
-            totalCompliments: history.length,
-            categoryCount,
-            recentCategories: recentCompliments.map(c => c.positive_aspects),
-            growth: {
-                recent: recentCompliments.length,
-                old: oldCompliments.length
-            }
-        });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: '統計情報取得エラー' });
     }
 };
