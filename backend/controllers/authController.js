@@ -1,108 +1,27 @@
 // サインアアップ、ログイン機能とか
 const User = require("../models/user");
-const bcrypt = require("bcrypt");
-const connection = require("../config/db");
 const jwt = require("jsonwebtoken");
-
-// //JSONの受け取り
-// app.use(express.json());
+const Task = require("../models/task");
 
 //サインアップ
 module.exports = {
-  //サインアップ
   signup: async function (req, res) {
     try {
       const { username, email, password } = req.body;
+      if (!username || !email || !password) {
+        return res.status(400).json({ message: "必須項目が不足しています" });
+      }
       const result = await User.signup(username, email, password);
       const userId = result.insertId;
-      const pool = require("../config/db");
-      const taskQuery =
-        "INSERT INTO tasks(task_title, task_name, task_type, status, user_id) VALUES(?,?,?,?,?)";
-      const initialTasks = [
-        "起床",
-        "起きたあなた、まず一歩踏み出しただけで本当に偉い！",
-        "当たり前タスク",
-        "true",
-        userId,
-        "パソコン画面開く",
-        "画面を灯したあなた、今日も世界にアクセスする覚悟ができてるね！",
-        "当たり前タスク",
-        "true",
-        userId,
-        "パソコン開く",
-        "パソコンを開いたその瞬間、あなたの冒険がまた始まった！",
-        "当たり前タスク",
-        "true",
-        userId,
-        "キーボード入力",
-        "一文字打ったあなたの手、確かに未来を動かしてるよ。",
-        "当たり前タスク",
-        "false",
-        userId,
-        "アプリ起動",
-        "アプリを起動したあなた、その行動が未来につながってる！",
-        "当たり前タスク",
-        "true",
-        userId,
-        "サインアップ完了",
-        "サインアップを完了したあなた、もう新世界の住人です！",
-        "当たり前タスク",
-        "false",
-        userId,
-        "ログイン",
-        "ログインしたあなた、今日もこの世界に確かに存在しています！",
-        "当たり前タスク",
-        "false",
-        userId,
-        "早朝ログイン",
-        "誰よりも早くログインしたあなた、まさに先頭を走る光だね！",
-        "当たり前タスク",
-        "false",
-        userId,
-        "ユーザー名正式入力",
-        "名前を入力したあなた、その一行がこの物語の主役の証！",
-        "当たり前タスク",
-        "false",
-        userId,
-        "パスワード正式入力",
-        "パスワードをしっかり入力できたあなた、セキュリティも気持ちも完璧です！",
-        "当たり前タスク",
-        "false",
-        userId,
-        "（英語？アルファベット？）使用",
-        "アルファベットを使えたあなた、もはや言語の魔法使いだね！",
-        "当たり前タスク",
-        "false",
-        userId,
-        "お手紙書いた",
-        "手紙を書いたあなた、ちゃんと誰かを思えるってすごい力だよ。",
-        "当たり前タスク",
-        "false",
-        userId,
-        "褒められた",
-        "褒められたあなた、その実力と優しさは本物だね！",
-        "当たり前タスク",
-        "false",
-        userId,
-        "ほめマックスの隠れた帽子を探す",
-        "ぼ、ぼくの帽子…！見つけてくれてありがとう、君、天才なの…！",
-        "隠しタスク",
-        "false",
-        userId,
-        "ほめマックスを撫でる",
-        "やさしく撫でられたほめマックスは、今、幸せゲージ MAX！",
-        "隠しタスク",
-        "false",
-        userId,
-        "いつもありがとうと言う",
-        "“ありがとう” が届きました。あなたの心意気、世界をあたためるね！",
-        "隠しタスク",
-        "false",
-        userId,
-      ];
-      await pool.query(taskQuery, initialTasks);
+      // const pool = require("../config/db");
 
-      return res.status(200).json({ message: "登録成功！ログインしてください" });
+      // タスク関連は一旦実装しない
+      // await Task.createInitialTasks(userId);
+      // await pool.query(taskQuery, initialTasks);
+
+      return res
+        .status(200)
+        .json({ message: "登録成功！ログインしてください" });
     } catch (err) {
       console.log(err);
       if (err.code === "ER_DUP_ENTRY") {
@@ -112,25 +31,21 @@ module.exports = {
     }
   },
 
+  // ログイン
   login: async function (req, res) {
     try {
-      console.log(req.body);
-      const username = req.body.username;
-      const password = req.body.password;
+      const { username, password } = req.body;
 
       const user = await User.login(username, password);
       if (!user) {
         throw { message: "ユーザー名またはパスワードが正しくありません" };
       }
 
-      // セッションに安全な最小情報のみ保存
       const safeUser = {
         user_id: user.user_id,
         username: user.username,
         email: user.email,
       };
-      // sessionは使わない方針にする
-      //   req.session.user = safeUser;
 
       // JWT発行（7日で有効期限切れ）
       const jwtSecret = process.env.JWT_SECRET;
@@ -156,86 +71,29 @@ module.exports = {
       });
     } catch (err) {
       console.log(err);
-      res.status(401).json({ message: err.message || "認証に失敗しました" });
-      res.status(500).json({ message: err.message });
+      // ユーザーが見つからない、パスワードが違う場合は401 Unauthorized
+      if (
+        err.message.includes("見つかりませんでした") ||
+        err.message.includes("間違っています")
+      ) {
+        return res
+          .status(401)
+          .json({ message: "ユーザー名またはパスワードが正しくありません" });
+      }
+      res.status(500).json({ message: "認証処理中にエラーが発生しました" });
     }
   },
 
   getCurrentUser: function (req, res) {
-    if (!req.session || !req.session.user) {
-      return res.status(401).json({ message: "未認証です" });
-    }
-    return res.status(200).json({ user: req.session.user });
+    // if (!req.user) {
+    //   return res.status(401).json({ message: "未認証です" });
+    // }
+    return res.status(200).json({ user: req.user });
   },
 
   //ログアウト
   logout: function (req, res) {
-    if (!req.session) {
-      return res.status(200).json({ message: "ログアウトしました" });
-    }
-    req.session.destroy((err) => {
-      if (err) {
-        return res.status(500).json({ message: "ログアウトに失敗しました" });
-      }
-      res.clearCookie("connect.sid", {
-        path: "/",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        secure: process.env.NODE_ENV === "production",
-      });
-      console.log("ログアウト成功");
-      return res.status(200).json({ message: "ログアウトしました" });
-    });
+    // JWTの場合、クライアント側でトークンを削除するため、サーバー側では特に処理は不要
+    return res.status(200).json({ message: "ログアウトしました" });
   },
 };
-
-// //サインアップ
-// app.post("/signUp",async (req,res)=>{
-//     console.log(req.body);
-//     const username = req.body.username;
-//     const email = req.body.email;
-//     const password = req.body.password;
-//     const hashedPassword = await bcrypt.hash(password, 10);
-
-//     const query = "INSERT INTO users(username, email, password) VALUES(?,?,?)";
-//     connection.query(query,[username, email, hashedPassword],(err,result)=>{
-//         if(err){
-//             console.log(err);
-//             res.status(500).send({err:"追加できませんでした"});
-//         }else{
-//             res.status(200).json({message:"追加できました！"});
-//             console.log(result);
-//         }
-//     })
-// });
-
-// //ログイン
-// app.post("/login", (req, res) => {
-//     const username = req.body.username;
-//     const password = req.body.password;
-
-//     // DBへの登録確認
-//     const checkQuery = "SELECT * FROM users WHERE username = ? ";
-
-//     connection.query(checkQuery, [username],async (err, results) => {
-//         if (err) {
-//             console.log(err);
-//             return res.status(500).json({ error: "確認中にエラーが発生しました" });
-//         }
-
-//         if(results.length == 0){
-//             console.log(err);
-//             res.status(400).json({message:"該当するユーザーが存在しません"});
-//         }
-
-//         const checkPassword = await bcrypt.compare(password, results[0].password);
-//         if(checkPassword){
-//             console.log("ログイン成功");
-//             res.status(200).json({message:"ログイン成功",username:results[0].username})
-//         }else{
-//             console.log("パスワードが違う");
-//             res.status(400).json({message:"パスワードが違います"})
-//         }
-
-//     });
-
-// });

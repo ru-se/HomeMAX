@@ -4,7 +4,7 @@ module.exports = {
     // タスク一覧取得
     getTaskList: async function(req, res) {
         try {
-            const userId = req.query.user_id || req.body.user_id || (req.session.user && req.session.user.user_id);
+            const userId = req.query.user_id || req.body.user_id || (req.user && req.user.user_id);
             if (!userId) return res.status(400).json({ error: "user_idが必要です" });
             const tasks = await Task.getTaskList(userId);
             res.json(tasks);
@@ -17,7 +17,7 @@ module.exports = {
     // クリア済みタスク取得
     getClearedTasks: async function(req, res) {
         try {
-            const userId = req.query.user_id || req.body.user_id || (req.session.user && req.session.user.user_id);
+            const userId = req.query.user_id || req.body.user_id || (req.user && req.user.user_id);
             if (!userId) return res.status(400).json({ error: "user_idが必要です" });
             const cleared = await Task.getClearedTasks(userId);
             res.json(cleared);
