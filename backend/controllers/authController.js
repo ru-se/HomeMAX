@@ -1,16 +1,16 @@
 // サインアアップ、ログイン機能とか
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
-const Task = require("../models/task");
+// const Task = require("../models/task");
 
 //サインアップ
 module.exports = {
   signup: async function (req, res) {
     try {
-      const { username, email, password } = req.body;
       if (!username || !email || !password) {
         return res.status(400).json({ message: "必須項目が不足しています" });
       }
+      const { username, email, password } = req.body;
       const result = await User.signup(username, email, password);
       const userId = result.insertId;
       // const pool = require("../config/db");

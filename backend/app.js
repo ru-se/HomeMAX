@@ -17,7 +17,7 @@ app.use(
       "http://localhost:5173", // 明示的にフロントのURLを指定
       "https://homemax-frontend.onrender.com",
     ],
-    credentials: true, // Cookie やセッションを許可 
+    credentials: true, // 認証ヘッダーなどのクレデンシャルを許可
   })
 );
 

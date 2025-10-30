@@ -42,7 +42,7 @@ module.exports = {
       const created_at = req.body.created_at;
       const result = await Letter.selectLetter(user_id, created_at);
 
-      if (!letter) {
+      if (!result || result.length === 0) {
         return res.status(200).json({ message: "メッセージは0件です" });
       }
 

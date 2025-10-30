@@ -64,7 +64,7 @@ exports.getTaskNameByTitle = async (task_title) => {
 
 exports.createInitialTasks = async (userId) => {
   const taskQuery =
-    "INSERT INTO tasks(task_title, task_name, task_type, status, user_id) VALUES ?";
+    "INSERT INTO Tasks(task_title, task_name, task_type, status, user_id) VALUES ?";
   const initialTasks = [
     [
       "起床",
