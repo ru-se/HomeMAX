@@ -6,11 +6,11 @@ const jwt = require("jsonwebtoken");
 //サインアップ
 module.exports = {
   signup: async function (req, res) {
+    const { username, email, password } = req.body;
     try {
       if (!username || !email || !password) {
         return res.status(400).json({ message: "必須項目が不足しています" });
       }
-      const { username, email, password } = req.body;
       const result = await User.signup(username, email, password);
       const userId = result.insertId;
       // const pool = require("../config/db");
