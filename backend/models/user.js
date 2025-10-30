@@ -15,10 +15,10 @@ module.exports = {
         email,
         hashedPassword,
       ]);
-      console.log(result);
+      // console.log(result);
       return result;
     } catch (error) {
-    //   console.log(error);
+      // console.log(error);
       throw error;
     }
   },

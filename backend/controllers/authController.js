@@ -23,7 +23,6 @@ module.exports = {
         .status(200)
         .json({ message: "登録成功！ログインしてください" });
     } catch (err) {
-      console.log(err);
       if (err.code === "ER_DUP_ENTRY") {
         return res.status(409).json({ message: "既に登録済みのユーザーです" });
       }

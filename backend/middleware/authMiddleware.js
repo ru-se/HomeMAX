@@ -21,7 +21,7 @@ const protect = async (req, res, next) => {
     // ペイロードからユーザーIDを取得し、DBからユーザー情報を取得（パスワードは除く）
     const [rows] = await pool.execute(
       "SELECT user_id, username, email FROM users WHERE user_id = ?",
-      [decoded.user_id]
+      [decoded.id]
     );
 
     if (rows.length === 0) {
