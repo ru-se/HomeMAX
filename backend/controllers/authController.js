@@ -1,4 +1,4 @@
-// サインアアップ、ログイン機能とか
+// サインアップ、ログイン機能とか
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 // const Task = require("../models/task");

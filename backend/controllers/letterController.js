@@ -9,7 +9,7 @@ module.exports = {
   addLetter: async function (req, res) {
     try {
       //ログインしていない場合ユーザーIDは0
-      let user_id = req.user ? req.user.user_id : 1;
+      let user_id = req.user ? req.user.user_id : 0;
       const message = req.body.message;
       // メッセージが空かどうかを確認
       if (!message || message.trim() === "") {
