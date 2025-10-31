@@ -53,7 +53,7 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(false) 
   const [OKCount, setOKCount] = useState(1) 
   const [userId, setUserId] = useState(null)
-  const [modeName, setModeName] = useState(null)
+  const [modeName, setModeName] = useState('ほめマックス') // 初期値ほめマックス
   const [hasShownLetterToast, setHasShownLetterToast] = useState(false) 
   const [hasShownComplimentToast, setHasShownComplimentToast] = useState(false)
 
@@ -228,11 +228,11 @@ const handleSend = async (userMessage) => {
       />
       
 
-      <div className='flex w-full h-3/4'>
+      <div className='flex w-full h-3/5'>
         {/* ほめマックスの吹き出し  */}
         <div className='basis-1/3 flex justify-center mt-10'>
           {isMessageSent && (
-            <div className=''>
+            <div>
               <HomemaxMessageBubble message={isLoading ? '生成中...' : compliment}/>
             </div>
           )}
@@ -241,8 +241,8 @@ const handleSend = async (userMessage) => {
         <div className=" basis-1/3 flex items-center justify-center ">
           {OKCount >= 6 ? (
             <div className="text-3xl font-bold flex flex-col items-center justify-center">
-              <p>すねてしまいました</p>
-              <div className="mt-4 text-2xl text-blue-500">
+              <p className="font-kiwi-maru">すねてしまいました . . .</p>
+              <div className="Josefin Sans mt-4 text-2xl text-blue-500">
                 {formatTime(timer)}
               </div>
 
@@ -259,50 +259,117 @@ const handleSend = async (userMessage) => {
         )}
       </div>
       {/* ほめマックスのモード選択 */}
-      <div className="my-4 flex items-center justify-center h-1/4">
-        <label style={{ marginRight: '20px' }}> {/* 間隔設定 */}
-          <input 
+      <div className="my-4 flex items-center justify-center">
+       {/* <label style={{ marginRight: '20px' }}> 間隔設定 */}
+          {/* <input 
             type="radio" 
             name="mode" 
             value="homemax"
             checked={modeName === 'ほめマックス'} // 修正: 値を一致させる
             onChange={() => setModeName('ほめマックス')} 
-            style={{ accentColor: 'pink' }} 
+            style={{  accentColor: 'pink',}} 
+          /> */}
+          {/* ほめマックス
+        </label> */}
+        <label className="flex items-center space-x-0.5 relative group">
+          <input
+            type="radio"
+            name="mode"
+            value="homemax"
+            checked={modeName === 'ほめマックス'}
+            onChange={() => setModeName('ほめマックス')}
+            className="
+              peer hidden
+            "
           />
-          ほめマックス
+          <div className="
+            w-3 h-3 rounded-full border-1 border-black
+            peer-checked:bg-pink-200 peer-checked:border-black
+            transition-colors duration-200
+          "></div>
+          <span className="text-black mr-2">ほめマックス</span>
+            <div className="
+                absolute bottom-full left-1/2 -translate-x-1/2 mb-1
+                bg-blue text-white text-xs rounded-lg px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200
+                whitespace-nowrap z-10
+              ">
+                ノーマルほめマックス！全力で褒めてくれるよ
+              </div>
         </label>
-        <label style={{ marginRight: '20px' }}> {/* 間隔設定 */}
+        <label className="flex items-center space-x-0.5 relative group">
           <input 
             type="radio" 
             name="mode" 
             value="galmax" 
             checked={modeName === 'ギャルです。ギャル語を使って話します。絵文字をたくさん使います。'} 
             onChange={() => setModeName('ギャルです。ギャル語を使って話します。絵文字をたくさん使います。')} 
-            style={{ accentColor: 'pink' }} 
+            className="
+              peer hidden
+            "
           />
-          ぎゃるマックス
+            <div className="
+              w-3 h-3 rounded-full border-1 border-black
+              peer-checked:bg-pink-200 peer-checked:border-black
+              transition-colors duration-200
+            "></div>
+            <span className="text-black mr-2">ぎゃるマックス</span>
+              <div className="
+                absolute bottom-full left-1/2 -translate-x-1/2 mb-1
+                bg-blue text-white text-xs rounded-lg px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200
+                whitespace-nowrap z-10
+              ">
+                ギャル語と絵文字でテンションMAXにほめてくれるよ
+              </div>
         </label>
-        <label style={{ marginRight: '20px' }}> {/* 最後のラベルには間隔を設定しない */}
+        <label className="flex items-center space-x-0.5 relative group"> 
           <input 
             type="radio" 
             name="mode" 
             value="yamimax" 
             checked={modeName === '病んでる人です。ネガティブなことを言います。人のこのは褒めるけど自分と比べてさらに病みます。'} 
             onChange={() => setModeName('病んでる人です。ネガティブなことを言います。人のこのは褒めるけど自分と比べてさらに病みます。')} 
-            style={{ accentColor: 'pink' }} 
+            className="
+              peer hidden
+            "
           />
-          病みマックス
+          <div className="
+              w-3 h-3 rounded-full border-1 border-black
+              peer-checked:bg-pink-200 peer-checked:border-black
+              transition-colors duration-200
+            "></div>
+            <span className="text-black mr-2">病みマックス</span>
+            <div className="
+                absolute bottom-full left-1/2 -translate-x-1/2 mb-1
+                bg-blue text-white text-xs rounded-lg px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200
+                whitespace-nowrap z-10
+              ">
+                ネガティブなことを言うけど、あなたのことは褒めてくれるよ。自分と比べてさらに病むけどね
+              </div>
         </label>
-        <label> 
+        <label className="flex items-center space-x-0.5 relative group"> 
           <input 
             type="radio" 
             name="mode" 
             value="yamimax" 
             checked={modeName === 'オタクです。語尾は「ござる」や「でござるよ」です。Twitterで使われるネットミームを使います。'} 
             onChange={() => setModeName('オタクです。語尾は「ござる」や「でござるよ」です。Twitterで使われるネットミームを使います。')} 
-            style={{ accentColor: 'pink' }} 
+            className="
+              peer hidden
+            "
           />
-          おたマックス
+           <div className="
+              w-3 h-3 rounded-full border-1 border-black
+              peer-checked:bg-pink-200 peer-checked:border-black
+              transition-colors duration-200
+            "></div>
+            <span className="text-black mr-2">おたマックス</span>
+            <div className="
+                absolute bottom-full left-1/2 -translate-x-1/2 mb-1
+                bg-blue text-white text-xs rounded-lg px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200
+                whitespace-nowrap z-10
+              ">
+                オタク語とネットミームで褒めてくれるよ。語尾は「ござる」や「〜でござるよ」だよ
+              </div>
         </label>
       </div>
       {/* メッセージ送信フォーム */}
