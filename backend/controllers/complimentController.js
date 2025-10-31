@@ -58,7 +58,7 @@ exports.getComplimentHistory = async (req, res) => {
             return res.status(400).json({ error: 'user_idが必要です' });
         }
         const history = await complimentModel.getComplimentHistory(userId);
-        res.json(history);
+        res.json(history);                          
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: '履歴取得エラー' });
