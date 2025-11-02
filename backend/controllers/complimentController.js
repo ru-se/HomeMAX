@@ -37,6 +37,10 @@ exports.generateCompliment = async (req, res) => {
 
         // 褒める対象を抽出（例: キーワード解析）
         const positiveAspects = await geminiService.extractPositiveAspects(letter_message);
+
+        // タイトル生成
+        const titleText = await geminiService.generateCompliment(`以下の文章を要約して、キャッチーなタイトルを5~10 文字で作ってください。タイトル以外の返信はしないでください。：「${complimentText}」`);
+
         //console.log("[DEBUG] Positive aspects extracted:", positiveAspects); // ポジティブ要素ログ
 
         // DB保存(後で実装)
@@ -49,7 +53,7 @@ exports.generateCompliment = async (req, res) => {
         //console.log("[DEBUG] Compliment saved with ID:", happinessId); // 保存ログ
 
         //res.json({ happiness_id: happinessId, compliment: complimentText, positive_aspects: positiveAspects });
-        res.json({ compliment: complimentText, positive_aspects: positiveAspects });
+        res.json({ title: titleText, compliment: complimentText, positive_aspects: positiveAspects  });
     } catch (err) {
         console.error("[ERROR] generateCompliment error:", err); // エラーログ
         res.status(500).json({ error: '褒め言葉生成エラー' });
