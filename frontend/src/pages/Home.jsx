@@ -273,9 +273,13 @@ const Home = () => {
               className="fixed inset-0 z-40" // z-40 は手紙の z-50 より小さくする
               onClick={handleCloseCompliment} // 背景クリックで閉じる関数を呼び出す
             >
-            //画面下部に固定して浮かせるラッパー
-    <div className="fixed bottom-5 inset-x-0 flex justify-center z-50 px-8">
-              <div 
+
+    <div
+      className="fixed bottom-5 inset-x-0 flex justify-center z-50 px-8"
+      onClick={(e) => e.stopPropagation()} // 手紙外だけで閉じる
+    >
+              <div
+                 onClick={(e) => e.stopPropagation()} // 手紙内クリックは閉じない
                 // 変更前: className="w-full bg-gradient-to-br from-pink-100 to-purple-100 rounded-3xl p-6 shadow-2xl border-4 border-pink-300 animate-bounce-in text-center"
 
                 //お手紙風デザインの適用
