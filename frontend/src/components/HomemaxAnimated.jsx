@@ -44,6 +44,14 @@ const HomemaxAnimated = ({ isLoading }) => {
 
   return (
     <div className="relative">
+
+       {/* なでた回数表示 */}
+      {petCount > 0 && (
+        <div className="absolute  left-1/2 transform -translate-x-1/2 bg-white/90 text-[#9C6924] px-6 py-2 rounded-full shadow-lg">
+          <p className="text-sm font-bold">なでなで {petCount}回 💕</p>
+        </div>
+      )}
+
       {/* キャラクター本体 */}
       <div 
         className={`
@@ -70,20 +78,20 @@ const HomemaxAnimated = ({ isLoading }) => {
       </div>
 
       {/* なでた回数表示 */}
-      {petCount > 0 && (
-        <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-pink-400 text-white px-6 py-2 rounded-full shadow-lg">
+      {/* {petCount > 0 && (
+        <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-white/90 text-[#9C6924] px-6 py-2 rounded-full shadow-lg">
           <p className="text-sm font-bold">なでなで {petCount}回 💕</p>
         </div>
-      )}
+      )} */}
 
       {/* ローディング時のメッセージ */}
-      {isLoading && (
+      {/* {isLoading && (
         <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 bg-white/90 backdrop-blur px-8 py-4 rounded-full shadow-xl border-2 border-pink-300">
           <p className="text-lg font-bold text-pink-600 whitespace-nowrap">
             一生懸命考え中... 🤔💭
           </p>
         </div>
-      )}
+      )} */}
     </div>
   )
 }
