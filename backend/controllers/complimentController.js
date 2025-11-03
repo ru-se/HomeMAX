@@ -40,7 +40,6 @@ exports.generateCompliment = async (req, res) => {
                         * 3行目以降: 褒め言葉の本文を書く。
                         `;
 
-        //console.log("[DEBUG] Generated prompt for Gemini API:", prompt); // 明確なログメッセージに変更
         const rawResponse = await geminiService.generateCompliment(prompt);
 
         const parts = rawResponse.split('\n---\n');
@@ -61,8 +60,6 @@ exports.generateCompliment = async (req, res) => {
 
         // 褒める対象を抽出（例: キーワード解析）
         const positiveAspects = await geminiService.extractPositiveAspects(letter_message);
-
-        // タイトル生成
 
         //console.log("[DEBUG] Positive aspects extracted:", positiveAspects); // ポジティブ要素ログ
 
