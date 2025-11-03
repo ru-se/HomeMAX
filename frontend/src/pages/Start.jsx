@@ -43,7 +43,7 @@ const Start = () => {
   }, [])
 
   return (
-    <div className="h-screen w-screen overflow-hidden bg- flex items-center justify-center relative">
+    <div className="h-screen w-screen overflow-hidden bg- flex items-center justify-center relative ">
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -60,7 +60,7 @@ const Start = () => {
       />
 
       {/* 背景アニメーション - 横スクロールするほめマックス */}
-      <div className="absolute inset-0 overflow-hidden opacity-20 ">
+      <div className="absolute inset-0 overflow-hidden opacity-50">
         <div className="animate-marquee-right whitespace-nowrap flex h-1/2">
           {[...Array(20)].map((_, i) => (
             <img 
@@ -87,7 +87,7 @@ const Start = () => {
       <div className="relative z-10 text-center">
         {/* タイトル */}
         <h1 className="text-9xl font-black mb-8 animate-bounce-in">
-          <span className="bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent drop-shadow-2xl">
+          <span className="bg-gradient-to-r max-w-48 bg-clip-text text-Rose drop-shadow-2xl bubble-text text-pink">
             ほめマックス！
           </span>
         </h1>

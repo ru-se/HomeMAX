@@ -16,4 +16,11 @@
 .animate-marquee-left {
           animation: marquee-left 30s linear infinite;
         }
-        
+
+        /* CSS */
+.bubble-text {
+  font-family: "kiwi-maru", sans-serif; /* 太いフォントを選ぶ */
+  
+  /* 輪郭（ふち）を指定 */
+  -webkit-text-stroke: 3px #0000005f; /* 3pxの黒い輪郭 */
+}
