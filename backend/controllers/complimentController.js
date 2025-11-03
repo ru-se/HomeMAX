@@ -44,7 +44,7 @@ exports.generateCompliment = async (req, res) => {
 
         const parts = rawResponse.split('\n---\n');
 
-        let titleText = "ほめマックスより"; // デフォルトタイトル
+        let titleText = "頑張った君へ"; // デフォルトタイトル
         let complimentText = "";
 
         if (parts.length >= 2) {
