@@ -89,12 +89,88 @@ const Home = () => {
     }
   }
 
+  // 端末のボイス一覧
+  const [voices, setVoices] = useState([])
+  // 好みの日本語ボイスを保持
+  const [preferredVoice, setPreferredVoice] = useState(null)
+
+  // 日本語の「かわいめ」候補を優先的に選ぶ
+  const pickCuteJapaneseVoice = (voices) => {
+    const ja = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('ja'))
+    const candidates = [
+    'Google 日本語', 'Kyoko', 'Kyoko (Enhanced)', 'Otoya',
+    'Microsoft Nanami', 'Microsoft Haruka', 'Nanami', 'Haruka',
+    'Siri' // iOS系で日本語Siriが返ることがある
+  ]
+    return ja.find(v => candidates.some(name => v.name.includes(name))) || ja[0] || null
+  }
+
+  // 名前候補リストから最適な日本語ボイスを選ぶ
+  const selectJapaneseVoiceByNames = (names) => {
+    const ja = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('ja'))
+    return ja.find(v => names.some(name => v.name.includes(name))) || null
+  }
+
+  // モードごとのおすすめ音声
+  const voiceForMode = () => {
+    if (!voices.length) return null
+    switch (modeName) {
+      case 'ギャルです。ギャル語を使って話します。絵文字をたくさん使います。':
+        // 可愛い・明るめ
+        return selectJapaneseVoiceByNames(['Siri', 'Kyoko', 'Google 日本語', 'Haruka', 'Nanami'])
+      case '病んでる人です。ネガティブなことを言います。人のこのは褒めるけど自分と比べてさらに病みます。':
+        // 低め・落ち着き
+        return selectJapaneseVoiceByNames(['Otoya', 'Naoki'])
+      case 'オタクです。語尾は「ござる」や「でござるよ」です。Twitterで使われるネットミームを使います。':
+        // ちょい早口・やや高め
+        return selectJapaneseVoiceByNames(['Otoya', 'Naoki', 'Kyoko', 'Google 日本語'])
+      default:
+        // ノーマル
+        return selectJapaneseVoiceByNames(['Kyoko', 'Google 日本語', 'Haruka', 'Nanami']) || preferredVoice
+    }
+  }
+
+  // モードごとのピッチ・スピード
+  const ttsParamsForMode = () => {
+    switch (modeName) {
+      case 'ギャルです。ギャル語を使って話します。絵文字をたくさん使います。':
+        return { rate: 1.55, pitch: 1.75 }
+      case '病んでる人です。ネガティブなことを言います。人のこのは褒めるけど自分と比べてさらに病みます。':
+        return { rate: 0.95, pitch: 0.9 }
+      case 'オタクです。語尾は「ござる」や「でござるよ」です。Twitterで使われるネットミームを使います。':
+        return { rate: 1.35, pitch: 1.2 }
+      default:
+        return { rate: 1.35, pitch: 1.4 }
+    }
+  }
+
+  // 端末のボイス一覧をロード（voiceschanged にも対応）
+  useEffect(() => {
+  const loadVoices = () => {
+    const voices = window.speechSynthesis?.getVoices() || []
+    setVoices(voices)
+    const v = pickCuteJapaneseVoice(voices)
+    setPreferredVoice(v)
+    // デバッグ用ログ（選ばれた声と候補一覧）
+    console.log('[TTS] available voices:', voices.map(x => `${x.name} (${x.lang})`))
+    console.log('[TTS] selected voice:', v ? `${v.name} (${v.lang})` : 'none (fallback to default)')
+  }
+  loadVoices()
+  window.speechSynthesis?.addEventListener('voiceschanged', loadVoices)
+  return () => window.speechSynthesis?.removeEventListener('voiceschanged', loadVoices)
+}, [])
+
   // 音声読み上げ
   const speakCompliment = (text) => {
-    if (!speechSynthesis) return
+    // 連続呼び出しで重ならないようにキャンセル
+    if (speechSynthesis.speaking) speechSynthesis.cancel()
     const utterance = new SpeechSynthesisUtterance(stripEmojis(text))
     utterance.lang = 'ja-JP'
-    utterance.rate = 1.0
+    const { rate, pitch } = ttsParamsForMode()
+    utterance.rate = rate
+    utterance.pitch = pitch
+    const v = voiceForMode() || preferredVoice
+    if (v) utterance.voice = v
     speechSynthesis.speak(utterance)
   }
 
