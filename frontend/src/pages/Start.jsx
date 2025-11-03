@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ToastContainer, toast, Slide } from 'react-toastify'
 import homeImage from '../assets/homemax_01-2.png'
+import '../styles/Start.css';
 
 const Start = () => {
   const navigate = useNavigate()
@@ -42,7 +43,7 @@ const Start = () => {
   }, [])
 
   return (
-    <div className="h-screen w-screen overflow-hidden bg-white flex items-center justify-center relative">
+    <div className="h-screen w-screen overflow-hidden bg- flex items-center justify-center relative">
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -60,7 +61,7 @@ const Start = () => {
 
       {/* 背景アニメーション - 横スクロールするほめマックス */}
       <div className="absolute inset-0 overflow-hidden opacity-20 ">
-        <div className="animate-marquee-slow whitespace-nowrap flex h-1/2">
+        <div className="animate-marquee-right whitespace-nowrap flex h-1/2">
           {[...Array(20)].map((_, i) => (
             <img 
               key={i} 
@@ -70,7 +71,7 @@ const Start = () => {
             />
           ))}
         </div>
-        <div className="animate-marquee-slow whitespace-nowrap flex items-end h-1/2">
+        <div className="animate-marquee-left whitespace-nowrap flex items-end h-1/2">
           {[...Array(20)].map((_, i) => (
             <img 
               key={i} 
@@ -106,16 +107,6 @@ const Start = () => {
           <div className="absolute inset-0 rounded-full animate-pulse-glow"></div>
         </button>
       </div>
-
-      <style jsx>{`
-        @keyframes marquee-slow {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .animate-marquee-slow {
-          animation: marquee-slow 30s linear infinite;
-        }
-      `}</style>
     </div>
   )
 }
