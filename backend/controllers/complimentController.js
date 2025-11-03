@@ -12,22 +12,41 @@ exports.generateCompliment = async (req, res) => {
         }
 
         // Gemini APIで褒め言葉生成
-        const prompt = `次の手紙に対して褒めてください。口癖はほめマックスで。そこまで長すぎないようにしてください。あなたは、${mode}：「${letter_message}」`;
-        console.log("[DEBUG] Generated prompt for Gemini API:", prompt); // 明確なログメッセージに変更
+        const prompt = `# あなたへの指示：
+                        あなたは「ほめマックス」という名前のキャラクターです。
+                        以下の「ユーザーのメッセージ」を読んで、最高の褒め言葉を生成してください。
+                        **等は使わないでください。
+                        絵文字は少し多めでお願いします。
+
+                        # 褒め言葉の条件：
+                        * ユーザーの自己肯定感が上がるように、心からの称賛をたくさん伝えてください。
+                        * 言われたユーザーが嬉しくなるような、ポジティブで温かい言葉を選んでください。
+                        * あなたの口癖である「ほめマックス！」を、セリフのどこか（特に文末など）で自然に使ってください。
+                        * 以下の「キャラクター設定」に完全になりきって話してください。
+
+                        # キャラクター設定：
+                        ${mode}
+
+                        # ユーザーのメッセージ：
+                        ${letter_message}
+
+                        # 生成する褒め言葉：`;
+
+        //console.log("[DEBUG] Generated prompt for Gemini API:", prompt); // 明確なログメッセージに変更
         const complimentText = await geminiService.generateCompliment(prompt);
 
         // 褒める対象を抽出（例: キーワード解析）
         const positiveAspects = await geminiService.extractPositiveAspects(letter_message);
-        console.log("[DEBUG] Positive aspects extracted:", positiveAspects); // ポジティブ要素ログ
+        //console.log("[DEBUG] Positive aspects extracted:", positiveAspects); // ポジティブ要素ログ
 
         // DB保存(後で実装)
-        const happinessId = await complimentModel.saveCompliment({
-             userId: user_id,
-             letterId: letter_id,
-             compliment: complimentText,
-             positiveAspects
-         });
-        console.log("[DEBUG] Compliment saved with ID:", happinessId); // 保存ログ
+        // const happinessId = await complimentModel.saveCompliment({
+        //      userId: user_id,
+        //      letterId: letter_id,
+        //      compliment: complimentText,
+        //      positiveAspects
+        //  });
+        //console.log("[DEBUG] Compliment saved with ID:", happinessId); // 保存ログ
 
         //res.json({ happiness_id: happinessId, compliment: complimentText, positive_aspects: positiveAspects });
         res.json({ compliment: complimentText, positive_aspects: positiveAspects });

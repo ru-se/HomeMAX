@@ -1,128 +1,112 @@
-// スタートページ
-
-import React, { useEffect , useRef} from 'react'
-import { useNavigate, } from "react-router-dom"; 
-import homeImage from '../assets/home.png'; // 画像をインポート
-import { ToastContainer, toast, Slide } from 'react-toastify';
+import React, { useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { ToastContainer, toast, Slide } from 'react-toastify'
+import homeImage from '../assets/homemax_01-2.png'
 
 const Start = () => {
-
   const navigate = useNavigate()
-const hasRun = useRef(false);
+  const hasRun = useRef(false)
+
   useEffect(() => {
-     if (hasRun.current) return;
-    hasRun.current = true;
-  let called = false;
-  if (!called) {
-    called = true;
-    (async () => {
+    if (hasRun.current) return
+    hasRun.current = true
+    
+    ;(async () => {
       try {
-        // 起床
-        const taskRes1 = await fetch(`${import.meta.env.VITE_API_BASE_URL}/task/update`, {
+        await fetch(`${import.meta.env.VITE_API_BASE_URL}/task/update`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
           body: JSON.stringify({ task_title: "起床" }),
-        });
-        const taskData1 = await taskRes1.json();
-        toast(`${taskData1.task_name}えらい！！`, {
-          style: { background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)' }
-        });
-
-        // パソコン開く
-        const taskRes2 = await fetch(`${import.meta.env.VITE_API_BASE_URL}/task/update`, {
+        })
+        await fetch(`${import.meta.env.VITE_API_BASE_URL}/task/update`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
           body: JSON.stringify({ task_title: "パソコン開く" }),
-        });
-        const taskData2 = await taskRes2.json();
-        toast(`${taskData2.task_name}すごい！！`, {
-          style: { background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)' }
-        });
-
-        // パソコン画面開く
-        const taskRes3 = await fetch(`${import.meta.env.VITE_API_BASE_URL}/task/update`, {
+        })
+        await fetch(`${import.meta.env.VITE_API_BASE_URL}/task/update`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
           body: JSON.stringify({ task_title: "パソコン画面開く" }),
-        });
-        const taskData3 = await taskRes3.json();
-        toast(`${taskData3.task_name}頑張った！！`, {
-          style: { background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)' }
-        });
-
-        // アプリ起動
-        const taskRes4 = await fetch(`${import.meta.env.VITE_API_BASE_URL}/task/update`, {
+        })
+        await fetch(`${import.meta.env.VITE_API_BASE_URL}/task/update`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
           body: JSON.stringify({ task_title: "アプリ起動" }),
-        });
-        const taskData4 = await taskRes4.json();
-        toast(`${taskData4.task_name}凄すぎる！！`, {
-          style: { background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)' }
-        });
-      } catch (e) {
-        // エラー時は何もしない
-      }
-    })();
-  }
-}, [])
+        })
+      } catch (e) {}
+    })()
+  }, [])
 
   return (
-    <>
-      <div className="min-h-screen bg-white flex  justify-center items-center relative overflow-hidden">
+    <div className="h-screen w-screen overflow-hidden bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 flex items-center justify-center relative">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        limit={3}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss={false}
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Slide}
+      />
 
-        <ToastContainer
-                  position="top-right"
-                  autoClose={5000}
-                  limit={5}
-                  hideProgressBar
-                  newestOnTop={false}
-                  closeOnClick
-                  rtl={false}
-                  pauseOnFocusLoss
-                  draggable
-                  pauseOnHover
-                  theme="light"
-                  transition={Slide}
-              />
-
-          {/* 背景の無限スクロール画像 */}
-        <div className="absolute z-0">
-          <div className="marquee">
-          </div>
-        </div>
-        
-
-        <div className="z-10 w-1/2 py-36 bg-white rounded border-1 border-white-dark shadow-lg">
-          {/* タイトル */}
-          <h1 className = "text-8xl text-center font-kiwi-maru">ほめマックス</h1>
-
-            {/* 説明 */}
-            <div className="font-kiwi-maru text-center mt-16">
-              ようこそ!<br />
-              「ほめマックス」へ！<br />
-              <br />
-              あなたの“がんばり”を全力で肯定してくれるほめマックス。<br />
-              日常のこと、仕事のこと、恋愛のこと、悩んでること——<br />
-              なんでも話してみてください。<br />
-              <br />
-              あなたの話に、キャラの「ほめマックス」が全力で、<br />
-              愛と勢いとテンションでほめちぎってくれます！
-            </div>
-
-            <div className="flex gap-8 justify-center mt-12">
-              {/* ログインボタン */}
-            <button onClick={() => navigate('/login')} className="rounded-full bg-blue text-white px-6 py-2 font-kiwi-maru hover:bg-blue-dark">ログイン</button> 
-              {/* 新規登録ボタン */}
-            <button onClick={() => navigate('/signup')} className="rounded-full  bg-blue text-white px-6 py-2 font-kiwi-maru hover:bg-blue-dark">新規登録</button>
-            </div>
+      {/* 背景アニメーション - 横スクロールするほめマックス */}
+      <div className="absolute inset-0 overflow-hidden opacity-20">
+        <div className="animate-marquee-slow whitespace-nowrap flex items-center h-full">
+          {[...Array(20)].map((_, i) => (
+            <img 
+              key={i} 
+              src={homeImage} 
+              alt="" 
+              className="inline-block h-32 mx-8"
+            />
+          ))}
         </div>
       </div>
-    </>
+
+      {/* メインコンテンツ */}
+      <div className="relative z-10 text-center">
+        {/* タイトル */}
+        <h1 className="text-9xl font-black mb-8 animate-bounce-in">
+          <span className="bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent drop-shadow-2xl">
+            ほめマックス！
+          </span>
+        </h1>
+
+        {/* 簡単な説明 */}
+        <p className="text-3xl font-bold text-gray-700 mb-12">
+          あなたの"がんばり"を<span className="text-pink-500">全力</span>で褒めちぎる！
+        </p>
+
+        {/* スタートボタン */}
+        <button
+          onClick={() => navigate('/home')}
+          className="group relative px-20 py-8 bg-gradient-to-r from-pink-400 via-purple-500 to-blue-500 text-white rounded-full text-4xl font-black shadow-2xl transform transition-all hover:scale-110 hover:shadow-3xl"
+        >
+          <span className="relative z-10">はじめる！</span>
+          <div className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-20 transition-opacity"></div>
+          <div className="absolute inset-0 rounded-full animate-pulse-glow"></div>
+        </button>
+      </div>
+
+      <style jsx>{`
+        @keyframes marquee-slow {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .animate-marquee-slow {
+          animation: marquee-slow 30s linear infinite;
+        }
+      `}</style>
+    </div>
   )
 }
 
