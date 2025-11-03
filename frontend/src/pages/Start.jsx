@@ -42,7 +42,7 @@ const Start = () => {
   }, [])
 
   return (
-    <div className="h-screen w-screen overflow-hidden bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 flex items-center justify-center relative">
+    <div className="h-screen w-screen overflow-hidden bg-white flex items-center justify-center relative">
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -59,8 +59,8 @@ const Start = () => {
       />
 
       {/* 背景アニメーション - 横スクロールするほめマックス */}
-      <div className="absolute inset-0 overflow-hidden opacity-20">
-        <div className="animate-marquee-slow whitespace-nowrap flex items-center h-full">
+      <div className="absolute inset-0 overflow-hidden opacity-20 ">
+        <div className="animate-marquee-slow whitespace-nowrap flex h-1/2">
           {[...Array(20)].map((_, i) => (
             <img 
               key={i} 
@@ -70,6 +70,16 @@ const Start = () => {
             />
           ))}
         </div>
+        <div className="animate-marquee-slow whitespace-nowrap flex items-end h-1/2">
+          {[...Array(20)].map((_, i) => (
+            <img 
+              key={i} 
+              src={homeImage} 
+              alt="" 
+              className="inline-block h-32 mx-8"
+            />
+          ))}
+          </div>
       </div>
 
       {/* メインコンテンツ */}
