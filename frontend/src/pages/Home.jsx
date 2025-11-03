@@ -67,10 +67,32 @@ const Home = () => {
     }
   }, [location.state])
 
+  // 絵文字などを除去するユーティリティ
+  const stripEmojis = (input) => {
+    if (!input) return ''
+    // Unicode プロパティが使える環境ではこちらを優先
+    try {
+      return input
+        .replace(/\p{Extended_Pictographic}/gu, '') // 絵文字本体
+        .replace(/[#*0-9]\uFE0F?\u20E3/g, '')       // キーキャップ絵文字 #️⃣, 1️⃣ など
+        .replace(/[\u200D\uFE0E\uFE0F]/g, '')       // ZWJ・バリエーション選択子
+    } catch {
+      // フォールバック（旧ブラウザ向け）
+      return input
+        .replace(/[\u2700-\u27BF]/g, '')
+        .replace(/[\uE000-\uF8FF]/g, '')
+        .replace(/[\u2011-\u26FF]/g, '')
+        .replace(/\uD83C[\uDC00-\uDFFF]/g, '')
+        .replace(/\uD83D[\uDC00-\uDFFF]/g, '')
+        .replace(/\uD83E[\uDD00-\uDDFF]/g, '')
+        .replace(/[\u200D\uFE0E\uFE0F]/g, '')
+    }
+  }
+
   // 音声読み上げ
   const speakCompliment = (text) => {
     if (!speechSynthesis) return
-    const utterance = new SpeechSynthesisUtterance(text)
+    const utterance = new SpeechSynthesisUtterance(stripEmojis(text))
     utterance.lang = 'ja-JP'
     utterance.rate = 1.0
     speechSynthesis.speak(utterance)
