@@ -15,6 +15,7 @@ const Home = () => {
   const [userId, setUserId] = useState(null)
   const [modeName, setModeName] = useState('ほめマックス')
   const [showTutorial, setShowTutorial] = useState(false)
+  const [title, setTitle] = useState('')
   
   const location = useLocation()
   const hasRun = useRef(false)
@@ -96,6 +97,7 @@ const Home = () => {
       const data = await response.json()
       setCompliment(data.compliment)
       speakCompliment(data.compliment)
+      setTitle(data.title)
 
       setHistory(prev => [
         ...prev,
