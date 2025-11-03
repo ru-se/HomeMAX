@@ -19,6 +19,7 @@ const Home = () => {
   const [userId, setUserId] = useState(null)
   const [modeName, setModeName] = useState('ほめマックス')
   const [showTutorial, setShowTutorial] = useState(false)
+  const [title, setTitle] = useState('お手紙をくれたあなたへ')
   
   const location = useLocation()
   const hasRun = useRef(false)
@@ -211,6 +212,7 @@ const Home = () => {
       const data = await response.json()
       setCompliment(data.compliment)
       // speakCompliment(data.compliment)
+      setTitle(data.title)
 
       setHistory(prev => [
         ...prev,
@@ -427,7 +429,7 @@ const Home = () => {
 
                     {/* 線の描画はpタグ全体に適用されているため、<p>要素を分けます */}
                     <span className="block text-center mb-2 text-2xl font-extrabold text-[#9C6924]">
-                        頑張った君へ
+                        {title}
                     </span>
                     {/* <span className="block border-t border-dashed border-[#9C6924]/50 my-2"></span>  */}
 
