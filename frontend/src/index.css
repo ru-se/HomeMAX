@@ -263,3 +263,47 @@
     background-position: -200% 0;
   }
 }
+
+@font-face {
+  /* 任意のフォントファミリー名 (Tailwindの設定で後で使う名前) */
+  font-family: 'UserFont';
+
+  /* .otf ファイルへのパスとフォーマットを指定 */
+  src: url('./fonts/AinoteFont.otf') format('opentype');
+
+       /* .woff2 や .woff もあれば併記推奨 */
+
+  font-weight: 400; /* 通常 */
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'YamiMAXFont';
+
+  src: url('./fonts/AnHina03.otf') format('opentype');
+
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'GalMAXFont';
+
+  src: url('./fonts/Kousagi.ttf') format('opentype');
+
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'HomeMAXFont';
+
+  src: url('./fonts/mushin.otf') format('opentype');
+
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
