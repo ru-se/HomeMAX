@@ -19,7 +19,7 @@ const Home = () => {
   const [userId, setUserId] = useState(null)
   const [modeName, setModeName] = useState('ほめマックス')
   const [showTutorial, setShowTutorial] = useState(false)
-  const [title, setTitle] = useState('')
+  const [title, setTitle] = useState('頑張った君へ')
   
   const location = useLocation()
   const hasRun = useRef(false)
@@ -429,7 +429,7 @@ const Home = () => {
 
                     {/* 線の描画はpタグ全体に適用されているため、<p>要素を分けます */}
                     <span className="block text-center mb-2 text-2xl font-extrabold text-[#9C6924]">
-                        頑張った君へ
+                        {title}
                     </span>
                     {/* <span className="block border-t border-dashed border-[#9C6924]/50 my-2"></span>  */}
 
