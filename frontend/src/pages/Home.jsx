@@ -19,7 +19,7 @@ const Home = () => {
   const [userId, setUserId] = useState(null)
   const [modeName, setModeName] = useState('ほめマックス')
   const [showTutorial, setShowTutorial] = useState(false)
-  const [title, setTitle] = useState('頑張った君へ')
+  const [title, setTitle] = useState('お手紙をくれたあなたへ')
   
   const location = useLocation()
   const hasRun = useRef(false)
