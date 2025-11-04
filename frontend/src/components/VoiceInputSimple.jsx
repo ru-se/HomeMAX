@@ -355,7 +355,7 @@ const handleTextChange = (e) => {
                   maxLength={200}
                   
                   // padding-top を最小限にし、上にmarginをかけて宛名の下に配置
-                  className="w-full bg-#fff0cd resize-none p-3 pt-0 leading-[2.5em] [background-image:linear-gradient(180deg,#9C6924_1px,transparent_1px)] [background-size:100%_2.5em] [word-wrap:break-word] text-xl self-end font-bold overflow-y-auto focus:outline-none focus:ring-0 font-kiwi-maru"              
+                  className="w-full bg-#fff0cd resize-none p-3 pt-0 leading-[2.5em] [background-image:linear-gradient(180deg,#9C6924_1px,transparent_1px)] [background-size:100%_2.5em] [word-wrap:break-word] text-xl self-end font-bold overflow-y-auto focus:outline-none focus:ring-0 font-kiwi-maru letter-scroll"              
                   style={{
                     // fontFamily: 'UserFont, sans-serif',
                     minHeight: '2.5em', /* 1行分の高さ */

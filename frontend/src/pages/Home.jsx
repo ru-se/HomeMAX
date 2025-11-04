@@ -401,6 +401,7 @@ const Home = () => {
            
 
                   max-h-[17em] overflow-y-auto
+                  letter-scrollbar
                   
                   /* 5pxの枠線に見えるようにシャドウとボーダーを調整 */
                   // [box-shadow:0px_0px_0px_5px_#ffdacc]

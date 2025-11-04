@@ -163,6 +163,32 @@
   background: linear-gradient(180deg, #db2777, #9333ea);
 }
 
+/* Firefox用の設定 */
+.letter-scrollbar {
+  scrollbar-width: thin; /* スクロールバーを細くする */
+  /* 親指の色 , トラックの色 */
+  scrollbar-color: #9C6924 rgba(255, 255, 255, 0.5); 
+}
+
+/* Chrome, Safari, Edge (WebKit系) の設定 */
+.letter-scrollbar::-webkit-scrollbar {
+  width: 8px; /* 幅を細めに */
+}
+
+/* スクロールバーの背景 (トラック) */
+.letter-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.5); /* 半透明の白 */
+  border-radius: 8px;
+}
+
+/* スクロールバーのつまみ (親指) */
+.letter-scrollbar::-webkit-scrollbar-thumb {
+  background: #9C6924; /* タイトルの色と同じ */
+  border-radius: 8px;
+}
+
+
+
 /* ボタンのリップル効果 */
 .ripple {
   position: relative;
