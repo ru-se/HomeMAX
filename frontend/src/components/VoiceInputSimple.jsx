@@ -13,6 +13,7 @@ const VoiceInputSimple = ({ onSend,inputPlaceholder }) => {
 
   const [showGlobalMailAnimation, setShowGlobalMailAnimation] = useState(false); // グローバルアニメーションの状態
   const addressText = inputPlaceholder;
+  const [isComposing, setIsComposing] = useState(false); // 追加: IME中フラグ
 
 
   //テキストの長さに応じて高さを調整するロジック
@@ -339,7 +340,17 @@ const handleTextChange = (e) => {
                   ref={textareaRef} 
                   value={text} 
                   onChange={(e) => setText(e.target.value)} // 元のシンプルな onChange に戻す
-                  onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                  onKeyDown={
+                    (e) => {
+                      if (e.key !== 'Enter') return
+                      if (e.shiftKey) return   
+                      if(isComposing) return; // 追加: IME中は無視
+                      e.preventDefault(); // 改行を防止
+                      handleSend();
+                    }
+                  }
+                  onCompositionStart={() => setIsComposing(true)} // IME変換開始
+                  onCompositionEnd={() => setIsComposing(false)}  // IME変換終了
                   placeholder={"がんばったこと、話してね！"} 
                   maxLength={200}
                   
