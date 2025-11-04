@@ -316,9 +316,9 @@ const handleTextChange = (e) => {
                 
                 {/* 1. 宛名表示ブロック (テキストエリアの領域内) */}
                 <div 
-                    className="w-full text-xl font-bold leading-[2.5em] text-left pointer-events-none"
+                    className="w-full text-xl font-bold leading-[2.5em] text-left pointer-events-none font-kiwi-maru"
                     style={{
-                        fontFamily: 'UserFont, sans-serif',
+                        // fontFamily: 'UserFont, sans-serif',
                        padding: '12px', 
                     lineHeight: '2.5em',
                         // 便箋の線を背景に持つ
@@ -326,7 +326,7 @@ const handleTextChange = (e) => {
                     }}
                 >
                     {/* 宛名 */}
-                    <span className="block text-2xl font-extrabold text-[#9C6924] leading-none">
+                    <span className="block text-2xl font-extrabold text-[#9C6924] leading-none font-kiwi-maru">
                         {addressText}へ
                     </span>
                     
@@ -344,9 +344,9 @@ const handleTextChange = (e) => {
                   maxLength={200}
                   
                   // padding-top を最小限にし、上にmarginをかけて宛名の下に配置
-                  className="w-full bg-#fff0cd resize-none p-3 pt-0 leading-[2.5em] [background-image:linear-gradient(180deg,#9C6924_1px,transparent_1px)] [background-size:100%_2.5em] [word-wrap:break-word] text-xl self-end font-bold overflow-y-auto focus:outline-none focus:ring-0"              
+                  className="w-full bg-#fff0cd resize-none p-3 pt-0 leading-[2.5em] [background-image:linear-gradient(180deg,#9C6924_1px,transparent_1px)] [background-size:100%_2.5em] [word-wrap:break-word] text-xl self-end font-bold overflow-y-auto focus:outline-none focus:ring-0 font-kiwi-maru"              
                   style={{
-                    fontFamily: 'UserFont, sans-serif',
+                    // fontFamily: 'UserFont, sans-serif',
                     minHeight: '2.5em', /* 1行分の高さ */
                     maxHeight: '7.5em', /* 3行分。宛名と合わせて4行 */
                     backgroundAttachment: 'local',

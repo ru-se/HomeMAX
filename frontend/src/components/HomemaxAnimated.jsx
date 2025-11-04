@@ -6,8 +6,9 @@ import homemaxImg4 from '../assets/homemax_04.png'
 import homemaxImg5 from '../assets/homemax_05.png'
 import homemaxImg6 from '../assets/homemax_06.png'
 import homemaxImg7 from '../assets/homemax_07.png'
+import gyarumax from '../assets/gyarumax.png'
 
-const HomemaxAnimated = ({ isLoading }) => {
+const HomemaxAnimated = ({ isLoading, mode }) => {
   const [currentImage, setCurrentImage] = useState(0)
   const [petCount, setPetCount] = useState(0)
   const [showSparkles, setShowSparkles] = useState(false)
@@ -20,7 +21,36 @@ const HomemaxAnimated = ({ isLoading }) => {
     homemaxImg5,
     homemaxImg6,
     homemaxImg7,
+    gyarumax
   ]
+
+  // モードをキーに正規化
+  const resolveModeKey = (m) => {
+    if (!m || m === 'ほめマックス') return 'homemax'
+    if (m.startsWith('ギャルです。')) return 'gyaru'
+    if (m.startsWith('病んでる人です。')) return 'yami'
+    if (m.startsWith('オタクです。')) return 'otaku'
+    return 'homemax'
+  }
+
+  // モード別に「固定で見せたい」画像インデックス（必要に応じて調整!!!）
+  const modeImageIndex = {
+    homemax: 0,
+    gyaru: images.length - 1,
+    yami: 4,   
+    otaku: 2,  
+  }
+
+  // モード変更時に固定画像へ
+  useEffect(() => {
+    if (isLoading) return
+    const key = resolveModeKey(mode)
+    // if (key === 'homemax') return
+    const idx = modeImageIndex[key]
+    if (typeof idx === 'number') {
+      setCurrentImage(Math.max(0, Math.min(images.length - 1, idx)))
+    }
+  }, [mode, isLoading]) // モードが変わった時にだけ反映
 
   // ローディング中のアニメーション
   useEffect(() => {

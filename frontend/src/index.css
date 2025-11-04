@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@500&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=DotGothic16&family=Hachi+Maru+Pop&family=Kiwi+Maru&family=Shippori+Mincho&display=swap');
 @import "tailwindcss";
 
 /* アニメーション定義 */
@@ -199,6 +199,9 @@
   --color-green-dark: #b8dbc2;
 
   --font-kiwi-maru: "Kiwi Maru", sans-serif;
+  --font-hachi-maru-pop: 'Hachi Maru Pop', cursive;
+  --font-dot-gothic16: 'DotGothic16', sans-serif;
+  --font-shippori-mincho: 'Shippori Mincho', serif;
 }
 
 /* レスポンシブ対応 */
@@ -264,21 +267,7 @@
   }
 }
 
-@font-face {
-  /* 任意のフォントファミリー名 (Tailwindの設定で後で使う名前) */
-  font-family: 'UserFont';
-
-  /* .otf ファイルへのパスとフォーマットを指定 */
-  src: url('./fonts/AinoteFont.otf') format('opentype');
-
-       /* .woff2 や .woff もあれば併記推奨 */
-
-  font-weight: 400; /* 通常 */
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
+/* @font-face {
   font-family: 'YamiMAXFont';
 
   src: url('./fonts/AnHina03.otf') format('opentype');
@@ -286,9 +275,9 @@
   font-weight: 400;
   font-style: normal;
   font-display: swap;
-}
+} */
 
-@font-face {
+/* @font-face {
   font-family: 'GalMAXFont';
 
   src: url('./fonts/Kousagi.ttf') format('opentype');
@@ -296,9 +285,9 @@
   font-weight: 400;
   font-style: normal;
   font-display: swap;
-}
+} */
 
-@font-face {
+/* @font-face {
   font-family: 'HomeMAXFont';
 
   src: url('./fonts/mushin.otf') format('opentype');
@@ -306,4 +295,4 @@
   font-weight: 400;
   font-style: normal;
   font-display: swap;
-}
+} */
