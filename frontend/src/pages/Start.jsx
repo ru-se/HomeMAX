@@ -101,7 +101,7 @@ const Start = () => {
         <button
           onClick={() => navigate('/home')}
           className=" relative px-20 py-8 bg-gradient-to-r start-yellow rounded-full text-4xl font-black transform transition-all hover:scale-110 hover:shadow-3xl">
-          <span className="relative z-10 start-red">はじめる！</span>
+          <span className="relative z-10 start-red font-kiwi-maru">はじめる！</span>
           <div className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-20 transition-opacity"></div>
           <div className="absolute inset-0 rounded-full animate-pulse-glow"></div>
         </button>
