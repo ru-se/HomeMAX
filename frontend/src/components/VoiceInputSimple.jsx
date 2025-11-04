@@ -229,7 +229,7 @@ const handleTextChange = (e) => {
     buttonClasses += ` 
       ${isListening 
         ? 'bg-gradient-to-br from-[#EE0077] to-[#ffa299] animate-pulse' 
-        : 'bg-[#80CD81]'
+        : 'bg-[#a7732b]'
       }
       hover:scale-110
     `;

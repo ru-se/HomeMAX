@@ -487,7 +487,7 @@ const Home = () => {
                 className={`
                   px-6 py-3 rounded-2xl text-lg font-bold transition-all transform hover:scale-105 flex items-center gap-2 font-kiwi-maru
                   ${modeName === mode.value 
-                    ? 'bg-[#FFEF63] text-[#00AAAA] shadow-xl scale-105' 
+                    ? 'bg-[#9C6924] text-white shadow-xl scale-105' 
                     : 'bg-white/80 text-[#9C6924] hover:bg-gray-100 shadow-lg'
                   }
                 `}
