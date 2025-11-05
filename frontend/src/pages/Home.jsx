@@ -10,6 +10,7 @@ import TutorialModal from '../components/TutorialModal'
 import { FaEnvelopeOpenText } from 'react-icons/fa' //封筒アイコン
 import { FaTimesCircle } from 'react-icons/fa' //閉じるボタンのアイコン
 import '../styles/Home.css'
+import ParticleField from '../components/ParticleField'
 
 
 const Home = () => {
@@ -36,17 +37,27 @@ const Home = () => {
 
   
 
-  // 初回訪問時にモーダル表示
+  // Start→Home 遷移時に表示（「今後表示しない」設定がなければ）
   useEffect(() => {
-    if (!hasShownTutorial.current) {
-      const visited = localStorage.getItem('homemax_visited')
-      if (!visited) {
-        setShowTutorial(true)
-        localStorage.setItem('homemax_visited', 'true')
-        hasShownTutorial.current = true
-      }
+    const dontShow = localStorage.getItem('homemax_modal_dontshow') === 'true'
+    if (location.state?.showTutorial && !dontShow) {
+      setShowTutorial(true)
     }
-  }, [])
+  }, [location.state])
+
+  // モーダルからの送信／クローズ
+  const handleTutorialClose = (dontShow) => {
+    if (dontShow) localStorage.setItem('homemax_modal_dontshow', 'true')
+    setShowTutorial(false)
+  }
+  const handleTutorialSubmit = (text, dontShow) => {
+    if (dontShow) localStorage.setItem('homemax_modal_dontshow', 'true')
+    setShowTutorial(false)
+    if (text && text.trim()) {
+      // そのまま Home の送信フローへ
+      handleSend(text.trim())
+    }
+  }
 
   // ログイン時の通知
   useEffect(() => {
@@ -309,6 +320,8 @@ const Home = () => {
 
   return (
     <div className='h-screen w-screen overflow-hidden bg-gradient-to-br from-pink-50 via-white to-blue-50 flex flex-col relative'>
+      {/* 背景パーティクル（背面レイヤー） */}
+      <ParticleField />
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -325,7 +338,12 @@ const Home = () => {
       />
 
       {/* チュートリアルモーダル */}
-      {showTutorial && <TutorialModal onClose={() => setShowTutorial(false)} />}
+      {showTutorial && (
+        <TutorialModal
+          onClose={handleTutorialClose}
+         onSubmit={handleTutorialSubmit}
+        />
+      )}
 
       {/* メニュー */}
       {/* <Menu /> */}

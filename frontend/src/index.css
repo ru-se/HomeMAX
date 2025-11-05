@@ -374,3 +374,31 @@
     padding: 0.75rem !important;
   }
 }
+
+/* パーティクル用アニメーション */
+@keyframes particle-rise {
+  0% {
+    transform: translateY(0) translateX(0) rotate(var(--rot, 0deg));
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.45;
+  }
+  90% {
+    opacity: 0.45;
+  }
+  100% {
+    transform: translateY(-120vh) translateX(var(--driftX, 0px)) rotate(var(--rot, 0deg));
+    opacity: 0;
+  }
+}
+
+.particle {
+  will-change: transform, opacity;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+}
+
+/* モバイルではさらに控えめに */
+@media (max-width: 768px) {
+  .particle { opacity: 0.35; }
+}

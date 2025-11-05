@@ -1,78 +1,93 @@
-import React from 'react'
-import { FaTimes, FaMicrophone, FaKeyboard } from 'react-icons/fa'
+import React, { useState } from 'react'
+import { FaTimes, FaPaperPlane } from 'react-icons/fa'
 
-const TutorialModal = ({ onClose }) => {
+const TutorialModal = ({ onClose, onSubmit }) => {
+  const [draft, setDraft] = useState('')
+  const [dontShowAgain, setDontShowAgain] = useState(false)
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in">
-      <div className="bg-white rounded-[3rem] shadow-2xl max-w-2xl w-full mx-8 p-12 relative animate-bounce-in">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in"
+      aria-modal="true"
+      role="dialog"
+    >
+      <div className="bg-white rounded-[3rem] shadow-2xl max-w-2xl w-full mx-8 p-8 md:p-12 relative animate-bounce-in">
         {/* 閉じるボタン */}
         <button
-          onClick={onClose}
+          onClick={() => onClose?.(dontShowAgain)}
           className="absolute top-6 right-6 w-12 h-12 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 text-xl transition-all transform hover:scale-110"
+          aria-label="閉じる"
         >
           <FaTimes />
         </button>
 
         {/* タイトル */}
-        <h2 className="text-5xl font-black text-center mb-8">
-          <span className="bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">
-            ほめマックスへようこそ！
+        <h2 className="text-3xl md:text-4xl font-black text-center mb-6 md:mb-8 whitespace-nowrap leading-tight">
+          <span className="bg-gradient-to-r from-pink-600 via-pink-500 to-pink-400 bg-clip-text text-transparent">
+            まずは最近やったことを書いてみて！！
           </span>
         </h2>
 
         {/* 説明 */}
-        <div className="space-y-6">
-          {/* このアプリについて */}
-          <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl p-6 border-2 border-pink-200">
-            <h3 className="text-2xl font-bold text-pink-600 mb-3">✨ このアプリについて</h3>
-            <p className="text-lg text-gray-700 leading-relaxed">
-              どんな小さなことでも、あなたの「がんばり」を<br />
-              <strong className="text-purple-600">全力で褒めちぎります！</strong><br />
-              日常のこと、仕事のこと、なんでもOK！
+        <div className="space-y-4 md:space-y-6">
+          <div className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-2xl p-5 md:p-6 border-2 border-yellow-200">
+            <p className="text-base md:text-lg text-gray-700 leading-relaxed">
+              小さなことでも大丈夫。<br />
+              書いてくれたら、ほめマックスが全力で褒めるよ。
             </p>
           </div>
 
-          {/* 使い方 */}
-          <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 border-2 border-blue-200">
-            <h3 className="text-2xl font-bold text-blue-600 mb-4">📝 使い方</h3>
-            <div className="space-y-3">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-pink-400 flex items-center justify-center text-white text-xl flex-shrink-0">
-                  <FaMicrophone />
-                </div>
-                <p className="text-lg text-gray-700">
-                  <strong>音声入力：</strong>マイクボタンを押して話すだけ！
-                </p>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-blue-400 flex items-center justify-center text-white text-xl flex-shrink-0">
-                  <FaKeyboard />
-                </div>
-                <p className="text-lg text-gray-700">
-                  <strong>テキスト入力：</strong>入力欄に打ち込んでEnter！
-                </p>
-              </div>
+          {/* 入力欄 */}
+          <div className="bg-[#fff0cd] border-2 border-dashed border-white shadow-lg shadow-yellow-300/40 rounded-3xl p-4 md:p-6">
+            <label className="block text-[#9C6924] font-bold mb-2">
+              あなたの最近やったこと
+            </label>
+            <textarea
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              placeholder="例）朝ごはんをちゃんと食べた／仕事のタスクをひとつ終わらせた／友だちに優しくできた"
+              className="w-full h-28 md:h-32 rounded-2xl p-4 bg-white/90 border-2 border-[#FFAA33] focus:outline-none focus:ring-4 focus:ring-yellow-200 resize-none"
+              maxLength={200}
+            />
+            <div className="mt-2 text-right text-sm text-gray-500">
+              {draft.length}/200文字
             </div>
           </div>
 
-          {/* 例 */}
-          <div className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-2xl p-6 border-2 border-yellow-200">
-            <h3 className="text-2xl font-bold text-orange-600 mb-3">💡 例えば...</h3>
-            <div className="space-y-2 text-gray-700">
-              <p>「今日、早起きできた」</p>
-              <p>「仕事で褒められた」</p>
-              <p>「友達に優しくできた」</p>
-            </div>
-          </div>
+          {/* 今後表示しない */}
+          <label className="flex items-center gap-3 mt-1 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={dontShowAgain}
+              onChange={(e) => setDontShowAgain(e.target.checked)}
+              className="w-5 h-5 accent-pink-500"
+            />
+            <span className="text-gray-600">今後この案内を表示しない</span>
+          </label>
         </div>
 
-        {/* スタートボタン */}
-        <button
-          onClick={onClose}
-          className="mt-8 w-full py-5 bg-gradient-to-r from-pink-400 via-purple-500 to-blue-500 text-white rounded-full text-2xl font-bold shadow-2xl transform transition-all hover:scale-105"
-        >
-          さっそく使ってみる！
-        </button>
+        {/* ボタン群 */}
+        <div className="mt-6 md:mt-8 flex flex-col md:flex-row gap-3 md:gap-4">
+          <button
+            onClick={() => onSubmit?.(draft.trim(), dontShowAgain)}
+            disabled={!draft.trim()}
+            className={`flex-1 py-4 rounded-full text-xl font-bold shadow-2xl transition-all ${
+              draft.trim()
+                ? 'bg-[#FFAA33] text-white hover:bg-[#ff9900] hover:shadow-xl hover:scale-105'
+                : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+            }`}
+          >
+            <span className="inline-flex items-center gap-2 justify-center">
+              <FaPaperPlane /> 送る
+            </span>
+          </button>
+          <button
+            onClick={() => onClose?.(dontShowAgain)}
+            className="flex-1 py-4 rounded-full text-xl font-bold bg-white border-2 border-gray-300 text-gray-600 hover:bg-gray-50 transition-all"
+          >
+            あとで
+          </button>
+        </div>
       </div>
     </div>
   )
