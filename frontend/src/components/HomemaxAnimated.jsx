@@ -74,24 +74,26 @@ const HomemaxAnimated = ({ isLoading, mode }) => {
     }
   }, [mode, isLoading]) // モードが変わった時にだけ反映
 
-  // ローディング中のアニメーション
   useEffect(() => {
-    if (isLoading) {
-      const interval = setInterval(() => {
+    if (!isLoading) return
+    const key = resolveModeKey(mode)
+    const range = modeImageRange[key]
+    const interval = setInterval(() => {
+      if (range) {
+        const next = Math.floor(Math.random() * (range.end - range.start + 1)) + range.start
+        setCurrentImage(next)
+      } else {
         setCurrentImage(prev => (prev + 1) % images.length)
-      }, 200)
-      return () => clearInterval(interval)
-    }
-  }, [isLoading])
+      }
+    }, 200)
+    return () => clearInterval(interval)
+  }, [isLoading, mode])
 
   // なでる機能
   const handlePet = () => {
     setPetCount(prev => prev + 1)
     setShowSparkles(true)
     setTimeout(() => setShowSparkles(false), 1000)
-
-    // ランダムに画像を変える
-    setCurrentImage(Math.floor(Math.random() * images.length))
 
     const key = resolveModeKey(mode)
     const range = modeImageRange[key]
