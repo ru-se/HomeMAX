@@ -86,24 +86,24 @@ const Start = () => {
       {/* メインコンテンツ */}
       <div className="relative z-10 text-center">
         {/* タイトル */}
-        <h1 className="text-9xl font-black mb-8 animate-bounce-in">
-          <span className="bg-gradient-to-r max-w-48 bg-clip-text text-Rose drop-shadow-2xl homemax-text start-red">
+        <h1 className="font-black mb-8 animate-bounce-in">
+          <span className="text-6xl sm:text-8xl md:text-12xl lg:text-20xl max-w-48 w-[30%] bg-clip-text text-Rose drop-shadow-2xl homemax-text start-yellow">
             ほめマックス！
           </span>
         </h1>
 
         {/* 簡単な説明 */}
-        <p className="text-3xl font-bold text-gray-700 mb-12 font-kiwi-maru">
-          あなたの"がんばり"を<span className="start-red">全力</span>で褒めちぎる！
+        <p className="text-base sm:text-lg md:text-2xl lg:text-3xl font-bold text-gray-700 mb-12 font-kiwi-maru">
+          あなたの"がんばり"を<span className="start-red text-xl sm:text-2xl md:text-3xl lg:text-4xl">全力</span>で褒めちぎる！
         </p>
 
         {/* スタートボタン */}
         <button
           onClick={() => navigate('/home')}
-          className=" relative px-20 py-8 bg-gradient-to-r start-yellow rounded-full text-4xl font-black transform transition-all hover:scale-110 hover:shadow-3xl">
-          <span className="relative z-10 start-red font-kiwi-maru">はじめる！</span>
+          className=" relative px-10 py-5 start-yellow rounded-full text-4xl font-black transform transition-all hover:scale-110 hover:shadow-3xl start-button">
+          <span className="relative z-10 start-red font-kiwi-maru text-3xl flex items-center justify-center">はじめる！</span>
           <div className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-20 transition-opacity"></div>
-          <div className="absolute inset-0 rounded-full animate-pulse-glow"></div>
+          <div className="absolute inset-0 rounded-full"></div>
         </button>
       </div>
     </div>
