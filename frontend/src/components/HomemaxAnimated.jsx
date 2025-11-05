@@ -86,6 +86,7 @@ const HomemaxAnimated = ({ isLoading, mode }) => {
     }
   }, [mode, isLoading]) // モードが変わった時にだけ反映
 
+  // ローディング中のアニメーション
   useEffect(() => {
     if (!isLoading) return
     const key = resolveModeKey(mode)
@@ -103,9 +104,6 @@ const HomemaxAnimated = ({ isLoading, mode }) => {
     // 開始直後に一度選んでから回す（他モードのチラ見え防止）
     pickInRange()
     const interval = setInterval(pickInRange, 200)
-        setCurrentImage(prev => (prev + 1) % images.length)
-      }
-    }, 200)
     return () => clearInterval(interval)
   }, [isLoading, mode])
 
