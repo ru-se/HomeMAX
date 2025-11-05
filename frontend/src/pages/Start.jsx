@@ -99,7 +99,7 @@ const Start = () => {
 
         {/* スタートボタン */}
         <button
-          onClick={() => navigate('/home')}
+          onClick={() => navigate('/home', { state: { showTutorial: true } })}
           className=" relative px-10 py-5 start-yellow rounded-full text-4xl font-black transform transition-all hover:scale-110 hover:shadow-3xl start-button">
           <span className="relative z-10 start-red font-kiwi-maru text-3xl flex items-center justify-center">はじめる！</span>
           <div className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-20 transition-opacity"></div>

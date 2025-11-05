@@ -10,6 +10,7 @@ import TutorialModal from '../components/TutorialModal'
 import { FaEnvelopeOpenText } from 'react-icons/fa' //封筒アイコン
 import { FaTimesCircle } from 'react-icons/fa' //閉じるボタンのアイコン
 import '../styles/Home.css'
+import ParticleField from '../components/ParticleField'
 
 
 const Home = () => {
@@ -36,17 +37,27 @@ const Home = () => {
 
   
 
-  // 初回訪問時にモーダル表示
+  // Start→Home 遷移時に表示（「今後表示しない」設定がなければ）
   useEffect(() => {
-    if (!hasShownTutorial.current) {
-      const visited = localStorage.getItem('homemax_visited')
-      if (!visited) {
-        setShowTutorial(true)
-        localStorage.setItem('homemax_visited', 'true')
-        hasShownTutorial.current = true
-      }
+    const dontShow = localStorage.getItem('homemax_modal_dontshow') === 'true'
+    if (location.state?.showTutorial && !dontShow) {
+      setShowTutorial(true)
     }
-  }, [])
+  }, [location.state])
+
+  // モーダルからの送信／クローズ
+  const handleTutorialClose = (dontShow) => {
+    if (dontShow) localStorage.setItem('homemax_modal_dontshow', 'true')
+    setShowTutorial(false)
+  }
+  const handleTutorialSubmit = (text, dontShow) => {
+    if (dontShow) localStorage.setItem('homemax_modal_dontshow', 'true')
+    setShowTutorial(false)
+    if (text && text.trim()) {
+      // そのまま Home の送信フローへ
+      handleSend(text.trim())
+    }
+  }
 
   // ログイン時の通知
   useEffect(() => {
@@ -309,6 +320,8 @@ const Home = () => {
 
   return (
     <div className='h-screen w-screen overflow-hidden bg-gradient-to-br from-pink-50 via-white to-blue-50 flex flex-col relative'>
+      {/* 背景パーティクル（背面レイヤー） */}
+      <ParticleField />
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -325,22 +338,27 @@ const Home = () => {
       />
 
       {/* チュートリアルモーダル */}
-      {showTutorial && <TutorialModal onClose={() => setShowTutorial(false)} />}
+      {showTutorial && (
+        <TutorialModal
+          onClose={handleTutorialClose}
+         onSubmit={handleTutorialSubmit}
+        />
+      )}
 
       {/* メニュー */}
       {/* <Menu /> */}
 
       {/* メインコンテンツ */}
-      <div className="flex-1 flex flex-col items-center justify-center pt-20 px-8 relative z-10 font-kiwi-maru">
+      <div className="flex-1 flex flex-col items-center justify-start pt-4 px-4 md:px-8 relative z-10 font-kiwi-maru">
         {/* ほめマックスキャラクター */}
-        <div className="mb-40">
+        <div className="mb-4 md:mb-6">
           <HomemaxAnimated isLoading={isLoading} mode={currentMode.value} />
         </div>
 
         {/* メッセージ表示エリア */}
 
     {/* min-hを削除し、封筒の高さ分確保します */}
-   <div className="w-full max-w-3xl mb-24 flex flex-col justify-center items-center">      
+    <div className="w-full max-w-3xl mb-4 flex flex-col justify-center items-center">
             {/* 1. 手紙を開く（封筒）コンポーネント */}
         {isComplimentReady && !isComplimentVisible && (
           <>
@@ -464,39 +482,33 @@ const Home = () => {
 
 
 
-        {/* 入力エリア */}
-        <div className="w-full max-w-3xl">
-          {/* ↓↓↓ 【修正】isInputVisible が true の時のみ表示 ↓↓↓ */}
+        <div className="w-full max-w-3xl mx-auto -mt-10 md:-mt-14 lg:-mt-16 mb-2">
           {isInputVisible && (
-                <VoiceInputSimple 
-                onSend={handleSend} 
-                // ↓↓↓ 【追加】宛名として渡す ↓↓↓
-                    inputPlaceholder={currentAddress}
-                    />
-            )}
-        </div>
-
-        {/* モード選択 */}
-        <div className="w-full max-w-3xl mb-6">
-          {isInputVisible && (
-            <div className="flex justify-center gap-3">
-            {modes.map((mode) => (
-              <button
-                key={mode.value}
-                onClick={() => setModeName(mode.value)}
-                className={`
-                  px-6 py-3 rounded-2xl text-lg font-bold transition-all transform hover:scale-105 flex items-center gap-2 font-kiwi-maru
-                  ${modeName === mode.value 
-                    ? 'bg-[#9C6924] text-white shadow-xl scale-105' 
-                    : 'bg-white/80 text-[#9C6924] hover:bg-gray-100 shadow-lg'
-                  }
-                `}
-              >
-                <span className="text-2xl">{mode.emoji}</span>
-                {mode.label}
-              </button>
-            ))}
-          </div>
+            <>
+              <VoiceInputSimple 
+                onSend={handleSend}
+                inputPlaceholder={currentAddress}
+              />
+              {/* モード選択（フォーム直下・折り返しで重なり防止） */}
+              <div className="mt-4 mb-6 flex flex-wrap justify-center gap-2 sm:gap-3">
+                {modes.map((mode) => (
+                  <button
+                    key={mode.value}
+                    onClick={() => setModeName(mode.value)}
+                    className={`
+                      px-6 py-3 rounded-2xl text-lg font-bold transition-all transform hover:scale-105 flex items-center gap-2 font-kiwi-maru
+                      ${modeName === mode.value 
+                        ? 'bg-[#9C6924] text-white shadow-xl scale-105' 
+                        : 'bg-white/80 text-[#9C6924] hover:bg-gray-100 shadow-lg'
+                      }
+                    `}
+                  >
+                    <span className="text-2xl">{mode.emoji}</span>
+                    {mode.label}
+                  </button>
+                ))}
+              </div>
+            </>
           )}
         </div>
       </div>
