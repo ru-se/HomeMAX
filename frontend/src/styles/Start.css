@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;900&family=Zen+Maru+Gothic&display=swap');
+/* アニメーション(右から左)*/
+ @keyframes marquee-right {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+
+.title-font{
+    font-family: 'Dela Gothic One', sans-serif;
+}
+.animate-marquee-right {
+          animation: marquee-right 30s linear infinite;
+        }
+/* アニメーション(左から右)*/
+ @keyframes marquee-left {
+          0% { transform: translateX(-50%); }
+          100% { transform: translateX(0%); }
+        }
+
+.animate-marquee-left {
+          animation: marquee-left 30s linear infinite;
+        }
+
+.start-brown {
+  color: #9C6924;
+}
+
+.start-yellow{
+    color: #FFF0CD
+}
+
+.start-red{
+    color: #f996ad
+}
+
+/* 文字フォント */
+.homemax-text {
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+  font-weight: 900;
+  
+}
+
+.start-button {
+  border: 3px solid #9C6924; /* 縁の色を #9C6924 に */
+  border-radius: 9999px;     /* rounded-full と同じ */
+  position: relative;
+  background: linear-gradient(90deg, rgba(255,240,205,1), rgba(255,245,210,0.95)); /* 既存の start-yellow に合わせる */
+  overflow: hidden;
+}
