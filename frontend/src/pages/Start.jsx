@@ -87,13 +87,13 @@ const Start = () => {
       <div className="relative z-10 text-center">
         {/* タイトル */}
         <h1 className="font-black mb-8 animate-bounce-in">
-          <span className="text-6xl sm:text-8xl md:text-12xl lg:text-20xl max-w-48 w-[30%] bg-clip-text text-Rose drop-shadow-2xl homemax-text start-yellow">
+          <span className="text-6xl sm:text-8xl md:text-12xl lg:text-20xl max-w-48 w-[30%] bg-clip-text text-Rose drop-shadow-2xl homemax-text start-red">
             ほめマックス！
           </span>
         </h1>
 
         {/* 簡単な説明 */}
-        <p className="text-base sm:text-lg md:text-2xl lg:text-3xl font-bold text-gray-700 mb-12 font-kiwi-maru">
+        <p className="text-base sm:text-lg md:text-2xl lg:text-3xl font-bold text-gray-400 mb-12 font-kiwi-maru">
           あなたの"がんばり"を<span className="start-red text-xl sm:text-2xl md:text-3xl lg:text-4xl">全力</span>で褒めちぎる！
         </p>
 
