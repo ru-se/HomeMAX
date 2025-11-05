@@ -6,7 +6,19 @@ import homemaxImg4 from '../assets/homemax_04.png'
 import homemaxImg5 from '../assets/homemax_05.png'
 import homemaxImg6 from '../assets/homemax_06.png'
 import homemaxImg7 from '../assets/homemax_07.png'
-import gyarumax from '../assets/gyarumax.png'
+import gyarumax1 from '../assets/gyarumax1.png'
+import gyarumax2 from '../assets/gyarumax2.png'
+import gyarumax3 from '../assets/gyarumax3.png'
+import gyarumax4 from '../assets/gyarumax4.png'
+import gyarumax5 from '../assets/gyarumax5.png'
+import gyarumax6 from '../assets/gyarumax6.png'
+import otamax1 from '../assets/otamax1.png'
+import otamax2 from '../assets/otamax2.png'
+import otamax3 from '../assets/otamax3.png'
+import otamax4 from '../assets/otamax4.png'
+import otamax5 from '../assets/otamax5.png'
+import otamax6 from '../assets/otamax6.png'
+
 
 const HomemaxAnimated = ({ isLoading, mode }) => {
   const [currentImage, setCurrentImage] = useState(0)
@@ -21,7 +33,18 @@ const HomemaxAnimated = ({ isLoading, mode }) => {
     homemaxImg5,
     homemaxImg6,
     homemaxImg7,
-    gyarumax
+    gyarumax1,
+    gyarumax2,
+    gyarumax3,
+    gyarumax4,
+    gyarumax5,
+    gyarumax6,
+    otamax1,
+    otamax2,
+    otamax3,
+    otamax4,
+    otamax5,
+    otamax6,
   ]
 
   // モードをキーに正規化
@@ -33,12 +56,11 @@ const HomemaxAnimated = ({ isLoading, mode }) => {
     return 'homemax'
   }
 
-  // モード別に「固定で見せたい」画像インデックス（必要に応じて調整!!!）
-  const modeImageIndex = {
-    homemax: 0,
-    gyaru: images.length - 1,
-    yami: 4,   
-    otaku: 2,  
+  const modeImageRange = {
+    homemax: { start: 0, end: 6, default: 0 },      // homemax_01-2 ~ homemax_07 (7枚)
+    gyaru: { start: 7, end: 12, default: 7 },       // gyarumax1 ~ gyarumax6 (6枚)
+    yami: { start: 0, end: 6, default: 4 },         // yami用は homemax から選択
+    otaku: { start: 13, end: 18, default: 13 },     // otamax1 ~ otamax6 (6枚)
   }
 
   // モード変更時に固定画像へ
@@ -46,9 +68,9 @@ const HomemaxAnimated = ({ isLoading, mode }) => {
     if (isLoading) return
     const key = resolveModeKey(mode)
     // if (key === 'homemax') return
-    const idx = modeImageIndex[key]
-    if (typeof idx === 'number') {
-      setCurrentImage(Math.max(0, Math.min(images.length - 1, idx)))
+    const range = modeImageRange[key]
+    if (range) {
+      setCurrentImage(range.default)
     }
   }, [mode, isLoading]) // モードが変わった時にだけ反映
 
@@ -70,6 +92,18 @@ const HomemaxAnimated = ({ isLoading, mode }) => {
 
     // ランダムに画像を変える
     setCurrentImage(Math.floor(Math.random() * images.length))
+
+    const key = resolveModeKey(mode)
+    const range = modeImageRange[key]
+    
+    if (range) {
+      // 指定範囲内でランダムに選択（start <= index <= end）
+      const randomIndex = Math.floor(Math.random() * (range.end - range.start + 1)) + range.start
+      setCurrentImage(randomIndex)
+    } else {
+      // フォールバック: 全体からランダム
+      setCurrentImage(Math.floor(Math.random() * images.length))
+    }
   }
 
   return (
