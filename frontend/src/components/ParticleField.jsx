@@ -5,8 +5,9 @@ import homemax1 from '../assets/homemax_01-2.png'
 import homemax2 from '../assets/homemax_03.png'
 import gyaru1 from '../assets/gyarumax2.png'
 import otaku1 from '../assets/otamax3.png'
+import yami1 from '../assets/yamimax1.png'
 
-const spritePool = [homemax1, homemax2, gyaru1, otaku1]
+const spritePool = [homemax1, homemax2, gyaru1, otaku1, yami1]
 
 const ParticleField = () => {
   const isMobile = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(max-width: 768px)').matches

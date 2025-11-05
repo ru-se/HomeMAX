@@ -18,6 +18,12 @@ import otamax3 from '../assets/otamax3.png'
 import otamax4 from '../assets/otamax4.png'
 import otamax5 from '../assets/otamax5.png'
 import otamax6 from '../assets/otamax6.png'
+import yamimax1 from '../assets/yamimax1.png'
+import yamimax2 from '../assets/yamimax2.png'
+import yamimax3 from '../assets/yamimax3.png'
+import yamimax4 from '../assets/yamimax4.png'
+import yamimax5 from '../assets/yamimax5.png'
+import yamimax6 from '../assets/yamimax6.png'
 
 
 const HomemaxAnimated = ({ isLoading, mode }) => {
@@ -45,6 +51,12 @@ const HomemaxAnimated = ({ isLoading, mode }) => {
     otamax4,
     otamax5,
     otamax6,
+    yamimax1,
+    yamimax2,
+    yamimax3,
+    yamimax4,
+    yamimax5,
+    yamimax6,
   ]
 
   // モードをキーに正規化
@@ -59,8 +71,8 @@ const HomemaxAnimated = ({ isLoading, mode }) => {
   const modeImageRange = {
     homemax: { start: 0, end: 6, default: 0 },      // homemax_01-2 ~ homemax_07 (7枚)
     gyaru: { start: 7, end: 12, default: 7 },       // gyarumax1 ~ gyarumax6 (6枚)
-    yami: { start: 0, end: 6, default: 4 },         // yami用は homemax から選択
     otaku: { start: 13, end: 18, default: 13 },     // otamax1 ~ otamax6 (6枚)
+    yami: { start: 19, end: 24, default: 19 },      // yamimax1 ~ yamimax6 (6枚)
   }
 
   // モード変更時に固定画像へ
@@ -76,22 +88,30 @@ const HomemaxAnimated = ({ isLoading, mode }) => {
 
   // ローディング中のアニメーション
   useEffect(() => {
-    if (isLoading) {
-      const interval = setInterval(() => {
+    if (!isLoading) return
+    const key = resolveModeKey(mode)
+    const range = modeImageRange[key]
+
+    const pickInRange = () => {
+      if (range) {
+        const next = Math.floor(Math.random() * (range.end - range.start + 1)) + range.start
+        setCurrentImage(next)
+      } else {
+        // フォールバック（範囲不明時のみ全体）
         setCurrentImage(prev => (prev + 1) % images.length)
-      }, 200)
-      return () => clearInterval(interval)
+      }
     }
-  }, [isLoading])
+    // 開始直後に一度選んでから回す（他モードのチラ見え防止）
+    pickInRange()
+    const interval = setInterval(pickInRange, 200)
+    return () => clearInterval(interval)
+  }, [isLoading, mode])
 
   // なでる機能
   const handlePet = () => {
     setPetCount(prev => prev + 1)
     setShowSparkles(true)
     setTimeout(() => setShowSparkles(false), 1000)
-
-    // ランダムに画像を変える
-    setCurrentImage(Math.floor(Math.random() * images.length))
 
     const key = resolveModeKey(mode)
     const range = modeImageRange[key]

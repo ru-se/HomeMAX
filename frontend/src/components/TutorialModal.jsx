@@ -10,21 +10,25 @@ const TutorialModal = ({ onClose, onSubmit }) => {
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in"
       aria-modal="true"
       role="dialog"
+      onClick={() => onClose?.(dontShowAgain)} // モーダル外クリックで閉じる
     >
-      <div className="bg-white rounded-[3rem] shadow-2xl max-w-2xl w-full mx-8 p-8 md:p-12 relative animate-bounce-in">
+      <div
+        className="bg-white rounded-[3rem] shadow-2xl max-w-2xl w-full mx-8 p-8 md:p-12 relative animate-bounce-in"
+        onClick={(e) => e.stopPropagation()} // 内側クリックは閉じない
+      >
         {/* 閉じるボタン */}
-        <button
+        {/* <button
           onClick={() => onClose?.(dontShowAgain)}
           className="absolute top-6 right-6 w-12 h-12 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 text-xl transition-all transform hover:scale-110"
           aria-label="閉じる"
         >
           <FaTimes />
-        </button>
+        </button> */}
 
         {/* タイトル */}
         <h2 className="text-3xl md:text-4xl font-black text-center mb-6 md:mb-8 whitespace-nowrap leading-tight">
           <span className="bg-gradient-to-r from-pink-600 via-pink-500 to-pink-400 bg-clip-text text-transparent">
-            まずは最近やったことを書いてみて！！
+            まずは最近やったことを書いてみて！
           </span>
         </h2>
 
@@ -85,7 +89,7 @@ const TutorialModal = ({ onClose, onSubmit }) => {
             onClick={() => onClose?.(dontShowAgain)}
             className="flex-1 py-4 rounded-full text-xl font-bold bg-white border-2 border-gray-300 text-gray-600 hover:bg-gray-50 transition-all"
           >
-            あとで
+            閉じる
           </button>
         </div>
       </div>
