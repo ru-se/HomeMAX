@@ -93,3 +93,52 @@
     transform: translateY(-120px);
     opacity: 1;
 }
+
+/* ===== Home専用: 封筒/手紙の縮小と余白調整 ===== */
+@media (max-width: 1024px) {
+  .scene {
+    perspective: 900px;
+  }
+  .envelope {
+    width: 280px;
+    height: 180px;
+  }
+  .letter {
+    padding: 16px;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .scene {
+    perspective: 800px;
+  }
+  .envelope {
+    width: 240px;
+    height: 160px;
+  }
+  .flap {
+    height: 80px;
+  }
+  .letter {
+    padding: 12px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .scene {
+    perspective: 700px;
+  }
+  .envelope {
+    width: 210px;
+    height: 140px;
+  }
+  .flap {
+    height: 70px;
+  }
+  .letter {
+    padding: 10px;
+    font-size: 0.85rem;
+  }
+}

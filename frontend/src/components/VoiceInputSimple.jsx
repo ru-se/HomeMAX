@@ -271,7 +271,7 @@ const handleTextChange = (e) => {
     {/* ↑ fixed bottom-0 を削除しました。幅は max-w-3xl mx-auto で親要素に依存します。 */}
 
     {/* 入力エリアの全体ラッパー (fixedを外し、親要素のフローに配置) */}
-    <div className="w-full max-w-3xl fixed bottom-30 mx-auto px-4 pt-4 sm:px-6 sm:pt-6 lg:px-8 lg:pt-8 font-sans z-50 ">
+    <div className="w-full max-w-3xl mx-auto px-4 pt-4 sm:px-6 sm:pt-6 lg:px-8 lg:pt-8 font-sans">
 
 
     {/* レスポンシブ対応のためにパディングを調整  */}

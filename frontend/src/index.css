@@ -322,3 +322,55 @@
   font-style: normal;
   font-display: swap;
 } */
+
+/* ===== Home のレスポンシブ強化（Start画面に合わせて縮小・スクロールへ） ===== */
+
+/* タブレット以下: 画像小さめ、封筒や文字も段階的に縮小 */
+@media (max-width: 1024px) {
+  /* ほめマックス画像（コンポーネント改修なしで対応） */
+  img[alt="ほめマックス"] {
+    max-width: 320px !important;
+    height: auto;
+  }
+}
+
+/* スマホ: スクロール前提＋さらに縮小 */
+@media (max-width: 768px) {
+  /* Home の最上位が h-screen+overflow-hidden のため、モバイルではスクロールに変更 */
+  .h-screen {
+    height: auto !important;
+    min-height: 100vh !important;
+  }
+  .overflow-hidden {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  /* ほめマックス画像の縮小 */
+  img[alt="ほめマックス"] {
+    max-width: 220px !important;
+    height: auto;
+  }
+
+  /* 褒め言葉の表示領域（手紙ボックス内）：高さは画面比率で確保しスクロール可 */
+  .letter-scrollbar {
+    max-height: 65vh !important;
+    font-size: 0.95rem;
+    line-height: 1.8;
+  }
+
+  /* 見出しの少し縮小（Start相当のノリ） */
+  .text-2xl { font-size: 1.25rem; }
+  .text-xl  { font-size: 1.125rem; }
+}
+
+/* さらに小さい端末 */
+@media (max-width: 480px) {
+  img[alt="ほめマックス"] {
+    max-width: 180px !important;
+  }
+  .letter-scrollbar {
+    max-height: 60vh !important;
+    padding: 0.75rem !important;
+  }
+}
