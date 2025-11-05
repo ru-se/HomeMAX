@@ -266,10 +266,10 @@ const Home = () => {
 
 
   const modes = [
-    { value: 'ほめマックス', label: 'ノーマル', emoji: '😊' ,fontStyle: { fontFamily: 'HomeMAXFont, sans-serif' }},
-    { value: 'ギャルです。ギャル語を使って話します。絵文字をたくさん使います。', label: 'ギャル', emoji: '💖' ,fontStyle: { fontFamily: 'GalMAXFont, sans-serif' }},
-    { value: '病んでる人です。ネガティブなことを言います。人のこのは褒めるけど自分と比べてさらに病みます。', label: '病み', emoji: '😢' ,fontStyle: { fontFamily: 'YamiMAXFont, sans-serif' }},
-    { value: 'オタクです。語尾は「ござる」や「でござるよ」です。Twitterで使われるネットミームを使います。', label: 'オタク', emoji: '🤓' ,fontStyle: { fontFamily: 'YamiMAXFont, sans-serif' }},
+    { value: 'ほめマックス', label: 'ノーマル', emoji: '😊' ,fontClass: 'font-kiwi-maru'},
+    { value: 'ギャルです。ギャル語を使って話します。絵文字をたくさん使います。', label: 'ギャル', emoji: '💖' , fontClass: 'font-hachi-maru-pop'},
+    { value: '病んでる人です。ネガティブなことを言います。人のこのは褒めるけど自分と比べてさらに病みます。', label: '病み', emoji: '😢' , fontClass: 'font-shippori-mincho'},
+    { value: 'オタクです。語尾は「ござる」や「でござるよ」です。Twitterで使われるネットミームを使います。', label: 'オタク', emoji: '🤓' , fontClass: 'font-dot-gothic16'},
   ]
 
     //モード名から宛名を生成する関数
@@ -290,7 +290,6 @@ const Home = () => {
   // 3. 依存関係のある変数を定義 (modeName, modes に依存)
   const currentAddress = generateAddress(modeName);
   const currentMode = modes.find(mode => mode.value === modeName) || modes[0];
-  const complimentFontStyle = currentMode.fontStyle; 
 
   //褒め言葉表示を閉じる関数
   const handleCloseCompliment = () => {
@@ -332,10 +331,10 @@ const Home = () => {
       {/* <Menu /> */}
 
       {/* メインコンテンツ */}
-      <div className="flex-1 flex flex-col items-center justify-center pt-20 px-8 relative z-10">
+      <div className="flex-1 flex flex-col items-center justify-center pt-20 px-8 relative z-10 font-kiwi-maru">
         {/* ほめマックスキャラクター */}
         <div className="mb-40">
-          <HomemaxAnimated isLoading={isLoading} />
+          <HomemaxAnimated isLoading={isLoading} mode={currentMode.value} />
         </div>
 
         {/* メッセージ表示エリア */}
@@ -402,6 +401,7 @@ const Home = () => {
            
 
                   max-h-[17em] overflow-y-auto
+                  letter-scrollbar
                   
                   /* 5pxの枠線に見えるようにシャドウとボーダーを調整 */
                   // [box-shadow:0px_0px_0px_5px_#ffdacc]
@@ -416,14 +416,13 @@ const Home = () => {
                   <FaTimesCircle />
                  </button> */}
                  <p 
-                  className="text-xl font-bold leading-[2.5em] [background-image:linear-gradient(180deg,#9C6924_1px,transparent_1px)] [background-size:100%_2.5em] text-left"             
+                  className={`text-xl font-bold leading-[2.5em] [background-image:linear-gradient(180deg,#9C6924_1px,transparent_1px)] [background-size:100%_2.5em] text-left {x} ${currentMode.fontClass}`}             
                   style={{
                       // パディングを調整し、線の描画位置を制御
                       paddingTop: '5px', 
                       paddingBottom: '5px',
                       paddingBottom: '20px',
                       // line-height が 2.5em に固定されるため、テキストが線の高さに合わせて表示されます
-                      ...complimentFontStyle
                   }}
                   >
 
@@ -486,9 +485,9 @@ const Home = () => {
                 key={mode.value}
                 onClick={() => setModeName(mode.value)}
                 className={`
-                  px-6 py-3 rounded-2xl text-lg font-bold transition-all transform hover:scale-105 flex items-center gap-2
+                  px-6 py-3 rounded-2xl text-lg font-bold transition-all transform hover:scale-105 flex items-center gap-2 font-kiwi-maru
                   ${modeName === mode.value 
-                    ? 'bg-[#FFEF63] text-[#00AAAA] shadow-xl scale-105' 
+                    ? 'bg-[#9C6924] text-white shadow-xl scale-105' 
                     : 'bg-white/80 text-[#9C6924] hover:bg-gray-100 shadow-lg'
                   }
                 `}
