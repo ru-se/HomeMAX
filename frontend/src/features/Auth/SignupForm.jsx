@@ -1,9 +1,13 @@
+
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom' 
+import { useNavigate } from 'react-router-dom'
 import { ToastContainer, toast, Slide } from 'react-toastify';
+import { useAuth } from '../../contexts/AuthContext';
 
 const SignupForm = () => {
   const navigate = useNavigate()
+  const { signup } = useAuth(); // Use Signup from Context
+
   const [signupData, setSignupData] = useState({
     username: '',
     email: '',
@@ -25,23 +29,17 @@ const SignupForm = () => {
     setError('')
     setSuccess('')
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/signup`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(signupData),
-      })
-      const data = await response.json()
-      if (response.ok) {
+      const result = await signup(signupData.email, signupData.password, signupData.username);
+
+      if (result.success) {
         setSuccess('登録成功！ログインしてください')
-        
         setTimeout(() => {
           navigate('/login', {
-            state: {signupSuccess: 'サインアップを完了したあなた、もう新世界の住人です！'}
-          }) 
-          //サインアップ時に通知
-        } , 1000)
+            state: { signupSuccess: 'サインアップを完了したあなた、もう新世界の住人です！' }
+          })
+        }, 1000)
       } else {
-        setError(data.message || '登録に失敗しました')
+        setError(result.error || '登録に失敗しました');
       }
     } catch (err) {
       setError('通信エラーが発生しました')
@@ -53,12 +51,11 @@ const SignupForm = () => {
       <div className="w-2/5 my-10 mx-10 bg-white rounded shadow-xl/20">
         <form onSubmit={handleSubmit} className='w-full max-w-md space-y-6 mx-auto'>
           <h2 className="text-7xl mb-20 mt-10">サインアップ</h2>
+          {error && <p className="text-red-500">{error}</p>}
+          {success && <p className="text-green-500">{success}</p>}
 
-          {/* ユーザー名 */}
           <div className="flex flex-row items-center mb-10">
             <label htmlFor="username" className="w-60">ユーザー名</label>
-
-            {/* ユーザー名の入力 */}
             <input
               type="text"
               id='username'
@@ -72,11 +69,8 @@ const SignupForm = () => {
             />
           </div>
 
-          {/* メールアドレス */}
           <div className="flex flex-row items-center mb-10">
             <label htmlFor="email" className="w-60">メールアドレス</label>
-
-            {/* メールアドレスの入力 */}
             <input
               type="email"
               id='email'
@@ -90,16 +84,13 @@ const SignupForm = () => {
             />
           </div>
 
-          {/* パスワード */}
           <div className="flex flex-row items-center mb-10">
             <label htmlFor="password" className="w-60">パスワード</label>
-
-            {/* パスワードの入力 */}
             <input
               type="password"
               id='password'
               name='password'
-              value={signupData.password} 
+              value={signupData.password}
               onChange={handleChange}
               required
               autoComplete="password"
@@ -108,7 +99,6 @@ const SignupForm = () => {
             />
           </div>
 
-          {/* サインボタン */}
           <button type='submit' className="rounded-full bg-blue text-white px-16 py-4 font-kiwi-maru hover:bg-blue-dark">サインアップ</button>
         </form>
       </div>

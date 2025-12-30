@@ -1,54 +1,73 @@
-const bcrypt = require("bcrypt");
-const supabase = require("../config/db");
+const supabase = require('../config/db');
 
 module.exports = {
-  // サインアップ
-  signup: async function (username, email, password) {
-    try {
-      const hashedPassword = await bcrypt.hash(password, 10);
+  // ユーザー作成
+  createUser: async (id, email, username) => {
+    const { data, error } = await supabase
+      .from('users')
+      .insert([{
+        user_id: id, // ここにSupabase AuthのUUIDが入る
+        email,
+        username,
+        // passwordは保存しない！これでOK
+        created_at: new Date().toISOString()
+      }])
+      .select()
+      .single();
 
-      const { data, error } = await supabase
-        .from("users")
-        .insert([
-          { username, email, password: hashedPassword }
-        ]);
-
-      if (error) {
-        console.error(error);
-        throw { message: "ユーザー登録に失敗しました" };
-      }
-
-      return data;
-    } catch (err) {
-      throw err;
-    }
+    if (error) throw error;
+    return data;
   },
 
-  // ログイン
-  login: async function (username, password) {
-    try {
-      const { data, error } = await supabase
-        .from("users")
-        .select("*")
-        .eq("username", username)
-        .single(); // 1件のみ取得
+  // ... (他のメソッドは変更なしで動作します)
+  
+  // findById も user_id (UUID) で検索するため、SQLの型変更さえしていれば正常に動きます。
+  findById: async (id) => {
+    const { data, error } = await supabase
+      .from('users')
+      .select('user_id, username, email, created_at, xp, level')
+      .eq('user_id', id)
+      .single();
 
-      if (error || !data) {
-        console.log(error || "ユーザーが見つかりませんでした");
-        throw { message: "該当するユーザーが見つかりませんでした" };
-      }
+    if (error) throw error;
+    return data;
+  },
+  
+  // addXp も同様にOK
+  addXp: async (userId, amount) => {
+      // ... (省略。ロジック変更なし) ...
+      // 前回のコードのままで大丈夫です
+      const { data: user, error: fetchError } = await supabase
+      .from('users')
+      .select('xp, level')
+      .eq('user_id', userId)
+      .single();
 
-      const isMatch = await bcrypt.compare(password, data.password);
-      if (!isMatch) {
-        throw { message: "パスワードが間違っています" };
-      }
+    if (fetchError) throw fetchError;
 
-      delete data.password; // パスワードは返さない
-      return data;
+    const currentXp = user.xp || 0;
+    const currentLevel = user.level || 1;
+    const newXp = currentXp + amount;
+    const calculatedLevel = Math.floor(newXp / 50) + 1;
 
-    } catch (err) {
-      console.log(err);
-      throw { message: "ログイン中にエラーが発生しました" };
-    }
+    const isLevelUp = calculatedLevel > currentLevel;
+    const newLevel = isLevelUp ? calculatedLevel : currentLevel;
+
+    const { data: updatedUser, error: updateError } = await supabase
+      .from('users')
+      .update({ xp: newXp, level: newLevel })
+      .eq('user_id', userId)
+      .select()
+      .single();
+
+    if (updateError) throw updateError;
+
+    return {
+      user: updatedUser,
+      isLevelUp,
+      xpGained: amount,
+      previousLevel: currentLevel,
+      currentLevel: newLevel
+    };
   }
 };
