@@ -1,11 +1,14 @@
 import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom';
+import Start from '../pages/Start';
 import SignupForm from '../features/Auth/SignupForm'
 import Home from '../pages/Home';
 import Login from '../features/Auth/LoginForm';
 import History from '../pages/History';
 import GrowthRecord from '../pages/GrowthRecord';
 import SharedLetter from '../pages/SharedLetter';
+import AuthCallback from '../pages/AuthCallback';
+import Achievements from '../pages/Achievements';
 import { useAuth } from '../contexts/AuthContext';
 
 // Protected Route Component
@@ -30,6 +33,7 @@ const AppRoutes = () => {
       <Route path="/share/:token" element={<SharedLetter />} />
       <Route path="/signup" element={user ? <Navigate to="/home" /> : <SignupForm />} />
       <Route path="/login" element={user ? <Navigate to="/home" /> : <Login />} />
+      <Route path="/auth/callback" element={<AuthCallback />} />
 
       {/* Protected Routes */}
       {/* Protected Routes */}
@@ -43,10 +47,15 @@ const AppRoutes = () => {
           <GrowthRecord />
         </ProtectedRoute>
       } />
+      <Route path="/achievements" element={
+        <ProtectedRoute>
+          <Achievements />
+        </ProtectedRoute>
+      } />
 
       {/* Default Redirect */}
-      <Route path="/" element={<Navigate to="/home" replace />} />
-      <Route path="*" element={<Navigate to="/home" replace />} />
+      <Route path="/" element={<Start />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 };
