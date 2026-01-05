@@ -20,24 +20,24 @@ module.exports = {
   },
 
   // ... (他のメソッドは変更なしで動作します)
-  
+
   // findById も user_id (UUID) で検索するため、SQLの型変更さえしていれば正常に動きます。
   findById: async (id) => {
     const { data, error } = await supabase
       .from('users')
       .select('user_id, username, email, created_at, xp, level')
       .eq('user_id', id)
-      .single();
+      .maybeSingle(); // 存在しない場合はnullを返す（エラーにしない）
 
     if (error) throw error;
-    return data;
+    return data; // nullの場合もそのまま返す
   },
-  
+
   // addXp も同様にOK
   addXp: async (userId, amount) => {
-      // ... (省略。ロジック変更なし) ...
-      // 前回のコードのままで大丈夫です
-      const { data: user, error: fetchError } = await supabase
+    // ... (省略。ロジック変更なし) ...
+    // 前回のコードのままで大丈夫です
+    const { data: user, error: fetchError } = await supabase
       .from('users')
       .select('xp, level')
       .eq('user_id', userId)

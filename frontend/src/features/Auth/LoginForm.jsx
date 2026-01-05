@@ -1,4 +1,5 @@
 
+
 import React, { useState, useRef, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { ToastContainer, toast, Slide } from 'react-toastify';
@@ -113,6 +114,41 @@ const LoginForm = () => {
                 className="border-1 border-black focus:outline-1 focus:outline-blue-dark inline-block py-1"
               />
             </div>
+          </div>
+
+          {/* Social Login Buttons (Google) */}
+          <div className="flex flex-col gap-4 mb-8">
+            <button
+              type="button"
+              onClick={() => {
+                // バックエンドの認証エンドポイントへリダイレクト
+                window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/login/google`;
+              }}
+              className="flex items-center justify-center gap-2 bg-white border border-gray-300 rounded-full px-6 py-3 hover:bg-gray-50 transition-colors"
+            >
+              <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-6 h-6" />
+              <span className="text-gray-600 font-bold">Googleでログイン</span>
+            </button>
+
+            {/* X/Twitter */}
+            <button
+              type="button"
+              onClick={() => {
+                window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/login/twitter`;
+              }}
+              className="flex items-center justify-center gap-2 bg-black border border-black rounded-full px-6 py-3 hover:bg-gray-800 transition-colors"
+            >
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="white">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+              </svg>
+              <span className="text-white font-bold">Xでログイン</span>
+            </button>
+          </div>
+
+          <div className="relative flex py-5 items-center">
+            <div className="flex-grow border-t border-gray-300"></div>
+            <span className="flex-shrink mx-4 text-gray-400">または</span>
+            <div className="flex-grow border-t border-gray-300"></div>
           </div>
 
           <button
