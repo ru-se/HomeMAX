@@ -10,6 +10,7 @@ const analysisRoutes = require('./routes/analysisRoutes');
 const letterRoutes = require('./routes/letterRoutes');
 const taskRoutes = require('./routes/taskRoutes');
 const shareRoutes = require('./routes/shareRoutes');
+const achievementRoutes = require('./routes/achievementRoutes');
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use('/analysis', analysisRoutes);
 app.use('/letter', letterRoutes);
 app.use('/task', taskRoutes);
 app.use('/share', shareRoutes);
+app.use('/achievements', achievementRoutes);
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
