@@ -389,6 +389,9 @@ const Home = () => {
           <Link to="/history" className="bg-white/80 hover:bg-white text-gray-600 px-4 py-2 rounded-full shadow-sm text-sm font-bold transition-all flex items-center gap-2">
             <span>📖</span> 履歴
           </Link>
+          <Link to="/achievements" className="bg-yellow-100/80 hover:bg-yellow-100 text-gray-600 px-4 py-2 rounded-full shadow-sm text-sm font-bold transition-all flex items-center gap-2">
+            <span>🏆</span> 称号
+          </Link>
           <button onClick={logout} className="bg-white/80 hover:bg-white text-gray-600 px-4 py-2 rounded-full shadow-sm text-sm font-bold transition-all">
             ログアウト
           </button>

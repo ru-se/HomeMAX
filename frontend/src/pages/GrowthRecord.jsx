@@ -63,6 +63,16 @@ const GrowthRecord = () => {
                     console.log('[CAPTURED_PRAISE_GROWTH] ' + data.praise);
                     synth.speak(u);
                 }
+
+                // Check for newly unlocked achievements
+                try {
+                    await fetch(`${import.meta.env.VITE_API_BASE_URL}/achievements/check`, {
+                        method: 'POST',
+                        credentials: 'include'
+                    });
+                } catch (achievementError) {
+                    console.error("Achievement check error:", achievementError);
+                }
             }
         } catch (error) {
             console.error("Task update error:", error);
@@ -78,9 +88,14 @@ const GrowthRecord = () => {
             {/* Header */}
             <div className="relative z-10 p-6 flex justify-between items-center">
                 <h1 className="text-2xl font-bold text-gray-800">🌱 成長記録</h1>
-                <Link to="/home" className="bg-white/80 px-4 py-2 rounded-full text-sm font-bold shadow-sm hover:bg-white transition-colors">
-                    🏠 ホームへ
-                </Link>
+                <div className="flex gap-2">
+                    <Link to="/achievements" className="bg-yellow-100/80 px-4 py-2 rounded-full text-sm font-bold shadow-sm hover:bg-yellow-100 transition-colors">
+                        🏆 称号
+                    </Link>
+                    <Link to="/home" className="bg-white/80 px-4 py-2 rounded-full text-sm font-bold shadow-sm hover:bg-white transition-colors">
+                        🏠 ホームへ
+                    </Link>
+                </div>
             </div>
 
             {/* Task Grid */}
