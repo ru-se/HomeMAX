@@ -340,7 +340,7 @@ const Home = () => {
 
 
   return (
-    <div className='h-screen w-screen overflow-hidden bg-gradient-to-br from-pink-50 via-white to-blue-50 flex flex-col relative'>
+    <div className='h-screen w-screen overflow-hidden bg-[#fff0f5] flex flex-col relative'>
       {/* 背景パーティクル（背面レイヤー） */}
       <ParticleField />
       <ToastContainer
@@ -397,58 +397,60 @@ const Home = () => {
       {/* <Menu /> */}
 
       {/* メインコンテンツ */}
-      <div className="flex-1 flex flex-col items-center justify-start pt-4 px-4 md:px-8 relative z-10 font-kiwi-maru overflow-hidden">
-        {/* ほめマックスキャラクター */}
-        <div className="mb-4 md:mb-6">
-          <HomemaxAnimated isLoading={isLoading} mode={currentMode.value} />
-        </div>
+      <div className="flex-1 flex flex-col items-center justify-start pt-4 px-4 md:px-8 relative font-kiwi-maru overflow-hidden bg-[#fff0f5]">
+        <ParticleField />
+        <div className="relative z-10 w-full flex flex-col items-center">
+          {/* ほめマックスキャラクター */}
+          <div className="mb-4 md:mb-6">
+            <HomemaxAnimated isLoading={isLoading} mode={currentMode.value} />
+          </div>
 
-        {/* メッセージ表示エリア */}
+          {/* メッセージ表示エリア */}
 
-        {/* min-hを削除し、封筒の高さ分確保します */}
-        <div className="w-full max-w-3xl mb-6 flex flex-col justify-center items-center">
-          {/* 1. 手紙を開く（封筒）コンポーネント */}
-          {isComplimentReady && !isComplimentVisible && (
-            <>
-              <div className="text-pink-500 font-extrabold text-lg mb-2 animate-bounce">
-                タップして開けてね！
-              </div>
+          {/* min-hを削除し、封筒の高さ分確保します */}
+          <div className="w-full max-w-3xl mb-6 flex flex-col justify-center items-center">
+            {/* 1. 手紙を開く（封筒）コンポーネント */}
+            {isComplimentReady && !isComplimentVisible && (
+              <>
+                <div className="text-pink-500 font-extrabold text-lg mb-2 animate-bounce">
+                  タップして開けてね！
+                </div>
 
-              <div className="scene">
-                {/* クリックイベントを封筒全体に適用 */}
-                <div
-                  className="envelope"
-                  onClick={handleOpenLetter} // ボタンの代わり
-                  id="envelope-animation" // JSでクラスをトグルするために使用
-                >
-                  <div className="flap"></div>
+                <div className="scene">
+                  {/* クリックイベントを封筒全体に適用 */}
+                  <div
+                    className="envelope"
+                    onClick={handleOpenLetter} // ボタンの代わり
+                    id="envelope-animation" // JSでクラスをトグルするために使用
+                  >
+                    <div className="flap"></div>
 
-                  {/* 中の手紙は、ここでは褒め言葉そのものではなく、単なる表示用として残します */}
-                  <div className="letter">
-                    <p>　</p>
+                    {/* 中の手紙は、ここでは褒め言葉そのものではなく、単なる表示用として残します */}
+                    <div className="letter">
+                      <p>　</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </>
-          )}
+              </>
+            )}
 
-          {/* 2. 褒め言葉の表示 */}
-          {isComplimentVisible && compliment && (
-            <div
-              className="fixed inset-0 z-40" // z-40 は手紙の z-50 より小さくする
-              onClick={handleCloseCompliment} // 背景クリックで閉じる関数を呼び出す
-            >
-
+            {/* 2. 褒め言葉の表示 */}
+            {isComplimentVisible && compliment && (
               <div
-                className="fixed bottom-28 inset-x-0 flex justify-center z-50 px-8 pb-24"
-                onClick={(e) => e.stopPropagation()} // 手紙外だけで閉じる
+                className="fixed inset-0 z-40" // z-40 は手紙の z-50 より小さくする
+                onClick={handleCloseCompliment} // 背景クリックで閉じる関数を呼び出す
               >
-                <div
-                  onClick={(e) => e.stopPropagation()} // 手紙内クリックは閉じない
-                  // 変更前: className="w-full bg-gradient-to-br from-pink-100 to-purple-100 rounded-3xl p-6 shadow-2xl border-4 border-pink-300 animate-bounce-in text-center"
 
-                  //お手紙風デザインの適用
-                  className={`
+                <div
+                  className="fixed bottom-28 inset-x-0 flex justify-center z-50 px-8 pb-24"
+                  onClick={(e) => e.stopPropagation()} // 手紙外だけで閉じる
+                >
+                  <div
+                    onClick={(e) => e.stopPropagation()} // 手紙内クリックは閉じない
+                    // 変更前: className="w-full bg-gradient-to-br from-pink-100 to-purple-100 rounded-3xl p-6 shadow-2xl border-4 border-pink-300 animate-bounce-in text-center"
+
+                    //お手紙風デザインの適用
+                    className={`
                   relative 
                   bg-[#ffdacc] 
                   shadow-lg shadow-yellow-300/50 
@@ -473,137 +475,138 @@ const Home = () => {
                   // [box-shadow:0px_0px_0px_5px_#ffdacc]
                 `}
 
-                >
-                  {/* ★ 追加: 閉じるボタン */}
-                  {/* <button 
+                  >
+                    {/* ★ 追加: 閉じるボタン */}
+                    {/* <button 
                     onClick={handleCloseCompliment}
                     className="absolute  text-4xl text-gray-500 hover:text-gray-700 transition duration-150"
                  >
                   <FaTimesCircle />
                  </button> */}
-                  <p
-                    className={`text-xl font-bold leading-[2.5em] [background-image:linear-gradient(180deg,#9C6924_1px,transparent_1px)] [background-size:100%_2.5em] text-left {x} ${currentMode.fontClass}`}
-                    style={{
-                      // パディングを調整し、線の描画位置を制御
-                      paddingTop: '5px',
-                      paddingBottom: '5px',
-                      paddingBottom: '20px',
-                      // line-height が 2.5em に固定されるため、テキストが線の高さに合わせて表示されます
-                    }}
-                  >
+                    <p
+                      className={`text-xl font-bold leading-[2.5em] [background-image:linear-gradient(180deg,#9C6924_1px,transparent_1px)] [background-size:100%_2.5em] text-left {x} ${currentMode.fontClass}`}
+                      style={{
+                        // パディングを調整し、線の描画位置を制御
+                        paddingTop: '5px',
+                        paddingBottom: '5px',
+                        paddingBottom: '20px',
+                        // line-height が 2.5em に固定されるため、テキストが線の高さに合わせて表示されます
+                      }}
+                    >
 
-                    {/* 線の描画はpタグ全体に適用されているため、<p>要素を分けます */}
-                    <span className="block text-center mb-2 text-2xl font-extrabold text-[#9C6924]">
-                      {title}
-                    </span>
-                    {/* <span className="block border-t border-dashed border-[#9C6924]/50 my-2"></span>  */}
+                      {/* 線の描画はpタグ全体に適用されているため、<p>要素を分けます */}
+                      <span className="block text-center mb-2 text-2xl font-extrabold text-[#9C6924]">
+                        {title}
+                      </span>
+                      {/* <span className="block border-t border-dashed border-[#9C6924]/50 my-2"></span>  */}
 
-                    {/* 褒め言葉本体 */}
-                    {compliment}
+                      {/* 褒め言葉本体 */}
+                      {compliment}
 
-                    {/* シェアボタン (ログイン時かつIDがある場合) */}
-                    {happinessId && (
-                      <div className="mt-6 pt-4 border-t border-dashed border-[#9C6924]/50 flex justify-center">
-                        <button
-                          onClick={async (e) => {
-                            e.stopPropagation();
-                            try {
-                              const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/share/create`, {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                credentials: 'include',
-                                body: JSON.stringify({ happiness_id: happinessId })
-                              });
-                              if (!res.ok) throw new Error('リンク生成失敗');
-                              const { share_token } = await res.json();
-                              const shareUrl = `${window.location.origin}/share/${share_token}`;
-                              await navigator.clipboard.writeText(shareUrl);
-                              alert("魔法のリンクをコピーしました！\n" + shareUrl);
-                            } catch (err) {
-                              console.error(err);
-                              alert("シェアできませんでした...");
-                            }
-                          }}
-                          className="bg-white/80 hover:bg-white text-[#9C6924] px-4 py-2 rounded-full font-bold shadow-sm text-sm transition-all transform hover:scale-105 flex items-center gap-2 border border-[#9C6924]/20"
-                        >
-                          <span>💌</span> 魔法のリンクを共有
-                        </button>
-                      </div>
-                    )}
+                      {/* シェアボタン (ログイン時かつIDがある場合) */}
+                      {happinessId && (
+                        <div className="mt-6 pt-4 border-t border-dashed border-[#9C6924]/50 flex justify-center">
+                          <button
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              try {
+                                const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/share/create`, {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  credentials: 'include',
+                                  body: JSON.stringify({ happiness_id: happinessId })
+                                });
+                                if (!res.ok) throw new Error('リンク生成失敗');
+                                const { share_token } = await res.json();
+                                const shareUrl = `${window.location.origin}/share/${share_token}`;
+                                await navigator.clipboard.writeText(shareUrl);
+                                alert("魔法のリンクをコピーしました！\n" + shareUrl);
+                              } catch (err) {
+                                console.error(err);
+                                alert("シェアできませんでした...");
+                              }
+                            }}
+                            className="bg-white/80 hover:bg-white text-[#9C6924] px-4 py-2 rounded-full font-bold shadow-sm text-sm transition-all transform hover:scale-105 flex items-center gap-2 border border-[#9C6924]/20"
+                          >
+                            <span>💌</span> 魔法のリンクを共有
+                          </button>
+                        </div>
+                      )}
 
-                    <span className="block border-t border-dashed border-[#9C6924]/50 my-2"></span>
-                    <span className="block text-center mb-2 text-2xl font-extrabold text-[#9C6924]">
-                      {currentAddress}より
-                    </span>
-                  </p>
+                      <span className="block border-t border-dashed border-[#9C6924]/50 my-2"></span>
+                      <span className="block text-center mb-2 text-2xl font-extrabold text-[#9C6924]">
+                        {currentAddress}より
+                      </span>
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* 3. ローディング表示 */}
-          {isLoading && (
-            <div className="bg-white/90 backdrop-blur rounded-3xl p-6 shadow-lg flex items-center justify-center">
-              <div className="flex space-x-2">
-                <div className="w-3 h-3 bg-pink-400 rounded-full animate-bounce"></div>
-                <div className="w-3 h-3 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                <div className="w-3 h-3 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+            {/* 3. ローディング表示 */}
+            {isLoading && (
+              <div className="bg-white/90 backdrop-blur rounded-3xl p-6 shadow-lg flex items-center justify-center">
+                <div className="flex space-x-2">
+                  <div className="w-3 h-3 bg-pink-400 rounded-full animate-bounce"></div>
+                  <div className="w-3 h-3 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                  <div className="w-3 h-3 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                </div>
+                <p className="ml-4 text-gray-600 text-xl" style={{ fontFamily: 'HomeMAXFont, sans-serif' }}>一生懸命考え中...</p>
               </div>
-              <p className="ml-4 text-gray-600 text-xl" style={{ fontFamily: 'HomeMAXFont, sans-serif' }}>一生懸命考え中...</p>
-            </div>
-          )}
+            )}
 
 
 
-        </div>
+          </div>
 
 
 
 
-        <div className="w-full max-w-3xl mx-auto -mt-24 md:-mt-28 lg:-mt-32 mb-16">
-          {isInputVisible && (
-            <>
-              {/* モード選択（手紙入力の上に配置） */}
-              <div className="mb-2 flex flex-wrap justify-center gap-2 sm:gap-3">
-                {modes.map((mode) => {
-                  return (
-                    <button
-                      key={mode.value}
-                      onClick={() => setModeName(mode.value)}
-                      className={`
+          <div className="w-full max-w-3xl mx-auto -mt-24 md:-mt-28 lg:-mt-32 mb-16">
+            {isInputVisible && (
+              <>
+                {/* モード選択（手紙入力の上に配置） */}
+                <div className="mb-2 flex flex-wrap justify-center gap-2 sm:gap-3">
+                  {modes.map((mode) => {
+                    return (
+                      <button
+                        key={mode.value}
+                        onClick={() => setModeName(mode.value)}
+                        className={`
                         px-3 py-2 sm:px-5 sm:py-3 rounded-2xl text-base sm:text-lg font-bold transition-all transform flex items-center gap-2 font-kiwi-maru relative
                         ${modeName === mode.value
-                          ? 'bg-[#9C6924] text-white shadow-xl scale-105'
-                          : 'bg-white/80 text-[#9C6924] hover:bg-gray-100 shadow-lg hover:scale-105'
-                        }
+                            ? 'bg-[#9C6924] text-white shadow-xl scale-105'
+                            : 'bg-white/80 text-[#9C6924] hover:bg-gray-100 shadow-lg hover:scale-105'
+                          }
                       `}
-                    >
-                      {/* ミニキャラクター画像 */}
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center">
-                        <HomemaxAnimated
-                          isLoading={false}
-                          mode={mode.value}
-                          isInteractive={false}
-                          style={{ width: '100%', height: '100%', transform: 'scale(0.8)' }}
-                        />
-                      </div>
-                      {mode.label}
-                    </button>
-                  )
-                })}
-              </div>
+                      >
+                        {/* ミニキャラクター画像 */}
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center">
+                          <HomemaxAnimated
+                            isLoading={false}
+                            mode={mode.value}
+                            isInteractive={false}
+                            style={{ width: '100%', height: '100%', transform: 'scale(0.8)' }}
+                          />
+                        </div>
+                        {mode.label}
+                      </button>
+                    )
+                  })}
+                </div>
 
-              <VoiceInputSimple
-                onSend={handleSend}
-                inputPlaceholder={currentAddress}
-              />
-            </>
-          )}
+                <VoiceInputSimple
+                  onSend={handleSend}
+                  inputPlaceholder={currentAddress}
+                />
+              </>
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* Bottom Navigation */}
-      <BottomNav />
+        {/* Bottom Navigation */}
+        <BottomNav />
+      </div>
     </div>
   )
 }

@@ -2,18 +2,24 @@ const express = require('express');
 const router = express.Router();
 const achievementController = require('../controllers/achievementController');
 const authMiddleware = require('../middleware/authMiddleware');
+const supabase = require('../config/db');
 
 // Optional auth middleware that doesn't fail if no token
 const optionalAuthMiddleware = async (req, res, next) => {
+    const token = req.cookies.token;
+    if (!token) return next();
+
     try {
-        await authMiddleware(req, res, (err) => {
-            // If auth fails, continue anyway (req.user will be undefined)
-            next();
-        });
-    } catch (error) {
-        // If auth middleware throws, continue anyway
-        next();
+        const { data: { user }, error } = await supabase.auth.getUser(token);
+        if (!error && user) {
+            user.user_id = user.id;
+            req.user = user;
+        }
+    } catch (err) {
+        // If error, ignore and proceed as guest
+        console.log("Optional auth check failed:", err);
     }
+    next();
 };
 
 // Get all achievements (with user status if authenticated)
