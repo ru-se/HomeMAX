@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import BottomNav from '../components/navigation/BottomNav';
 import ParticleField from '../components/ParticleField';
+import GyaruFace from '../assets/gyarumax1.png';
+import HomemaxNormal from '../assets/homemax_02.png';
 
 const Achievements = () => {
     const { user } = useAuth();
@@ -43,8 +45,15 @@ const Achievements = () => {
 
             <div className="relative z-10">
                 {/* Header */}
-                <div className="p-8 pb-4 text-center">
-                    <h1 className="text-3xl md:text-4xl font-black text-[#db2777] mb-4">称号一覧</h1>
+                <div className="p-8 pb-4 text-center relative max-w-sm mx-auto">
+                    <h1 className="text-3xl md:text-4xl font-black text-[#db2777] mb-4 relative z-10 inline-block">
+                        称号一覧
+                    </h1>
+                    <img
+                        src={GyaruFace}
+                        alt="Gyarumax"
+                        className="absolute top-0 -right-4 w-16 h-16 transform rotate-12 z-0 opacity-90"
+                    />
 
                     <div className="max-w-md mx-auto bg-white/60 backdrop-blur rounded-2xl p-4 shadow-sm border border-pink-100">
                         <div className="flex justify-between items-end mb-2 px-2">
@@ -59,6 +68,7 @@ const Achievements = () => {
                                 style={{ width: `${(unlockedCount / totalCount) * 100}%` }}
                             ></div>
                         </div>
+
                     </div>
                 </div>
 
