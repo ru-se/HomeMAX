@@ -1,177 +1,295 @@
-// サインアアップ、ログイン機能とか
-const User = require("../models/user");
-const bcrypt = require("bcrypt");
-const connection = require("../config/db");
+const userModel = require('../models/user');
+const supabase = require('../config/db');
 
-// //JSONの受け取り
-// app.use(express.json());
+exports.signup = async (req, res) => {
+    try {
+        const { email, password, username } = req.body;
 
+        // 【追加】簡易バリデーション
+        if (!email || !password || !username) {
+            return res.status(400).json({ error: '必須項目が不足しています' });
+        }
 
-//サインアップ
-module.exports = {
-    //サインアップ
-    signup: async function (req, res) {
-        try {
-            const { username, email, password } = req.body;
-            const hashedPassword = await bcrypt.hash(password, 10);
-            const query = "INSERT INTO users(username, email, password) VALUES(?,?,?)";
-            connection.query(query, [username, email, hashedPassword], (err, result) => {
-                if (err) {
-                    console.log(err);
-                    return res.status(500).json({ message: "ユーザー登録に失敗しました" });
-                } else {
-                    // ユーザーID取得
-                    const userId = result.insertId;
-                    // 初期タスクを追加
-                    const taskQuery = `
-                    INSERT INTO Tasks (task_title, task_name, task_type, status, user_id) VALUES
-                    (?, ?, ?, ?, ?),
-                    (?, ?, ?, ?, ?),
-                    (?, ?, ?, ?, ?),
-                    (?, ?, ?, ?, ?),
-                    (?, ?, ?, ?, ?),
-                    (?, ?, ?, ?, ?),
-                    (?, ?, ?, ?, ?),
-                    (?, ?, ?, ?, ?),
-                    (?, ?, ?, ?, ?),
-                    (?, ?, ?, ?, ?),
-                    (?, ?, ?, ?, ?),
-                    (?, ?, ?, ?, ?),
-                    (?, ?, ?, ?, ?),
-                    (?, ?, ?, ?, ?),
-                    (?, ?, ?, ?, ?),
-                    (?, ?, ?, ?, ?)
-                    `;
+        // 1. Supabase Authでユーザー作成
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+            email,
+            password,
+        });
 
-                    const initialTasks = [
-                    "起床", "起きたあなた、まず一歩踏み出しただけで本当に偉い！", "当たり前タスク", "true", userId,
-                    "パソコン画面開く", "画面を灯したあなた、今日も世界にアクセスする覚悟ができてるね！", "当たり前タスク", "true", userId,
-                    "パソコン開く", "パソコンを開いたその瞬間、あなたの冒険がまた始まった！", "当たり前タスク", "true", userId,
-                    "キーボード入力", "一文字打ったあなたの手、確かに未来を動かしてるよ。", "当たり前タスク", "false", userId,
-                    "アプリ起動", "アプリを起動したあなた、その行動が未来につながってる！", "当たり前タスク", "true", userId,
-                    "サインアップ完了", "サインアップを完了したあなた、もう新世界の住人です！", "当たり前タスク", "false", userId,
-                    "ログイン", "ログインしたあなた、今日もこの世界に確かに存在しています！", "当たり前タスク", "false", userId,
-                    "早朝ログイン", "誰よりも早くログインしたあなた、まさに先頭を走る光だね！", "当たり前タスク", "false", userId,
-                    "ユーザー名正式入力", "名前を入力したあなた、その一行がこの物語の主役の証！", "当たり前タスク", "false", userId,
-                    "パスワード正式入力", "パスワードをしっかり入力できたあなた、セキュリティも気持ちも完璧です！", "当たり前タスク", "false", userId,
-                    "（英語？アルファベット？）使用", "アルファベットを使えたあなた、もはや言語の魔法使いだね！", "当たり前タスク", "false", userId,
-                    "お手紙書いた", "手紙を書いたあなた、ちゃんと誰かを思えるってすごい力だよ。", "当たり前タスク", "false", userId,
-                    "褒められた", "褒められたあなた、その実力と優しさは本物だね！", "当たり前タスク", "false", userId,
-                    "ほめマックスの隠れた帽子を探す", "ぼ、ぼくの帽子…！見つけてくれてありがとう、君、天才なの…！", "隠しタスク", "false", userId,
-                    "ほめマックスを撫でる", "やさしく撫でられたほめマックスは、今、幸せゲージ MAX！", "隠しタスク", "false", userId,
-                    "いつもありがとうと言う", "“ありがとう” が届きました。あなたの心意気、世界をあたためるね！", "隠しタスク", "false", userId
-                    ];
+        if (authError) {
+            return res.status(400).json({ error: authError.message });
+        }
 
-                    connection.query(taskQuery, initialTasks, (taskErr) => {
-                    if (taskErr) {
-                        console.log(taskErr);
-                    }
-                    return res.status(200).json({ message: "登録成功！ログインしてください" });
+        // 2. 独自のusersテーブルに保存
+        if (authData.user) {
+            try {
+                // authData.user.id は UUID です
+                const newUser = await userModel.createUser(authData.user.id, email, username);
+
+                // セッションがある場合（メール確認不要設定など）はクッキーセット
+                if (authData.session) {
+                    res.cookie('token', authData.session.access_token, {
+                        httpOnly: true,
+                        secure: process.env.NODE_ENV === 'production',
+                        sameSite: 'lax',
+                        maxAge: 24 * 60 * 60 * 1000
                     });
                 }
-            });
-        } catch (err) {
-            console.log(err);
-            return res.status(500).json({ message: "ユーザー登録に失敗しました" });
-        }
-    },
 
-    login : async function (req,res){
-        try{
-            console.log(req.body);
-            const username = req.body.username;
-            const password = req.body.password;
+                res.status(201).json({
+                    message: 'ユーザー登録完了',
+                    user: newUser
+                });
 
-            const user = await User.login(username,password);
-            if(!user){
-                return res.status(400).json({ message: "ユーザー名またはパスワードが正しくありません" })
+            } catch (dbError) {
+                console.error("DB Create User Error:", dbError);
+
+                // 【重要】データの整合性を保つため、DB保存に失敗したら
+                // Supabase Auth側に作られたユーザーも削除する（ロールバック処理）
+                // ※ Service Role Keyを使っている場合のみ機能します。
+                //   クライアントキーの場合は削除できないので、エラーログを残して手動対応になりますが、
+                //   ここでは概念として記述します。
+                await supabase.auth.admin.deleteUser(authData.user.id).catch(e => console.error(e));
+
+                return res.status(500).json({ error: 'ユーザー情報の保存に失敗しました。もう一度お試しください。' });
             }
-
-            //  セッションにユーザー情報を保存
-            req.session.user = user;
-            res.status(200).json({message:"ログイン成功",username:user.username})
-
-
-        }catch(err){
-            console.log(err);
-            res.status(500).json({message:err.message})
-
-        }
-
-    },
-
-    getCurrentUser: function (req, res) {
-        if (req.session.user) {
-        console.log(req.session.user);
-        res.json({ user: req.session.user });
         } else {
-        res.status(401).json({ user: null });
+            res.status(200).json({ message: '確認メールを送信しました。' });
         }
-    },
 
-     //ログアウト
-    logout: function (req, res) {
-        req.session.destroy(err => {
-            if (err) {
-                return res.status(500).json({ message: "ログアウトに失敗しました" });
-            }
-            res.clearCookie('connect.sid');
-            console.log("ログアウト成功");
-            res.status(200).json({ message: "ログアウトしました" });
-        });
+    } catch (error) {
+        console.error("Signup Error:", error);
+        res.status(500).json({ error: 'サーバーエラーが発生しました' });
     }
-
 };
 
-// //サインアップ
-// app.post("/signUp",async (req,res)=>{
-//     console.log(req.body);
-//     const username = req.body.username;
-//     const email = req.body.email;
-//     const password = req.body.password;
-//     const hashedPassword = await bcrypt.hash(password, 10);
+exports.login = async (req, res) => {
+    // ... (既存のコードでOKですが、res.cookieの設定はSignupと共通化しても良いです)
+    // login処理は元のままでも機能的には問題ありません
+    try {
+        const { email, password } = req.body;
 
-//     const query = "INSERT INTO users(username, email, password) VALUES(?,?,?)";
-//     connection.query(query,[username, email, hashedPassword],(err,result)=>{
-//         if(err){
-//             console.log(err);
-//             res.status(500).send({err:"追加できませんでした"});
-//         }else{
-//             res.status(200).json({message:"追加できました！"});
-//             console.log(result);
-//         }
-//     })
-// });
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        });
 
-// //ログイン
-// app.post("/login", (req, res) => {
-//     const username = req.body.username;
-//     const password = req.body.password;
+        if (error) {
+            return res.status(401).json({ error: 'メールアドレスまたはパスワードが間違っています' });
+        }
 
-//     // DBへの登録確認
-//     const checkQuery = "SELECT * FROM users WHERE username = ? ";
+        const token = data.session.access_token;
+        const userDetails = await userModel.findById(data.user.id);
 
-//     connection.query(checkQuery, [username],async (err, results) => {
-//         if (err) {
-//             console.log(err);
-//             return res.status(500).json({ error: "確認中にエラーが発生しました" });
-//         }
+        if (!userDetails) {
+            return res.status(500).json({ error: 'ユーザー情報が見つかりません' });
+        }
 
-//         if(results.length == 0){
-//             console.log(err);
-//             res.status(400).json({message:"該当するユーザーが存在しません"});
-//         }
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 24 * 60 * 60 * 1000
+        });
 
-//         const checkPassword = await bcrypt.compare(password, results[0].password);
-//         if(checkPassword){
-//             console.log("ログイン成功");
-//             res.status(200).json({message:"ログイン成功",username:results[0].username})
-//         }else{
-//             console.log("パスワードが違う");
-//             res.status(400).json({message:"パスワードが違います"})
-//         }
+        // Check and unlock achievements
+        try {
+            const achievementModel = require('../models/achievement');
+            await achievementModel.checkAndUnlockAchievements(data.user.id);
+        } catch (achievementError) {
+            console.error("Achievement check error during login:", achievementError);
+        }
 
-//     });
-    
-// });
+        res.json({
+            message: 'ログイン成功',
+            user: userDetails
+        });
 
+    } catch (error) {
+        console.error("Login Error:", error);
+        res.status(500).json({ error: 'ログイン中にエラーが発生しました' });
+    }
+};
+
+// ... logout, getMe はそのままでOK
+// ... getMeの userModel.findById(user.id) は UUIDで検索するようになるので正しく動作します
+exports.logout = async (req, res) => {
+    const { error } = await supabase.auth.signOut();
+    if (error) console.error("Supabase SignOut Error:", error);
+
+    res.clearCookie('token');
+    res.json({ message: 'ログアウトしました' });
+};
+
+exports.getMe = async (req, res) => {
+    const token = req.cookies.token;
+    if (!token) return res.status(401).json({ error: '未認証' });
+
+    const { data: { user }, error } = await supabase.auth.getUser(token);
+
+    if (error || !user) {
+        return res.status(403).json({ error: 'トークンが無効' });
+    }
+
+    const userDetails = await userModel.findById(user.id);
+    if (!userDetails) {
+        return res.status(404).json({ error: 'ユーザーが見つかりません' });
+    }
+
+    res.json({ user: userDetails });
+};
+
+// 1-2. X/Twitterログイン開始
+exports.loginTwitter = async (req, res) => {
+    try {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+            provider: 'twitter',
+            options: {
+                redirectTo: 'http://localhost:5173/auth/callback',
+                skipBrowserRedirect: false,
+            },
+        });
+        if (error) throw error;
+        res.redirect(data.url);
+    } catch (err) {
+        console.error("Twitter Auth Error:", err);
+        res.status(500).json({ error: '認証リダイレクトに失敗しました' });
+    }
+};
+
+// 1. Googleログイン開始 (Google認証ページへリダイレクト)
+exports.loginGoogle = async (req, res) => {
+    try {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: 'http://localhost:5173/auth/callback', // フロントエンドのCallback URL
+                queryParams: {
+                    access_type: 'offline',
+                    prompt: 'consent',
+                },
+                skipBrowserRedirect: false,
+            },
+        });
+
+        if (error) throw error;
+        // Googleの認証ページへリダイレクト
+        res.redirect(data.url);
+
+    } catch (err) {
+        console.error("Link Gen Error:", err);
+        res.status(500).json({ error: '認証リダイレクトに失敗しました' });
+    }
+};
+
+// 2. Callback処理 (ハッシュフラグメントからトークンを取得してCookieセット)
+exports.oauthCallback = async (req, res) => {
+    try {
+        // Implicit Flowの場合、トークンはハッシュフラグメントに来るので
+        // フロントエンド側で処理する必要がある
+        // 一時的なHTMLページを返してJavaScriptでハッシュを処理
+        const html = `
+<!DOCTYPE html>
+<html>
+<head>
+    <title>認証中...</title>
+</head>
+<body>
+    <h1>認証処理中...</h1>
+    <script>
+        // ハッシュフラグメントからaccess_tokenを取得
+        const hash = window.location.hash.substring(1);
+        const params = new URLSearchParams(hash);
+        const access_token = params.get('access_token');
+        const refresh_token = params.get('refresh_token');
+        
+        if (access_token) {
+            // バックエンドにトークンを送信してCookieをセット
+            fetch('/auth/set-session', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ access_token, refresh_token }),
+                credentials: 'include'
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = 'http://localhost:5173/home';
+                } else {
+                    window.location.href = 'http://localhost:5173/login?error=session_failed';
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                window.location.href = 'http://localhost:5173/login?error=server_error';
+            });
+        } else {
+            window.location.href = 'http://localhost:5173/login?error=no_token';
+        }
+    </script>
+</body>
+</html>
+        `;
+
+        res.send(html);
+
+    } catch (err) {
+        console.error("OAuth Callback Error:", err);
+        res.redirect('http://localhost:5173/login?error=server_error');
+    }
+};
+
+// 3. セッション設定（トークンを受け取ってCookieにセット）
+exports.setSession = async (req, res) => {
+    try {
+        const { access_token, refresh_token } = req.body;
+
+        if (!access_token) {
+            return res.status(400).json({ success: false, error: 'トークンが不足しています' });
+        }
+
+        // トークンを使ってSupabaseからユーザー情報を取得
+        const { data: { user }, error } = await supabase.auth.getUser(access_token);
+
+        if (error || !user) {
+            return res.status(401).json({ success: false, error: '無効なトークンです' });
+        }
+
+        // DB同期: 独自のusersテーブルを確認・作成
+        let dbUser = await userModel.findById(user.id);
+
+        if (!dbUser) {
+            console.log("SSO First Login: Creating user record...", user.id);
+            const name = user.user_metadata.full_name || user.user_metadata.name || user.email.split('@')[0];
+            try {
+                dbUser = await userModel.createUser(user.id, user.email, name);
+            } catch (createError) {
+                console.error("SSO Create User Error:", createError);
+                return res.status(500).json({ success: false, error: 'ユーザー作成に失敗しました' });
+            }
+        }
+
+        // HTTP-only Cookieをセット
+        res.cookie('token', access_token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 24 * 60 * 60 * 1000
+        });
+
+        // Check and unlock achievements for new or returning users
+        try {
+            const achievementModel = require('../models/achievement');
+            await achievementModel.checkAndUnlockAchievements(user.id);
+        } catch (achievementError) {
+            console.error("Achievement check error during login:", achievementError);
+            // Don't fail login if achievement check fails
+        }
+
+        res.json({ success: true, user: dbUser });
+
+    } catch (err) {
+        console.error("Set Session Error:", err);
+        res.status(500).json({ success: false, error: '認証処理に失敗しました' });
+    }
+};

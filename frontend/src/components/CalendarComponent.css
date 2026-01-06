@@ -1,0 +1,84 @@
+/* CalendarComponent.css */
+
+/* react-calendar overrides */
+.react-calendar {
+    width: 100% !important;
+    background: transparent !important;
+    border: none !important;
+    font-family: 'Kiwi Maru', serif !important;
+}
+
+/* Header */
+.react-calendar__navigation {
+    margin-bottom: 1rem;
+}
+
+.react-calendar__navigation button {
+    color: #db2777;
+    font-weight: bold;
+    font-size: 1.1rem;
+    border-radius: 12px;
+}
+
+.react-calendar__navigation button:enabled:hover,
+.react-calendar__navigation button:enabled:focus {
+    background-color: #ffe4e6 !important;
+    /* pink-100 */
+}
+
+/* Weekdays */
+.react-calendar__month-view__weekdays {
+    color: #9ca3af;
+    /* gray-400 */
+    font-weight: bold;
+    text-decoration: none !important;
+    font-size: 0.9rem;
+}
+
+.react-calendar__month-view__weekdays__weekday abbr {
+    text-decoration: none;
+}
+
+/* Days */
+.react-calendar__tile {
+    padding: 10px 6px !important;
+    border-radius: 12px;
+    font-weight: bold;
+    color: #4b5563;
+    /* gray-600 */
+    transition: all 0.2s;
+}
+
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+    background-color: #fff0f5 !important;
+    color: #db2777;
+}
+
+/* Selected Day */
+.react-calendar__tile--active,
+.react-calendar__tile--active:enabled:hover,
+.react-calendar__tile--active:enabled:focus {
+    background: #db2777 !important;
+    color: white !important;
+    box-shadow: 0 4px 6px -1px rgba(219, 39, 119, 0.3);
+}
+
+/* Current Day */
+.react-calendar__tile--now {
+    background: transparent !important;
+    border: 2px solid #fbcfe8 !important;
+    /* pink-200 */
+    color: #db2777 !important;
+}
+
+.react-calendar__tile--now:enabled:hover,
+.react-calendar__tile--now:enabled:focus {
+    background: #fff0f5 !important;
+}
+
+/* Weekend colors (Optional) */
+.react-calendar__month-view__days__day--weekend {
+    color: #f472b6;
+    /* pink-400 */
+}

@@ -1,20 +1,20 @@
-import React, { useState } from "react"
+import React from "react"
 import { BrowserRouter } from "react-router-dom"
 import AppRoutes from "./routes/AppRoutes"
+import { AuthProvider } from "./contexts/AuthContext"
 import { TasksProvider } from "./contexts/TasksContext"
-
-export const HistoryContext = React.createContext();
+import { HistoryProvider } from "./contexts/HistoryContext"
 
 function App() {
-  const [history, setHistory] = useState([]);
-
   return (
     <BrowserRouter>
-      <TasksProvider>
-        <HistoryContext.Provider value={{ history, setHistory }}>
-          <AppRoutes />
-        </HistoryContext.Provider>
-      </TasksProvider>
+      <AuthProvider>
+        <TasksProvider>
+          <HistoryProvider>
+            <AppRoutes />
+          </HistoryProvider>
+        </TasksProvider>
+      </AuthProvider>
     </BrowserRouter>
   )
 }

@@ -7,8 +7,9 @@ exports.generateCompliment = async (req, res) => {
         console.log("[DEBUG] Starting generateCompliment function"); // デバッグ開始ログ
         const { user_id, letter_id, letter_message, mode } = req.body;
 
-        if (!letter_id || !letter_message) {
-            return res.status(400).json({ error: 'letter_id と letter_message が必要です' });
+        // letter_id は未ログイン(ゲスト)の場合は null になることがあるため必須チェックから除外
+        if (!letter_message) {
+            return res.status(400).json({ error: 'letter_message が必要です' });
         }
 
         // Gemini APIで褒め言葉生成
@@ -40,40 +41,68 @@ exports.generateCompliment = async (req, res) => {
                         * 3行目以降: 褒め言葉の本文を書く。
                         `;
 
-        const rawResponse = await geminiService.generateCompliment(prompt);
-
-        const parts = rawResponse.split('\n---\n');
-
         let titleText = "お手紙をくれたあなたへ"; // デフォルトタイトル
         let complimentText = "";
+        let positiveAspects = [];
 
-        if (parts.length >= 2) {
-            // 1行目がタイトル
-            titleText = parts[0].trim(); 
-            // 2つ目以降（デリミタ以降）が本文
-            complimentText = parts.slice(1).join('\n---\n').trim();
-        } else {
-            // もしGeminiが指示に従わなかった場合
-            console.warn("Geminiが期待した形式（---区切り）で返答しませんでした。");
-            complimentText = rawResponse; // とりあえず全部を本文とする
+        try {
+            const rawResponse = await geminiService.generateCompliment(prompt);
+            const parts = rawResponse.split('\n---\n');
+
+            if (parts.length >= 2) {
+                titleText = parts[0].trim();
+                complimentText = parts.slice(1).join('\n---\n').trim();
+            } else {
+                console.warn("Geminiが期待した形式（---区切り）で返答しませんでした。");
+                complimentText = rawResponse;
+            }
+
+            // 褒める対象を抽出
+            positiveAspects = await geminiService.extractPositiveAspects(letter_message);
+
+        } catch (geminiError) {
+            console.error("[ERROR] Gemini API failed:", geminiError);
+            // フォールバック（API制限時など）
+            const praiseMessages = [
+                "いつも頑張っていてえらい！",
+                "その気持ち、すごく素敵だよ！",
+                "無理しないでね、応援してるよ！",
+                "すごい！その調子！",
+                "今日も一日お疲れ様！"
+            ];
+            complimentText = praiseMessages[Math.floor(Math.random() * praiseMessages.length)];
+            titleText = "元気を出してね";
+            positiveAspects = ["努力", "継続"];
         }
-
-        // 褒める対象を抽出（例: キーワード解析）
-        const positiveAspects = await geminiService.extractPositiveAspects(letter_message);
 
         //console.log("[DEBUG] Positive aspects extracted:", positiveAspects); // ポジティブ要素ログ
 
-        // DB保存(後で実装)
-        // const happinessId = await complimentModel.saveCompliment({
-        //      userId: user_id,
-        //      letterId: letter_id,
-        //      compliment: complimentText,
-        //      positiveAspects
-        //  });
-        //console.log("[DEBUG] Compliment saved with ID:", happinessId); // 保存ログ
+        // DB保存 (ログインユーザーのみ)
+        let happinessId = null;
+        if (user_id) {
+            try {
+                const savedData = await complimentModel.saveCompliment(
+                    user_id,
+                    letter_id,
+                    complimentText,
+                    positiveAspects,
+                    titleText, // タイトルも保存
+                    mode || 'ほめマックス' // モードも保存
+                );
+                happinessId = savedData ? savedData.happiness_id : null;
+                console.log("[DEBUG] Compliment saved with ID:", happinessId);
+            } catch (saveError) {
+                console.error("[ERROR] Failed to save compliment:", saveError);
+                // 失敗してもレスポンスは返す（ユーザーには褒め言葉を見せる）
+            }
+        }
 
-        //res.json({ happiness_id: happinessId, compliment: complimentText, positive_aspects: positiveAspects });
-        res.json({ title: titleText, compliment: complimentText, positive_aspects: positiveAspects  });
+        res.json({
+            happiness_id: happinessId,
+            title: titleText,
+            compliment: complimentText,
+            positive_aspects: positiveAspects
+        });
     } catch (err) {
         console.error("[ERROR] generateCompliment error:", err); // エラーログ
         res.status(500).json({ error: '褒め言葉生成エラー' });

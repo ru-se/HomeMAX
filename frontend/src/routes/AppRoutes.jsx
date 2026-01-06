@@ -1,55 +1,69 @@
-// ルーティング設定
-
 import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom';
-import Start from '../pages/Start'
-import Signup from '../pages/Signup'
+import Start from '../pages/Start';
+import SignupForm from '../features/Auth/SignupForm'
 import Home from '../pages/Home';
-import Tasks from '../pages/Tasks';
+import Login from '../features/Auth/LoginForm';
 import History from '../pages/History';
-import Settings from '../pages/Settings';
-import Login from '../pages/Login';
-import Analysis from '../pages/Analysis' ;
+import GrowthRecord from '../pages/GrowthRecord';
+import SharedLetter from '../pages/SharedLetter';
+import AuthCallback from '../pages/AuthCallback';
+import Achievements from '../pages/Achievements';
+import Profile from '../pages/Profile';
+import { useAuth } from '../contexts/AuthContext';
 
+// Protected Route Component
+const ProtectedRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+  if (loading) return <div>Loading...</div>;
+  if (!user) return <Navigate to="/login" replace />;
+  return children;
+};
 
 const AppRoutes = () => {
+  const { user, loading } = useAuth();
 
-// 認証状態を管理するためのフラグ
-// 仮でtrueに設定しているが、実際には認証状態を管理するためのロジックを実装する
-  const isAuthenticated = true;
+  if (loading) {
+    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  }
 
   return (
     <Routes>
+      {/* Public Routes */}
+      <Route path="/home" element={<Home />} />
+      <Route path="/share/:token" element={<SharedLetter />} />
+      <Route path="/signup" element={user ? <Navigate to="/home" /> : <SignupForm />} />
+      <Route path="/login" element={user ? <Navigate to="/home" /> : <Login />} />
+      <Route path="/auth/callback" element={<AuthCallback />} />
+
+      {/* Protected Routes */}
+      {/* Protected Routes */}
+      <Route path="/history" element={
+        <ProtectedRoute>
+          <History />
+        </ProtectedRoute>
+      } />
+      <Route path="/growth" element={
+        <ProtectedRoute>
+          <GrowthRecord />
+        </ProtectedRoute>
+      } />
+      <Route path="/achievements" element={
+        <ProtectedRoute>
+          <Achievements />
+        </ProtectedRoute>
+      } />
+      <Route path="/profile" element={
+        <ProtectedRoute>
+          <Profile />
+        </ProtectedRoute>
+      } />
+
+      {/* Default Redirect */}
       <Route path="/" element={<Start />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/login" element={<Login />} />
-
-      {/* 認証が必要なルート */}
-      {isAuthenticated ? (
-        <>
-          {/* 認証後にアクセスできるページ */}
-          <Route path="/home" element={<Home />} />
-          <Route path="/tasks" element={<Tasks />} />
-          <Route path="/history" element={<History />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/analysis" element={<Analysis />} />
-          {/* ログイン後にリダイレクトするページ */}
-        </>
-      ) : (
-        <>
-          {/* 未認証の場合にログインにリダイレクト */}
-          <Route path="/home" element={<Navigate to="/" />} />
-          <Route path="/tasks" element={<Navigate to="/" />} />
-          <Route path="/history" element={<Navigate to="/" />} />
-          <Route path="/settings" element={<Navigate to="/" />} />
-          <Route path="/analysis" element={<Navigate to="/" />} />
-        </>
-      )}
-      {/* その他の場合はStartにリダイレクト */}
-      <Route path="*" element={<Navigate to="/" />} />
-
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
-  )
-}
+  );
+};
 
-export default AppRoutes
+export default AppRoutes;

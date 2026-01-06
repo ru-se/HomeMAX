@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef, useContext } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, Link } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 import Menu from '../components/menu/Menu'
 import { ToastContainer, toast, Slide } from 'react-toastify'
 import { useTasks } from '../contexts/TasksContext'
-import { HistoryContext } from '../App'
+import { HistoryContext } from '../contexts/HistoryContext'
 import VoiceInputSimple from '../components/VoiceInputSimple'
 import HomemaxAnimated from '../components/HomemaxAnimated'
 import TutorialModal from '../components/TutorialModal'
+import BottomNav from '../components/navigation/BottomNav'
 import { FaEnvelopeOpenText } from 'react-icons/fa' //封筒アイコン
 import { FaTimesCircle } from 'react-icons/fa' //閉じるボタンのアイコン
 import '../styles/Home.css'
@@ -21,21 +23,23 @@ const Home = () => {
   const [modeName, setModeName] = useState('ほめマックス')
   const [showTutorial, setShowTutorial] = useState(false)
   const [title, setTitle] = useState('お手紙をくれたあなたへ')
-  
+  const [happinessId, setHappinessId] = useState(null)
+
   const location = useLocation()
   const hasRun = useRef(false)
   const hasShownTutorial = useRef(false)
   const { completeTaskByTitle } = useTasks()
   const { history, setHistory } = useContext(HistoryContext)
+  const { user, logout } = useAuth()
   const speechSynthesis = window.speechSynthesis
 
   const [isComplimentReady, setIsComplimentReady] = useState(false) // 褒め言葉の生成が完了したか
   const [isComplimentVisible, setIsComplimentVisible] = useState(false) // ユーザーが手紙を開いたか
-  
-  const [isInputVisible, setIsInputVisible] = useState(true) //入力ボックスの表示状態
-  
 
-  
+  const [isInputVisible, setIsInputVisible] = useState(true) //入力ボックスの表示状態
+
+
+
 
   // Start→Home 遷移時に表示（「今後表示しない」設定がなければ）
   useEffect(() => {
@@ -63,18 +67,18 @@ const Home = () => {
   useEffect(() => {
     if (location.state && location.state.signupSuccess && !hasRun.current) {
       hasRun.current = true
-      ;(async () => {
-        try {
-          const taskRes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/task/update`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ task_title: "ログイン" }),
-          })
-          const taskData = await taskRes.json()
-          toast(`${taskData.task_name}`, { style: { background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)' } })
-        } catch (e) {}
-      })()
+        ; (async () => {
+          try {
+            const taskRes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/task/update`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({ task_title: "ログイン" }),
+            })
+            const taskData = await taskRes.json()
+            toast(`${taskData.task_name}`, { style: { background: 'linear-gradient(90deg, #FFE3E3, #FFE3E3)' } })
+          } catch (e) { }
+        })()
       window.history.replaceState({}, document.title)
     }
   }, [location.state])
@@ -110,10 +114,10 @@ const Home = () => {
   const pickCuteJapaneseVoice = (voices) => {
     const ja = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('ja'))
     const candidates = [
-    'Google 日本語', 'Kyoko', 'Kyoko (Enhanced)', 'Otoya',
-    'Microsoft Nanami', 'Microsoft Haruka', 'Nanami', 'Haruka',
-    'Siri' // iOS系で日本語Siriが返ることがある
-  ]
+      'Google 日本語', 'Kyoko', 'Kyoko (Enhanced)', 'Otoya',
+      'Microsoft Nanami', 'Microsoft Haruka', 'Nanami', 'Haruka',
+      'Siri' // iOS系で日本語Siriが返ることがある
+    ]
     return ja.find(v => candidates.some(name => v.name.includes(name))) || ja[0] || null
   }
 
@@ -158,19 +162,19 @@ const Home = () => {
 
   // 端末のボイス一覧をロード（voiceschanged にも対応）
   useEffect(() => {
-  const loadVoices = () => {
-    const voices = window.speechSynthesis?.getVoices() || []
-    setVoices(voices)
-    const v = pickCuteJapaneseVoice(voices)
-    setPreferredVoice(v)
-    // デバッグ用ログ（選ばれた声と候補一覧）
-    console.log('[TTS] available voices:', voices.map(x => `${x.name} (${x.lang})`))
-    console.log('[TTS] selected voice:', v ? `${v.name} (${v.lang})` : 'none (fallback to default)')
-  }
-  loadVoices()
-  window.speechSynthesis?.addEventListener('voiceschanged', loadVoices)
-  return () => window.speechSynthesis?.removeEventListener('voiceschanged', loadVoices)
-}, [])
+    const loadVoices = () => {
+      const voices = window.speechSynthesis?.getVoices() || []
+      setVoices(voices)
+      const v = pickCuteJapaneseVoice(voices)
+      setPreferredVoice(v)
+      // デバッグ用ログ（選ばれた声と候補一覧）
+      console.log('[TTS] available voices:', voices.map(x => `${x.name} (${x.lang})`))
+      console.log('[TTS] selected voice:', v ? `${v.name} (${v.lang})` : 'none (fallback to default)')
+    }
+    loadVoices()
+    window.speechSynthesis?.addEventListener('voiceschanged', loadVoices)
+    return () => window.speechSynthesis?.removeEventListener('voiceschanged', loadVoices)
+  }, [])
 
   // 音声読み上げ
   const speakCompliment = (text) => {
@@ -183,6 +187,7 @@ const Home = () => {
     utterance.pitch = pitch
     const v = voiceForMode() || preferredVoice
     if (v) utterance.voice = v
+    console.log('[CAPTURED_PRAISE] ' + stripEmojis(text)); // Explicit logging for verification
     speechSynthesis.speak(utterance)
   }
 
@@ -200,20 +205,27 @@ const Home = () => {
     setIsInputVisible(false);
 
     try {
-      const letterRes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/letter/addLetter`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ user_id: userId, message: textToSend }),
-      })
-      const letterData = await letterRes.json()
-      const letter_id = letterData.result.insertId
+      let letter_id = null;
+
+      // ユーザーがログインしている場合のみ、手紙をDBに保存
+      if (user) {
+        const letterRes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/letter/addLetter`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ user_id: user.user_id, message: textToSend }),
+        })
+        const letterData = await letterRes.json()
+        // result is the letter object directly (or inside result property depending on controller)
+        // Controller returns: { message: "...", result: { letter_id: "...", ... } }
+        letter_id = letterData.result ? letterData.result.letter_id : null
+      }
 
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/compliment/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          user_id: userId,
+          user_id: user ? user.user_id : null,
           letter_id: letter_id,
           letter_message: textToSend,
           mode: modeName,
@@ -222,6 +234,7 @@ const Home = () => {
 
       const data = await response.json()
       setCompliment(data.compliment)
+      setHappinessId(data.happiness_id) // Add this
       // speakCompliment(data.compliment)
       setTitle(data.title)
 
@@ -237,10 +250,11 @@ const Home = () => {
 
       setUserMessage('')
       setIsComplimentReady(true) // 褒め言葉の生成が完了したことを通知
-      
+
     } catch (error) {
       console.error('Error sending message:', error)
       toast.error('送信に失敗しました')
+      setIsInputVisible(true); // エラー時は入力を復帰
     } finally {
       setIsLoading(false)
     }
@@ -248,28 +262,28 @@ const Home = () => {
 
   const handleOpenLetter = () => {
     if (compliment && isComplimentReady) {
-        
-        // 封筒DOM要素を取得
-        const envelope = document.getElementById('envelope-animation');
-        
-        if (envelope) {
-            // 3Dアニメーションを開始
-            envelope.classList.add('open');
 
-            // アニメーション完了を待って、褒め言葉のボックスと読み上げを表示
-            // CSSアニメーション時間(0.6s + 0.3s遅延)よりも少し長く待機
-            setTimeout(() => {
-                setIsComplimentVisible(true); 
-                speakCompliment(compliment);
-                setIsComplimentReady(false); // 封筒を消す
-            }, 1000); // 1000ms (1秒) 待機
-            
-        } else {
-            // DOM要素が見つからない場合はすぐに表示
-            setIsComplimentVisible(true);
-            speakCompliment(compliment);
-            setIsComplimentReady(false);
-        }
+      // 封筒DOM要素を取得
+      const envelope = document.getElementById('envelope-animation');
+
+      if (envelope) {
+        // 3Dアニメーションを開始
+        envelope.classList.add('open');
+
+        // アニメーション完了を待って、褒め言葉のボックスと読み上げを表示
+        // CSSアニメーション時間(0.6s + 0.3s遅延)よりも少し長く待機
+        setTimeout(() => {
+          setIsComplimentVisible(true);
+          speakCompliment(compliment);
+          setIsComplimentReady(false); // 封筒を消す
+        }, 1000); // 1000ms (1秒) 待機
+
+      } else {
+        // DOM要素が見つからない場合はすぐに表示
+        setIsComplimentVisible(true);
+        speakCompliment(compliment);
+        setIsComplimentReady(false);
+      }
     }
   }
 
@@ -277,13 +291,20 @@ const Home = () => {
 
 
   const modes = [
-    { value: 'ほめマックス', label: 'ノーマル', emoji: '😊' ,fontClass: 'font-kiwi-maru'},
-    { value: 'ギャルです。ギャル語を使って話します。絵文字をたくさん使います。', label: 'ギャル', emoji: '💖' , fontClass: 'font-hachi-maru-pop'},
-    { value: '病んでる人です。ネガティブなことを言います。人のこのは褒めるけど自分と比べてさらに病みます。', label: '病み', emoji: '😢' , fontClass: 'font-shippori-mincho'},
-    { value: 'オタクです。語尾は「ござる」や「でござるよ」です。Twitterで使われるネットミームを使います。', label: 'オタク', emoji: '🤓' , fontClass: 'font-dot-gothic16'},
+    { value: 'ほめマックス', label: 'ノーマル', emoji: '😊', fontClass: 'font-kiwi-maru' },
+    { value: 'ギャルです。ギャル語を使って話します。絵文字をたくさん使います。', label: 'ギャル', emoji: '💖', fontClass: 'font-hachi-maru-pop' },
+    { value: '病んでる人です。ネガティブなことを言います。人のこのは褒めるけど自分と比べてさらに病みます。', label: '病み', emoji: '😢', fontClass: 'font-shippori-mincho' },
+    { value: 'オタクです。語尾は「ござる」や「でござるよ」です。Twitterで使われるネットミームを使います。', label: 'オタク', emoji: '🤓', fontClass: 'font-dot-gothic16' },
   ]
 
-    //モード名から宛名を生成する関数
+  // ユーザーレベルを取得 (簡易的にuserオブジェクトから、もしくはapiから取得)
+  // 現状userオブジェクトにlevelが入っていないため、本来は /auth/me とかで取得すべきだが
+  // ここでは簡易的に user?.level を参照 (バックエンドの改修に合わせて)
+  const userLevel = user?.level || 1; // デフォルト Lv1
+
+  //モード名から宛名を生成する関数
+
+  //モード名から宛名を生成する関数
   const generateAddress = (mode) => {
     switch (mode) {
       case 'ほめマックス':
@@ -308,18 +329,73 @@ const Home = () => {
     if (speechSynthesis && speechSynthesis.speaking) {
       speechSynthesis.cancel();
     }
-    
+
     // 2. 褒め言葉の表示を閉じる
     setCompliment('');
     setIsComplimentVisible(false);
-    
+
     // 3. 入力ボックスとモード選択を再表示
     setIsInputVisible(true);
   }
 
 
+  // Touch Reaction Logic
+  const handleCharacterTouch = () => {
+    let reactions = ['えへへ', 'くすぐったいよ', 'もっと褒めて！', '大好き！', 'なでなで...嬉しいな']; // Default
+
+    if (modeName.includes('ギャル')) {
+      reactions = ['ウケるw', 'かわちい〜', 'それな！', 'テンアゲ！', '最高かよ'];
+    } else if (modeName.includes('病み')) {
+      reactions = ['ふふ...', '私なんて...', '優しくしないで...', '...ありがとう', '消えたいくらい嬉しい...'];
+    } else if (modeName.includes('オタク')) {
+      reactions = ['デュフw', '尊い...', '神エモ...', 'ありよりのあり...', '推し変不可避...'];
+    }
+
+    const randomReaction = reactions[Math.floor(Math.random() * reactions.length)];
+    speakCompliment(randomReaction);
+  };
+
+  // Background color based on mode
+  const getBackgroundColor = () => {
+    switch (modeName) {
+      case 'ギャルです。ギャル語を使って話します。絵文字をたくさん使います。':
+        return 'bg-[#ffebf5]'; // Vivid Pink-ish
+      case '病んでる人です。ネガティブなことを言います。人のこのは褒めるけど自分と比べてさらに病みます。':
+        return 'bg-[#f3e5f5]'; // Pale Purple
+      case 'オタクです。語尾は「ござる」や「でござるよ」です。Twitterで使われるネットミームを使います。':
+        return 'bg-[#e0f7fa]'; // Cyan-ish
+      default:
+        return 'bg-[#fff0f5]'; // Default
+    }
+  }
+
+  // Thinking Bubble Logic
+  const [thinkingState, setThinkingState] = useState({ text: 'うんうん...', side: 'right' });
+  useEffect(() => {
+    if (!isLoading) return;
+    const phrases = [
+      'うんうん...',
+      'なるほど...',
+      '何て書こうかな...',
+      'これわかるなぁ...',
+      '一生懸命考え中...',
+      'ちょっと待ってね...',
+      '心を込めて...',
+    ];
+    let index = 0;
+    const interval = setInterval(() => {
+      index = (index + 1) % phrases.length;
+      setThinkingState({
+        text: phrases[index],
+        side: index % 2 === 0 ? 'right' : 'left'
+      });
+    }, 2000); // Change every 2 seconds
+    return () => clearInterval(interval);
+  }, [isLoading]);
+
+
   return (
-    <div className='h-screen w-screen overflow-hidden bg-gradient-to-br from-pink-50 via-white to-blue-50 flex flex-col relative'>
+    <div className={`h-screen w-screen overflow-hidden ${getBackgroundColor()} flex flex-col relative transition-colors duration-1000`}>
       {/* 背景パーティクル（背面レイヤー） */}
       <ParticleField />
       <ToastContainer
@@ -341,71 +417,134 @@ const Home = () => {
       {showTutorial && (
         <TutorialModal
           onClose={handleTutorialClose}
-         onSubmit={handleTutorialSubmit}
+          onSubmit={handleTutorialSubmit}
         />
       )}
 
-      {/* メニュー */}
+      {/* ログイン/サインアップボタン (未ログイン時) */}
+      {!user && (
+        <div className="absolute top-4 right-4 z-50 flex gap-3 font-kiwi-maru">
+          <Link to="/login" className="bg-white/80 hover:bg-white text-gray-600 px-4 py-2 rounded-full shadow-sm text-sm font-bold transition-all">
+            ログイン
+          </Link>
+          <Link to="/signup" className="bg-pink-400 hover:bg-pink-500 text-white px-4 py-2 rounded-full shadow-md text-sm font-bold transition-all">
+            新規登録
+          </Link>
+        </div>
+      )}
+
+      {/* 簡素化されたヘッダー (ログイン時) */}
+      {user && (
+        <div className="absolute top-4 right-4 z-50 flex gap-3 font-kiwi-maru items-center">
+          <div className="bg-white/80 backdrop-blur px-4 py-2 rounded-full shadow-sm">
+            <span className="text-pink-500 font-bold text-sm">なでなで{user.level}回目💕</span>
+          </div>
+          <div className="bg-white/80 backdrop-blur px-4 py-2 rounded-full shadow-sm">
+            <span className="text-gray-600 text-sm font-bold">{user.username}さん</span>
+          </div>
+          <button onClick={logout} className="bg-white/80 hover:bg-white text-gray-600 px-4 py-2 rounded-full shadow-sm text-sm font-bold transition-all">
+            ログアウト
+          </button>
+        </div>
+      )}
+
+      {/* メニュー (ログイン時のみなど、必要に応じて) */}
       {/* <Menu /> */}
 
       {/* メインコンテンツ */}
-      <div className="flex-1 flex flex-col items-center justify-start pt-4 px-4 md:px-8 relative z-10 font-kiwi-maru">
-        {/* ほめマックスキャラクター */}
-        <div className="mb-4 md:mb-6">
-          <HomemaxAnimated isLoading={isLoading} mode={currentMode.value} />
-        </div>
-
-        {/* メッセージ表示エリア */}
-
-    {/* min-hを削除し、封筒の高さ分確保します */}
-    <div className="w-full max-w-3xl mb-4 flex flex-col justify-center items-center">
-            {/* 1. 手紙を開く（封筒）コンポーネント */}
-        {isComplimentReady && !isComplimentVisible && (
-          <>
-          <div className="text-pink-500 font-extrabold text-lg mb-2 animate-bounce">
-                タップして開けてね！
+      <div className={`flex-1 flex flex-col items-center justify-start pt-4 px-4 md:px-8 relative font-kiwi-maru overflow-hidden ${getBackgroundColor()} transition-colors duration-1000`}>
+        <ParticleField />
+        <div className="relative z-10 w-full flex flex-col items-center">
+          {/* ほめマックスキャラクター */}
+          <div className="mb-4 md:mb-6 relative">
+            {/* Thinking Bubble */}
+            {isLoading && (
+              <div
+                className={`
+                  absolute z-20 animate-bounce-in transition-all duration-500
+                  top-0 md:top-4
+                  ${thinkingState.side === 'right' ? '-right-2 md:-right-24' : '-left-2 md:-left-24'}
+                `}
+              >
+                <div
+                  className={`
+                    relative bg-white p-4 shadow-lg border-2 border-pink-200 min-w-[140px] text-center
+                    rounded-3xl
+                    ${thinkingState.side === 'right' ? 'rounded-bl-none' : 'rounded-br-none'}
+                  `}
+                >
+                  <p className="text-[#db2777] font-bold text-sm animate-pulse">{thinkingState.text}</p>
+                  {/* Bubble Tail */}
+                  <div
+                    className={`
+                      absolute -bottom-2 w-4 h-4 bg-white border-pink-200 transform 
+                      ${thinkingState.side === 'right'
+                        ? 'left-4 border-b-2 border-r-2 rotate-45'
+                        : 'right-4 border-b-2 border-l-2 -rotate-45'
+                      }
+                    `}
+                  ></div>
+                </div>
               </div>
-          
-            <div className="scene">
-                {/* クリックイベントを封筒全体に適用 */}
-                <div 
-                    className="envelope" 
+            )}
+            <HomemaxAnimated
+              isLoading={isLoading}
+              mode={currentMode.value}
+              onTouch={handleCharacterTouch}
+            />
+          </div>
+
+          {/* メッセージ表示エリア */}
+
+          {/* min-hを削除し、封筒の高さ分確保します */}
+          <div className="w-full max-w-3xl mb-6 flex flex-col justify-center items-center">
+            {/* 1. 手紙を開く（封筒）コンポーネント */}
+            {isComplimentReady && !isComplimentVisible && (
+              <>
+                <div className="text-pink-500 font-extrabold text-lg mb-2 animate-bounce">
+                  タップして開けてね！
+                </div>
+
+                <div className="scene">
+                  {/* クリックイベントを封筒全体に適用 */}
+                  <div
+                    className="envelope"
                     onClick={handleOpenLetter} // ボタンの代わり
                     id="envelope-animation" // JSでクラスをトグルするために使用
-                >
+                  >
                     <div className="flap"></div>
-                    
+
                     {/* 中の手紙は、ここでは褒め言葉そのものではなく、単なる表示用として残します */}
                     <div className="letter">
-                        <p>　</p>
+                      <p>　</p>
                     </div>
+                  </div>
                 </div>
-            </div>
-          </>
-        )}
+              </>
+            )}
 
-          {/* 2. 褒め言葉の表示 */}
-          {isComplimentVisible && compliment && (
-            <div 
-              className="fixed inset-0 z-40" // z-40 は手紙の z-50 より小さくする
-              onClick={handleCloseCompliment} // 背景クリックで閉じる関数を呼び出す
-            >
-
-    <div
-      className="fixed bottom-5 inset-x-0 flex justify-center z-50 px-8"
-      onClick={(e) => e.stopPropagation()} // 手紙外だけで閉じる
-    >
+            {/* 2. 褒め言葉の表示 */}
+            {isComplimentVisible && compliment && (
               <div
-                 onClick={(e) => e.stopPropagation()} // 手紙内クリックは閉じない
-                // 変更前: className="w-full bg-gradient-to-br from-pink-100 to-purple-100 rounded-3xl p-6 shadow-2xl border-4 border-pink-300 animate-bounce-in text-center"
+                className="fixed inset-0 z-40 flex items-center justify-center p-4 bg-black/20 backdrop-blur-sm" // Flex center & backdrop styles
+                onClick={handleCloseCompliment}
+              >
 
-                //お手紙風デザインの適用
-                className={`
+                <div
+                  className="w-full max-w-3xl flex flex-col items-center" // Simple container, no fixed position
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div
+                    onClick={(e) => e.stopPropagation()} // 手紙内クリックは閉じない
+                    // 変更前: className="w-full bg-gradient-to-br from-pink-100 to-purple-100 rounded-3xl p-6 shadow-2xl border-4 border-pink-300 animate-bounce-in text-center"
+
+                    //お手紙風デザインの適用
+                    className={`
                   relative 
                   bg-[#ffdacc] 
                   shadow-lg shadow-yellow-300/50 
                   border-2 border-dashed border-white 
-                  p-6 sm:p-8 
+                  p-2 sm:p-4
                   text-[#454545]
                   w-full
                   animate-bounce-in 
@@ -415,102 +554,135 @@ const Home = () => {
 
                   max-w-3xl
                   
-                  
-           
-
-                  max-h-[17em] overflow-y-auto
-                  letter-scrollbar
+                  flex flex-col
                   
                   /* 5pxの枠線に見えるようにシャドウとボーダーを調整 */
                   // [box-shadow:0px_0px_0px_5px_#ffdacc]
                 `}
-                
-              >
-                {/* ★ 追加: 閉じるボタン */}
-                 {/* <button 
-                    onClick={handleCloseCompliment}
-                    className="absolute  text-4xl text-gray-500 hover:text-gray-700 transition duration-150"
-                 >
-                  <FaTimesCircle />
-                 </button> */}
-                 <p 
-                  className={`text-xl font-bold leading-[2.5em] [background-image:linear-gradient(180deg,#9C6924_1px,transparent_1px)] [background-size:100%_2.5em] text-left {x} ${currentMode.fontClass}`}             
-                  style={{
-                      // パディングを調整し、線の描画位置を制御
-                      paddingTop: '5px', 
-                      paddingBottom: '5px',
-                      paddingBottom: '20px',
-                      // line-height が 2.5em に固定されるため、テキストが線の高さに合わせて表示されます
-                  }}
+
                   >
+                    {/* ★ 追加: 閉じるボタン */}
+                    <button
+                      onClick={handleCloseCompliment}
+                      className="absolute top-2 right-2 text-3xl text-[#9C6924] hover:text-pink-500 transition duration-150 z-50 p-2"
+                      aria-label="閉じる"
+                    >
+                      <FaTimesCircle />
+                    </button>
 
-                    {/* 線の描画はpタグ全体に適用されているため、<p>要素を分けます */}
-                    <span className="block text-center mb-2 text-2xl font-extrabold text-[#9C6924]">
-                        {title}
-                    </span>
-                    {/* <span className="block border-t border-dashed border-[#9C6924]/50 my-2"></span>  */}
+                    {/* スクロール可能エリア */}
+                    <div className="max-h-[15em] overflow-y-auto letter-scrollbar px-4 sm:px-6 py-4">
+                      {/* コンテンツラッパー */}
+                      <div
+                        className={`text-xl font-bold leading-[2.5em] [background-image:linear-gradient(180deg,#9C6924_1px,transparent_1px)] [background-size:100%_2.5em] text-left ${currentMode.fontClass}`}
+                        style={{
+                          paddingTop: '5px',
+                          paddingBottom: '20px',
+                        }}
+                      >
 
-                    {/* 褒め言葉本体 */}
-                    {compliment}
-                    <span className="block border-t border-dashed border-[#9C6924]/50 my-2"></span> 
-                    <span className="block text-center mb-2 text-2xl font-extrabold text-[#9C6924]">
-                        {currentAddress}より
-                    </span>
+                        <div className="text-center mb-2 text-2xl font-extrabold text-[#9C6924]">
+                          {title}
+                        </div>
 
-                  </p>             
-               </div>
-               </div>
-               </div>
-            )}
+                        {/* 褒め言葉本体 */}
+                        <div className="whitespace-pre-wrap">
+                          {compliment}
+                        </div>
 
-            {/* 3. ローディング表示 */}
-            {isLoading && (
-              <div className="bg-white/90 backdrop-blur rounded-3xl p-6 shadow-lg flex items-center justify-center">
-                <div className="flex space-x-2">
-                  <div className="w-3 h-3 bg-pink-400 rounded-full animate-bounce"></div>
-                  <div className="w-3 h-3 bg-purple-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                  <div className="w-3 h-3 bg-blue-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                        <div className="border-t border-dashed border-[#9C6924]/50 my-4"></div>
+                        <div className="text-center mb-2 text-2xl font-extrabold text-[#9C6924]">
+                          {currentAddress}より
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* シェアボタン (手紙の外側に配置) */}
+                  {happinessId && (
+                    <div className="mt-6 flex justify-center w-full z-10">
+                      <button
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          try {
+                            const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/share/create`, {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              credentials: 'include',
+                              body: JSON.stringify({ happiness_id: happinessId })
+                            });
+                            if (!res.ok) throw new Error('リンク生成失敗');
+                            const { share_token } = await res.json();
+                            const shareUrl = `${window.location.origin}/share/${share_token}`;
+                            await navigator.clipboard.writeText(shareUrl);
+                            toast.success("魔法のリンクをコピーしました！✨");
+                          } catch (err) {
+                            console.error(err);
+                            toast.error("シェアできませんでした...");
+                          }
+                        }}
+                        className="bg-[#db2777] text-white px-8 py-3 rounded-full font-bold shadow-lg text-base transition-all transform hover:scale-105 flex items-center gap-2 hover:bg-pink-600"
+                      >
+                        <span className="text-2xl">💌</span> 魔法のリンクを共有
+                      </button>
+                    </div>
+                  )}
                 </div>
-                <p className="ml-4 text-gray-600 text-xl" style={{fontFamily: 'HomeMAXFont, sans-serif'}}>一生懸命考え中...</p>
               </div>
             )}
 
+            {/* 3. ローディング表示 (旧スタイルは削除または吹き出しに置換) */}
+            {/* {isLoading && ( ... )} --> Removed old loading indicator as bubble is better */}
+
+          </div>
 
 
+
+
+          <div className="w-full max-w-3xl mx-auto -mt-24 md:-mt-28 lg:-mt-32 mb-16">
+            {isInputVisible && (
+              <>
+                {/* モード選択（手紙入力の上に配置） */}
+                <div className="mb-2 flex flex-wrap justify-center gap-2 sm:gap-3">
+                  {modes.map((mode) => {
+                    return (
+                      <button
+                        key={mode.value}
+                        onClick={() => setModeName(mode.value)}
+                        className={`
+                        px-3 py-2 sm:px-5 sm:py-3 rounded-2xl text-base sm:text-lg font-bold transition-all transform flex items-center gap-2 font-kiwi-maru relative
+                        ${modeName === mode.value
+                            ? 'bg-[#9C6924] text-white shadow-xl scale-105'
+                            : 'bg-white/80 text-[#9C6924] hover:bg-gray-100 shadow-lg hover:scale-105'
+                          }
+                      `}
+                      >
+                        {/* ミニキャラクター画像 */}
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center">
+                          <HomemaxAnimated
+                            isLoading={false}
+                            mode={mode.value}
+                            isInteractive={false}
+                            style={{ width: '100%', height: '100%', transform: 'scale(0.8)' }}
+                          />
+                        </div>
+                        {mode.label}
+                      </button>
+                    )
+                  })}
+                </div>
+
+                <VoiceInputSimple
+                  onSend={handleSend}
+                  inputPlaceholder={currentAddress}
+                />
+              </>
+            )}
+          </div>
         </div>
 
-
-
-
-        <div className="w-full max-w-3xl mx-auto -mt-10 md:-mt-14 lg:-mt-16 mb-2">
-          {isInputVisible && (
-            <>
-              <VoiceInputSimple 
-                onSend={handleSend}
-                inputPlaceholder={currentAddress}
-              />
-              {/* モード選択（フォーム直下・折り返しで重なり防止） */}
-              <div className="mt-4 mb-6 flex flex-wrap justify-center gap-2 sm:gap-3">
-                {modes.map((mode) => (
-                  <button
-                    key={mode.value}
-                    onClick={() => setModeName(mode.value)}
-                    className={`
-                      px-6 py-3 rounded-2xl text-lg font-bold transition-all transform hover:scale-105 flex items-center gap-2 font-kiwi-maru
-                      ${modeName === mode.value 
-                        ? 'bg-[#9C6924] text-white shadow-xl scale-105' 
-                        : 'bg-white/80 text-[#9C6924] hover:bg-gray-100 shadow-lg'
-                      }
-                    `}
-                  >
-                    <span className="text-2xl">{mode.emoji}</span>
-                    {mode.label}
-                  </button>
-                ))}
-              </div>
-            </>
-          )}
-        </div>
+        {/* Bottom Navigation */}
+        <BottomNav />
       </div>
     </div>
   )

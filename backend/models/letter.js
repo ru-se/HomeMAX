@@ -1,54 +1,40 @@
-const supabase = require("../config/db");
+const supabase = require('../config/db');
 
 module.exports = {
-    // お手紙をDBに保存
-    addLetter: async function (user_id, message) {
-        const { data, error } = await supabase
-            .from('letters')
-            .insert([{ user_id, message }])
-            .select('letter_id')  // insertId を代替
-            .single();
+  createLetter: async (userId, message, mood) => {
+    const { data, error } = await supabase
+      .from('letters')
+      .insert([{
+        user_id: userId,
+        message: message,
+        created_at: new Date().toISOString()
+      }])
+      .select()
+      .single();
 
-        if (error) {
-            console.log(error);
-            throw { message: "メッセージを追加できませんでした" };
-        }
+    if (error) throw error;
+    return data;
+  },
 
-        return { insertId: data.letter_id };
-    },
+  getLettersByUserId: async (userId) => {
+    const { data, error } = await supabase
+      .from('letters')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
 
-    // 指定ユーザーの全てのLetterを取得
-    allLetters: async function (user_id) {
-        const { data, error } = await supabase
-            .from('letters')
-            .select('*')
-            .eq('user_id', user_id);
+    if (error) throw error;
+    return data;
+  },
 
-        if (error) {
-            console.log(error);
-            throw { message: "検索できませんでした" };
-        }
+  getLetterById: async (letterId) => {
+    const { data, error } = await supabase
+      .from('letters')
+      .select('*')
+      .eq('letter_id', letterId)
+      .single();
 
-        console.log(data);
-        console.log("------------------");
-        return data;
-    },
-
-    // 指定日付のLetterを取得（1件目）
-    selectLetters: async function (user_id, created_at) {
-        const { data, error } = await supabase
-            .from('letters')
-            .select('*')
-            .eq('user_id', user_id)
-            .eq('created_at', created_at) // created_at に時間が含まれていると一致しない場合あり
-            .limit(1)
-            .single();
-
-        if (error && error.code !== 'PGRST116') {
-            console.log(error);
-            throw { message: "検索できませんでした" };
-        }
-
-        return data || null;
-    }
+    if (error) throw error;
+    return data;
+  }
 };

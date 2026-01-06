@@ -26,7 +26,7 @@ import yamimax5 from '../assets/yamimax5.png'
 import yamimax6 from '../assets/yamimax6.png'
 
 
-const HomemaxAnimated = ({ isLoading, mode }) => {
+const HomemaxAnimated = ({ isLoading, mode, isInteractive = true, style, onTouch }) => {
   const [currentImage, setCurrentImage] = useState(0)
   const [petCount, setPetCount] = useState(0)
   const [showSparkles, setShowSparkles] = useState(false)
@@ -109,13 +109,17 @@ const HomemaxAnimated = ({ isLoading, mode }) => {
 
   // なでる機能
   const handlePet = () => {
+    if (!isInteractive) return // インタラクティブでない場合は何もしない
+
     setPetCount(prev => prev + 1)
     setShowSparkles(true)
     setTimeout(() => setShowSparkles(false), 1000)
 
+    if (onTouch) onTouch()
+
     const key = resolveModeKey(mode)
     const range = modeImageRange[key]
-    
+
     if (range) {
       // 指定範囲内でランダムに選択（start <= index <= end）
       const randomIndex = Math.floor(Math.random() * (range.end - range.start + 1)) + range.start
@@ -127,36 +131,36 @@ const HomemaxAnimated = ({ isLoading, mode }) => {
   }
 
   return (
-    <div className="relative">
+    <div className="relative" style={style}>
 
-       {/* なでた回数表示 */}
-      {petCount > 0 && (
-        <div className="absolute  left-1/2 transform -translate-x-1/2 bg-white/90 text-[#9C6924] px-6 py-2 rounded-full shadow-lg">
+      {/* なでた回数表示 (インタラクティブ時のみ) */}
+      {isInteractive && petCount > 0 && (
+        <div className="absolute  left-1/2 transform -translate-x-1/2 bg-white/90 text-[#9C6924] px-6 py-2 rounded-full shadow-lg z-50 whitespace-nowrap">
           <p className="text-sm font-bold">なでなで {petCount}回 💕</p>
         </div>
       )}
 
       {/* キャラクター本体 */}
-      <div 
+      <div
         className={`
-          relative transition-transform duration-300 cursor-pointer
-          ${isLoading ? 'animate-bounce' : 'hover:scale-105'}
+          relative transition-transform duration-300 ${isInteractive ? 'cursor-hand' : ''}
+          ${isLoading ? 'animate-bounce' : (isInteractive ? 'hover:scale-105' : '')}
         `}
         onClick={handlePet}
         onMouseEnter={handlePet}
       >
-        <img 
-          src={images[currentImage]} 
-          alt="ほめマックス" 
+        <img
+          src={images[currentImage]}
+          alt="ほめマックス"
           className="w-full max-w-md drop-shadow-2xl"
         />
-        
+
         {/* キラキラエフェクト */}
         {showSparkles && (
           <>
             <div className="absolute top-0 left-0 text-6xl animate-ping">✨</div>
-            <div className="absolute top-10 right-10 text-6xl animate-ping" style={{animationDelay: '0.1s'}}>⭐</div>
-            <div className="absolute bottom-20 left-20 text-6xl animate-ping" style={{animationDelay: '0.2s'}}>💖</div>
+            <div className="absolute top-10 right-10 text-6xl animate-ping" style={{ animationDelay: '0.1s' }}>⭐</div>
+            <div className="absolute bottom-20 left-20 text-6xl animate-ping" style={{ animationDelay: '0.2s' }}>💖</div>
           </>
         )}
       </div>
