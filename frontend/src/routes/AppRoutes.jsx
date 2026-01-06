@@ -9,6 +9,7 @@ import GrowthRecord from '../pages/GrowthRecord';
 import SharedLetter from '../pages/SharedLetter';
 import AuthCallback from '../pages/AuthCallback';
 import Achievements from '../pages/Achievements';
+import Profile from '../pages/Profile';
 import { useAuth } from '../contexts/AuthContext';
 
 // Protected Route Component
@@ -50,6 +51,11 @@ const AppRoutes = () => {
       <Route path="/achievements" element={
         <ProtectedRoute>
           <Achievements />
+        </ProtectedRoute>
+      } />
+      <Route path="/profile" element={
+        <ProtectedRoute>
+          <Profile />
         </ProtectedRoute>
       } />
 

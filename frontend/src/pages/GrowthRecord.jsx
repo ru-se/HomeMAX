@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import ShareCard from '../components/ShareCard';
 import Menu from '../components/menu/Menu';
 import ParticleField from '../components/ParticleField';
+import BottomNav from '../components/navigation/BottomNav';
 import { Link } from 'react-router-dom';
 
 const GrowthRecord = () => {
@@ -139,6 +140,9 @@ const GrowthRecord = () => {
 
             {/* Menu */}
             {/* <Menu /> */}
+
+            {/* Bottom Navigation */}
+            <BottomNav />
         </div>
     );
 };

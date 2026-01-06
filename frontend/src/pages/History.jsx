@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { FaCalendar, FaSearch } from 'react-icons/fa'
 import Menu from '../components/menu/Menu'
+import BottomNav from '../components/navigation/BottomNav'
 
 const History = () => {
   const [history, setHistory] = useState([])
@@ -317,6 +318,9 @@ const History = () => {
 
       {/* メニューバー (必要であれば) */}
       {/* <Menu /> */}
+
+      {/* Bottom Navigation */}
+      <BottomNav />
     </div>
   )
 }

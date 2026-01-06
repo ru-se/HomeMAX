@@ -8,6 +8,7 @@ import { HistoryContext } from '../contexts/HistoryContext'
 import VoiceInputSimple from '../components/VoiceInputSimple'
 import HomemaxAnimated from '../components/HomemaxAnimated'
 import TutorialModal from '../components/TutorialModal'
+import BottomNav from '../components/navigation/BottomNav'
 import { FaEnvelopeOpenText } from 'react-icons/fa' //封筒アイコン
 import { FaTimesCircle } from 'react-icons/fa' //閉じるボタンのアイコン
 import '../styles/Home.css'
@@ -290,10 +291,10 @@ const Home = () => {
 
 
   const modes = [
-    { value: 'ほめマックス', label: 'ノーマル', emoji: '😊', fontClass: 'font-kiwi-maru', unlockLevel: 1 },
-    { value: 'ギャルです。ギャル語を使って話します。絵文字をたくさん使います。', label: 'ギャル', emoji: '💖', fontClass: 'font-hachi-maru-pop', unlockLevel: 2 },
-    { value: '病んでる人です。ネガティブなことを言います。人のこのは褒めるけど自分と比べてさらに病みます。', label: '病み', emoji: '😢', fontClass: 'font-shippori-mincho', unlockLevel: 3 },
-    { value: 'オタクです。語尾は「ござる」や「でござるよ」です。Twitterで使われるネットミームを使います。', label: 'オタク', emoji: '🤓', fontClass: 'font-dot-gothic16', unlockLevel: 4 },
+    { value: 'ほめマックス', label: 'ノーマル', emoji: '😊', fontClass: 'font-kiwi-maru' },
+    { value: 'ギャルです。ギャル語を使って話します。絵文字をたくさん使います。', label: 'ギャル', emoji: '💖', fontClass: 'font-hachi-maru-pop' },
+    { value: '病んでる人です。ネガティブなことを言います。人のこのは褒めるけど自分と比べてさらに病みます。', label: '病み', emoji: '😢', fontClass: 'font-shippori-mincho' },
+    { value: 'オタクです。語尾は「ござる」や「でござるよ」です。Twitterで使われるネットミームを使います。', label: 'オタク', emoji: '🤓', fontClass: 'font-dot-gothic16' },
   ]
 
   // ユーザーレベルを取得 (簡易的にuserオブジェクトから、もしくはapiから取得)
@@ -377,21 +378,15 @@ const Home = () => {
         </div>
       )}
 
-      {/* ログアウトボタン (ログイン時) - テスト用 */}
+      {/* 簡素化されたヘッダー (ログイン時) */}
       {user && (
-        <div className="absolute top-4 right-4 z-50 flex gap-3 font-kiwi-maru">
-          <div className="flex items-center gap-2 mr-2">
+        <div className="absolute top-4 right-4 z-50 flex gap-3 font-kiwi-maru items-center">
+          <div className="bg-white/80 backdrop-blur px-4 py-2 rounded-full shadow-sm">
+            <span className="text-pink-500 font-bold text-sm">なでなで{user.level}回目💕</span>
+          </div>
+          <div className="bg-white/80 backdrop-blur px-4 py-2 rounded-full shadow-sm">
             <span className="text-gray-600 text-sm font-bold">{user.username}さん</span>
           </div>
-          <Link to="/growth" className="bg-white/80 hover:bg-white text-gray-600 px-4 py-2 rounded-full shadow-sm text-sm font-bold transition-all flex items-center gap-2">
-            <span>🌱</span> 成長
-          </Link>
-          <Link to="/history" className="bg-white/80 hover:bg-white text-gray-600 px-4 py-2 rounded-full shadow-sm text-sm font-bold transition-all flex items-center gap-2">
-            <span>📖</span> 履歴
-          </Link>
-          <Link to="/achievements" className="bg-yellow-100/80 hover:bg-yellow-100 text-gray-600 px-4 py-2 rounded-full shadow-sm text-sm font-bold transition-all flex items-center gap-2">
-            <span>🏆</span> 称号
-          </Link>
           <button onClick={logout} className="bg-white/80 hover:bg-white text-gray-600 px-4 py-2 rounded-full shadow-sm text-sm font-bold transition-all">
             ログアウト
           </button>
@@ -402,7 +397,7 @@ const Home = () => {
       {/* <Menu /> */}
 
       {/* メインコンテンツ */}
-      <div className="flex-1 flex flex-col items-center justify-start pt-4 px-4 md:px-8 relative z-10 font-kiwi-maru">
+      <div className="flex-1 flex flex-col items-center justify-start pt-4 px-4 md:px-8 relative z-10 font-kiwi-maru overflow-hidden">
         {/* ほめマックスキャラクター */}
         <div className="mb-4 md:mb-6">
           <HomemaxAnimated isLoading={isLoading} mode={currentMode.value} />
@@ -411,7 +406,7 @@ const Home = () => {
         {/* メッセージ表示エリア */}
 
         {/* min-hを削除し、封筒の高さ分確保します */}
-        <div className="w-full max-w-3xl mb-4 flex flex-col justify-center items-center">
+        <div className="w-full max-w-3xl mb-6 flex flex-col justify-center items-center">
           {/* 1. 手紙を開く（封筒）コンポーネント */}
           {isComplimentReady && !isComplimentVisible && (
             <>
@@ -445,7 +440,7 @@ const Home = () => {
             >
 
               <div
-                className="fixed bottom-5 inset-x-0 flex justify-center z-50 px-8"
+                className="fixed bottom-28 inset-x-0 flex justify-center z-50 px-8 pb-24"
                 onClick={(e) => e.stopPropagation()} // 手紙外だけで閉じる
               >
                 <div
@@ -565,48 +560,50 @@ const Home = () => {
 
 
 
-        <div className="w-full max-w-3xl mx-auto -mt-10 md:-mt-14 lg:-mt-16 mb-2">
+        <div className="w-full max-w-3xl mx-auto -mt-24 md:-mt-28 lg:-mt-32 mb-16">
           {isInputVisible && (
             <>
-              <VoiceInputSimple
-                onSend={handleSend}
-                inputPlaceholder={currentAddress}
-              />
-              {/* モード選択（フォーム直下・折り返しで重なり防止） */}
-              <div className="mt-4 mb-6 flex flex-wrap justify-center gap-2 sm:gap-3">
+              {/* モード選択（手紙入力の上に配置） */}
+              <div className="mb-2 flex flex-wrap justify-center gap-2 sm:gap-3">
                 {modes.map((mode) => {
-                  const isLocked = userLevel < mode.unlockLevel;
                   return (
                     <button
                       key={mode.value}
-                      onClick={() => !isLocked && setModeName(mode.value)}
-                      disabled={isLocked}
+                      onClick={() => setModeName(mode.value)}
                       className={`
-                        px-6 py-3 rounded-2xl text-lg font-bold transition-all transform flex items-center gap-2 font-kiwi-maru relative
+                        px-3 py-2 sm:px-5 sm:py-3 rounded-2xl text-base sm:text-lg font-bold transition-all transform flex items-center gap-2 font-kiwi-maru relative
                         ${modeName === mode.value
                           ? 'bg-[#9C6924] text-white shadow-xl scale-105'
-                          : isLocked
-                            ? 'bg-gray-200 text-gray-400 cursor-not-allowed opacity-70'
-                            : 'bg-white/80 text-[#9C6924] hover:bg-gray-100 shadow-lg hover:scale-105'
+                          : 'bg-white/80 text-[#9C6924] hover:bg-gray-100 shadow-lg hover:scale-105'
                         }
                       `}
                     >
-                      <span className="text-2xl">{isLocked ? '🔒' : mode.emoji}</span>
+                      {/* ミニキャラクター画像 */}
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center">
+                        <HomemaxAnimated
+                          isLoading={false}
+                          mode={mode.value}
+                          isInteractive={false}
+                          style={{ width: '100%', height: '100%', transform: 'scale(0.8)' }}
+                        />
+                      </div>
                       {mode.label}
-                      {/* ロック時のヒント（ホバー時などに表示できればベストだが、今回は簡易的に） */}
-                      {isLocked && (
-                        <span className="absolute -top-3 right-0 bg-gray-600 text-white text-[10px] px-2 py-1 rounded-full">
-                          Lv.{mode.unlockLevel}~
-                        </span>
-                      )}
                     </button>
                   )
                 })}
               </div>
+
+              <VoiceInputSimple
+                onSend={handleSend}
+                inputPlaceholder={currentAddress}
+              />
             </>
           )}
         </div>
       </div>
+
+      {/* Bottom Navigation */}
+      <BottomNav />
     </div>
   )
 }
