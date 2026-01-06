@@ -7,6 +7,14 @@ import BottomNav from '../components/navigation/BottomNav'
 import ParticleField from '../components/ParticleField'
 import CalendarComponent from '../components/CalendarComponent'
 
+// Assets
+import HomemaxFace from '../assets/homemax_01.png'
+import HomemaxNormal from '../assets/homemax_02.png' // Normal mode
+import HomemaxHappy from '../assets/homemax_05.png' // Empty/Fun state
+import GyaruFace from '../assets/gyarumax1.png'
+import YamiFace from '../assets/yamimax1.png'
+import OtaFace from '../assets/otamax1.png'
+
 const History = () => {
   const [history, setHistory] = useState([])
   const [isLoading, setIsLoading] = useState(true)
@@ -44,14 +52,16 @@ const History = () => {
         const data = await response.json()
 
         // 2. データをUI用に整形 (APIの入れ子構造をフラットにする)
+        // 2. データをUI用に整形 (APIの入れ子構造をフラットにする)
         const formattedData = data.map(item => ({
           id: item.happiness_id,
           happiness_id: item.happiness_id,
           letter_message: item.letters ? item.letters.message : '(手紙の内容なし)',
           compliment: item.compliment,
           letter_date: item.created_at, // 作成日
-          positive_aspects: item.positive_aspects || '',
-          reactions: item.reactions || [] // リアクション配列
+          positive_aspects: item.positive_aspects,
+          reactions: item.reactions || [], // リアクション配列
+          mode: item.mode || 'ほめマックス' // DBから取得 or デフォルト
         }))
 
         setHistory(formattedData)
@@ -65,6 +75,15 @@ const History = () => {
 
     fetchHistory()
   }, [user])
+
+  const getModeImage = (mode) => {
+    if (!mode) return HomemaxNormal;
+    // Match keywords used in Home.jsx values
+    if (mode.includes('ギャル')) return GyaruFace;
+    if (mode.includes('病み')) return YamiFace;
+    if (mode.includes('オタク')) return OtaFace;
+    return HomemaxNormal;
+  }
 
   // 3. フィルタリングロジック
   const filteredHistory = history.filter(item => {
@@ -106,12 +125,15 @@ const History = () => {
             </div>
 
             <div className="space-y-4">
-              <div className="bg-blue-50/80 p-5 rounded-2xl text-gray-700 leading-relaxed border border-blue-100">
+              <div className="bg-blue-50/80 p-5 rounded-2xl text-gray-700 leading-relaxed border border-blue-100 relative">
                 <span className="block text-xs font-bold text-blue-400 mb-2">あなた</span>
                 {item.letter_message}
               </div>
               <div className="bg-white p-5 rounded-2xl text-[#db2777] leading-relaxed border border-pink-100 shadow-sm relative">
-                <span className="block text-xs font-bold text-pink-400 mb-2">ほめマックス</span>
+                <div className="flex items-center gap-2 mb-2">
+                  <img src={getModeImage(item.mode)} alt="Homemax" className="w-8 h-8 rounded-full border border-pink-200 bg-pink-50" />
+                  <span className="text-xs font-bold text-pink-400">{item.mode || 'ほめマックス'}</span>
+                </div>
                 {item.compliment}
               </div>
             </div>
@@ -211,10 +233,17 @@ const History = () => {
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 relative z-10">
 
         {/* ヘッダー */}
-        <div className="text-center mb-10">
-          <h1 className="text-3xl md:text-4xl font-bold text-[#db2777] mb-2">
-            ほめほめ日記
-          </h1>
+        <div className="text-center mb-10 relative">
+          <div className="inline-block relative">
+            <h1 className="text-3xl md:text-4xl font-bold text-[#db2777] mb-2 relative z-10">
+              ほめほめ日記
+            </h1>
+            <img
+              src={GyaruFace}
+              alt="Gyarumax"
+              className="absolute -top-6 -right-10 w-12 h-12 transform rotate-12"
+            />
+          </div>
           <p className="text-gray-500 text-sm md:text-base">あなたの成長の記録</p>
         </div>
 
@@ -237,7 +266,8 @@ const History = () => {
 
             {/* 統計サマリー */}
             {history.length > 0 && (
-              <div className="mt-6 bg-white/60 backdrop-blur rounded-3xl p-6 shadow-sm border border-pink-100 hidden lg:block">
+              <div className="mt-6 bg-white/60 backdrop-blur rounded-3xl p-6 shadow-sm border border-pink-100 hidden lg:block relative overflow-hidden">
+                <img src={HomemaxNormal} className="absolute -bottom-4 -right-4 w-24 h-24 opacity-20 transform rotate-12" alt="" />
                 <h3 className="text-lg font-bold text-[#db2777] mb-4 text-center">日記データ</h3>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-gray-600 font-bold text-sm">書いた回数</span>
@@ -300,8 +330,8 @@ const History = () => {
                 <p className="text-gray-500">思い出を整理中...</p>
               </div>
             ) : filteredHistory.length === 0 ? (
-              <div className="text-center py-20 bg-white/50 rounded-3xl backdrop-blur border border-dashed border-pink-200">
-                <p className="text-6xl mb-4 opacity-50">🍃</p>
+              <div className="text-center py-20 bg-white/50 rounded-3xl backdrop-blur border border-dashed border-pink-200 flex flex-col items-center">
+                <img src={HomemaxHappy} alt="Empty" className="w-32 h-32 mb-4 opacity-80 animate-bounce" />
                 <p className="text-lg text-pink-400 font-bold">
                   {selectedDate
                     ? `${selectedDate.toLocaleDateString()} の日記はありませんでした`
@@ -339,9 +369,9 @@ const History = () => {
                     <div
                       key={itemId}
                       onClick={() => setSelectedDiary(item)}
-                      className="bg-white hover:bg-pink-50 rounded-2xl p-5 cursor-pointer transform transition-all hover:scale-[1.01] shadow-sm border-2 border-transparent hover:border-pink-200 group"
+                      className="bg-white hover:bg-pink-50 rounded-2xl p-5 cursor-pointer transform transition-all hover:scale-[1.01] shadow-sm border-2 border-transparent hover:border-pink-200 group relative overflow-hidden"
                     >
-                      <div className="flex justify-between items-start">
+                      <div className="flex justify-between items-start relative z-10">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
                             <span className="text-sm font-bold text-pink-400 bg-pink-50 px-2 py-1 rounded-lg">
@@ -358,11 +388,15 @@ const History = () => {
                           <p className="text-gray-700 font-bold line-clamp-1 mb-1">
                             {item.letter_message}
                           </p>
-                          <p className="text-sm text-pink-400 line-clamp-1 opacity-80 group-hover:opacity-100 transition-opacity">
-                            {item.compliment}
-                          </p>
+                          {/* ほめマックスのアイコンと返信を表示 */}
+                          <div className="flex items-center gap-2 mt-2">
+                            <img src={getModeImage(item.mode)} className="w-6 h-6 rounded-full border border-pink-200" alt="H" />
+                            <p className="text-sm text-pink-400 line-clamp-1 opacity-80 group-hover:opacity-100 transition-opacity">
+                              {item.compliment}
+                            </p>
+                          </div>
                         </div>
-                        <div className="text-pink-300 group-hover:translate-x-1 transition-transform">
+                        <div className="text-pink-300 group-hover:translate-x-1 transition-transform self-center">
                           ▶
                         </div>
                       </div>
