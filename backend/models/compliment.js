@@ -2,7 +2,7 @@ const supabase = require('../config/db');
 
 module.exports = {
     // 褒め言葉を保存 (lettersテーブルと紐づけ)
-    saveCompliment: async (userId, letterId, compliment, positiveAspects, title) => {
+    saveCompliment: async (userId, letterId, compliment, positiveAspects, title, mode) => {
         // positiveAspects が配列の場合は文字列化、またはテキストそのまま保存
         const aspectsText = Array.isArray(positiveAspects) ? positiveAspects.join(', ') : positiveAspects;
 
@@ -14,6 +14,7 @@ module.exports = {
                 compliment: compliment,
                 positive_aspects: aspectsText,
                 title: title, // DB定義に合わせてタイトルも保存
+                mode: mode,   // モードも保存
                 created_at: new Date().toISOString()
             }])
             .select()

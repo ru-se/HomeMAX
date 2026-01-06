@@ -86,7 +86,8 @@ exports.generateCompliment = async (req, res) => {
                     letter_id,
                     complimentText,
                     positiveAspects,
-                    titleText // タイトルも保存
+                    titleText, // タイトルも保存
+                    mode || 'ほめマックス' // モードも保存
                 );
                 happinessId = savedData ? savedData.happiness_id : null;
                 console.log("[DEBUG] Compliment saved with ID:", happinessId);
