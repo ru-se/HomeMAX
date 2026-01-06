@@ -36,6 +36,14 @@ exports.signup = async (req, res) => {
                     });
                 }
 
+                // Unlock signup achievement
+                try {
+                    const achievementModel = require('../models/achievement');
+                    await achievementModel.checkAndUnlockAchievements(authData.user.id);
+                } catch (achievementError) {
+                    console.error("Achievement check error during signup:", achievementError);
+                }
+
                 res.status(201).json({
                     message: 'ユーザー登録完了',
                     user: newUser
