@@ -26,7 +26,7 @@ import yamimax5 from '../assets/yamimax5.png'
 import yamimax6 from '../assets/yamimax6.png'
 
 
-const HomemaxAnimated = ({ isLoading, mode, isInteractive = true, style }) => {
+const HomemaxAnimated = ({ isLoading, mode, isInteractive = true, style, onTouch }) => {
   const [currentImage, setCurrentImage] = useState(0)
   const [petCount, setPetCount] = useState(0)
   const [showSparkles, setShowSparkles] = useState(false)
@@ -115,6 +115,8 @@ const HomemaxAnimated = ({ isLoading, mode, isInteractive = true, style }) => {
     setShowSparkles(true)
     setTimeout(() => setShowSparkles(false), 1000)
 
+    if (onTouch) onTouch()
+
     const key = resolveModeKey(mode)
     const range = modeImageRange[key]
 
@@ -141,7 +143,7 @@ const HomemaxAnimated = ({ isLoading, mode, isInteractive = true, style }) => {
       {/* キャラクター本体 */}
       <div
         className={`
-          relative transition-transform duration-300 ${isInteractive ? 'cursor-pointer' : ''}
+          relative transition-transform duration-300 ${isInteractive ? 'cursor-hand' : ''}
           ${isLoading ? 'animate-bounce' : (isInteractive ? 'hover:scale-105' : '')}
         `}
         onClick={handlePet}

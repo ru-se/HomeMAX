@@ -3,7 +3,7 @@ import { FaMicrophone, FaPaperPlane } from 'react-icons/fa'
 import '../styles/Home.css'
 import { TbMailShare } from "react-icons/tb";
 
-const VoiceInputSimple = ({ onSend,inputPlaceholder }) => {
+const VoiceInputSimple = ({ onSend, inputPlaceholder }) => {
   const [text, setText] = useState('')
   const [isListening, setIsListening] = useState(false)
   const recognitionRef = useRef(null)
@@ -21,17 +21,17 @@ const VoiceInputSimple = ({ onSend,inputPlaceholder }) => {
   //   if (textareaRef.current) {
   //     // 1. 高さを一旦リセットして、最小の状態に戻す
   //     textareaRef.current.style.height = 'auto'; 
-      
+
   //     // 2. コンテンツの実際の高さ（scrollHeight）を取得し、高さを設定
   //     textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
   //   }
   // }, [text]); // textステートが変更されるたびに実行
 
- useEffect(() => {
+  useEffect(() => {
     if (textareaRef.current) {
       // 1. 高さを一旦リセットして、最小の状態に戻す
-      textareaRef.current.style.height = 'auto'; 
-      
+      textareaRef.current.style.height = 'auto';
+
       // 2. コンテンツの実際の高さ（scrollHeight）を取得し、高さを設定
       // CSSのmaxHeight(10em)を超えると、それ以上高さは伸びず、スクロールが有効になる
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
@@ -101,7 +101,7 @@ const VoiceInputSimple = ({ onSend,inputPlaceholder }) => {
   //   }
   // }
 
-const handleSend = useCallback(() => {
+  const handleSend = useCallback(() => {
     if (text.trim() === '' || isSending) return;
 
     const textPayload = text; // 送信するテキストを保存
@@ -115,25 +115,25 @@ const handleSend = useCallback(() => {
       recognitionRef.current.stop();
       setIsListening(false);
     }
-    
+
 
     // 2. アニメーションの実行時間（800ms）を待つ
     setTimeout(() => {
-      
+
       // 3. アニメーションの終了
       setIsSending(false);
-      setShowGlobalMailAnimation(false); 
-      
+      setShowGlobalMailAnimation(false);
+
       // ↓↓↓ 【修正】アニメーションが完了してから親に通知 ↓↓↓
       // 完了を通知することで、親コンポーネントがAPIを叩き、入力ボックスを非表示にする
-      onSend(textPayload); 
+      onSend(textPayload);
 
-      
+
 
     }, 1000); // アニメーション時間(800ms)より少し長く待機
 
   }, [text, isSending, isListening, onSend]);  // ユーザーの入力部分のみを抽出するロジック
-const handleTextChange = (e) => {
+  const handleTextChange = (e) => {
     const fullText = e.target.value;
     const addressLength = fixedAddressText.length;
 
@@ -142,11 +142,11 @@ const handleTextChange = (e) => {
     let userInput = fullText.substring(addressLength);
 
     // ユーザーが意図せず入力した宛名直後の改行やスペースをトリム（削除）する
-    userInput = userInput.trimStart(); 
-    
+    userInput = userInput.trimStart();
+
     setText(userInput);
   };
-    // Tailwind CSSアニメーションを定義するスタイルタグ
+  // Tailwind CSSアニメーションを定義するスタイルタグ
   // Reactコンポーネント内で直接定義することで、単一ファイルでの実行を可能にする
   const keyframesStyle = (
     <style>
@@ -227,8 +227,8 @@ const handleTextChange = (e) => {
   } else {
     // ボイス入力ボタンのスタイル
     buttonClasses += ` 
-      ${isListening 
-        ? 'bg-gradient-to-br from-[#EE0077] to-[#ffa299] animate-pulse' 
+      ${isListening
+        ? 'bg-gradient-to-br from-[#EE0077] to-[#ffa299] animate-pulse'
         : 'bg-[#a7732b]'
       }
       hover:scale-110
@@ -238,11 +238,11 @@ const handleTextChange = (e) => {
   // 送信中は無効化
   const isButtonDisabled = isSending && text.trim();
 
-  const fixedAddressText = inputPlaceholder ? `${inputPlaceholder}` : '';  
+  const fixedAddressText = inputPlaceholder ? `${inputPlaceholder}` : '';
 
   const addressLength = fixedAddressText.length;
 
-  
+
 
 
 
@@ -250,41 +250,41 @@ const handleTextChange = (e) => {
   return (
     <>
       {keyframesStyle}
-        {showGlobalMailAnimation && (
-          <div 
+      {showGlobalMailAnimation && (
+        <div
           className="fixed inset-0 flex items-center justify-center pointer-events-none z-[999]"
-          >
-          <TbMailShare 
-            size={80} 
-            className="text-pink-500 fill-pink-300 animate-fly-out" 
+        >
+          <TbMailShare
+            size={80}
+            className="text-pink-500 fill-pink-300 animate-fly-out"
             style={{ animationDelay: '0s' }}
           />
-          </div>
-        )}
+        </div>
+      )}
 
-    {/* // <div className="bg-white/90 backdrop-blur rounded-3xl shadow-2xl p-6 border-4 border-[#ffa299]"> */}
-    {/* // 入力エリアを画面下部に固定 */}
-    {/* <div className="fixed bottom-0 left-0 right-0 p-4 sm:p-6 lg:p-8 font-sans z-50">  */}
+      {/* // <div className="bg-white/90 backdrop-blur rounded-3xl shadow-2xl p-6 border-4 border-[#ffa299]"> */}
+      {/* // 入力エリアを画面下部に固定 */}
+      {/* <div className="fixed bottom-0 left-0 right-0 p-4 sm:p-6 lg:p-8 font-sans z-50">  */}
 
-    {/* 変更後: 幅を制限し、中央に配置（mx-auto）する通常のブロック要素にする */}
-    {/* <div className="w-full max-w-3xl mx-auto px-4 pt-4 sm:px-6 sm:pt-6 lg:px-8 lg:pt-8 font-sans z-50">  */}
-    {/* ↑ fixed bottom-0 を削除しました。幅は max-w-3xl mx-auto で親要素に依存します。 */}
+      {/* 変更後: 幅を制限し、中央に配置（mx-auto）する通常のブロック要素にする */}
+      {/* <div className="w-full max-w-3xl mx-auto px-4 pt-4 sm:px-6 sm:pt-6 lg:px-8 lg:pt-8 font-sans z-50">  */}
+      {/* ↑ fixed bottom-0 を削除しました。幅は max-w-3xl mx-auto で親要素に依存します。 */}
 
-    {/* 入力エリアの全体ラッパー (fixedを外し、親要素のフローに配置) */}
-    <div className="w-full max-w-3xl mx-auto px-4 pt-4 sm:px-6 sm:pt-6 lg:px-8 lg:pt-8 font-sans">
+      {/* 入力エリアの全体ラッパー (fixedを外し、親要素のフローに配置) */}
+      <div className="w-full max-w-3xl mx-auto px-4 pt-4 sm:px-6 sm:pt-6 lg:px-8 lg:pt-8 font-sans">
 
 
-    {/* レスポンシブ対応のためにパディングを調整  */}
-    {/* <div className="max-w-3xl mx-auto flex flex-col items-center"> */}
+        {/* レスポンシブ対応のためにパディングを調整  */}
+        {/* <div className="max-w-3xl mx-auto flex flex-col items-center"> */}
 
-{/* レスポンシブ対応のためにパディングを調整  */}
-    {/* ↓↓↓ flex-col justify-end を削除し、伸びる方向の制御を textarea の margin/padding に委ねます ↓↓↓ */}
-    <div className="max-w-3xl mx-auto flex flex-col items-center"> 
-        {/* ↑ justify-end を削除しました。 */}
+        {/* レスポンシブ対応のためにパディングを調整  */}
+        {/* ↓↓↓ flex-col justify-end を削除し、伸びる方向の制御を textarea の margin/padding に委ねます ↓↓↓ */}
+        <div className="max-w-3xl mx-auto flex flex-col items-center">
+          {/* ↑ justify-end を削除しました。 */}
 
-      {/* 折られた角付きボックス (bg-transparent で背景色を透明化) */}   
-        <div 
-        className={`
+          {/* 折られた角付きボックス (bg-transparent で背景色を透明化) */}
+          <div
+            className={`
           relative 
           bg-[#fff0cd] 
           shadow-lg shadow-yellow-300/50 
@@ -308,54 +308,54 @@ const handleTextChange = (e) => {
           /* 5pxの枠線に見えるようにシャドウとボーダーを調整 */
           [box-shadow:0px_0px_0px_5px_#fff0cd]
         `}
-      >
+          >
 
-      <div className="flex gap-4 items-center">
+            <div className="flex gap-4 items-center">
 
-{/* ↓↓↓ 【修正】宛名表示とテキスト入力をラップするコンテナ ↓↓↓ */}
-<div className="flex-1 min-h-[5em]">
-                
+              {/* ↓↓↓ 【修正】宛名表示とテキスト入力をラップするコンテナ ↓↓↓ */}
+              <div className="flex-1 min-h-[5em]">
+
                 {/* 1. 宛名表示ブロック (テキストエリアの領域内) */}
-                <div 
-                    className="w-full text-xl font-bold leading-[2.5em] text-left pointer-events-none font-kiwi-maru"
-                    style={{
-                        // fontFamily: 'UserFont, sans-serif',
-                       padding: '12px', 
+                <div
+                  className="w-full text-xl font-bold leading-[2.5em] text-left pointer-events-none font-kiwi-maru"
+                  style={{
+                    // fontFamily: 'UserFont, sans-serif',
+                    padding: '12px',
                     lineHeight: '2.5em',
-                        // 便箋の線を背景に持つ
-                      height: '2.5em',
-                    }}
+                    // 便箋の線を背景に持つ
+                    height: '2.5em',
+                  }}
                 >
-                    {/* 宛名 */}
-                    <span className="block text-2xl font-extrabold text-[#9C6924] leading-none font-kiwi-maru">
-                        {addressText}へ
-                    </span>
-                    
-                    {/* 宛名の後の空行は、textareaのmarginで調整します */}
+                  {/* 宛名 */}
+                  <span className="block text-2xl font-extrabold text-[#9C6924] leading-none font-kiwi-maru">
+                    {addressText}へ
+                  </span>
+
+                  {/* 宛名の後の空行は、textareaのmarginで調整します */}
                 </div>
 
 
                 {/* 2. 実際のテキストエリア (ユーザー入力) */}
                 <textarea
-                  ref={textareaRef} 
-                  value={text} 
+                  ref={textareaRef}
+                  value={text}
                   onChange={(e) => setText(e.target.value)} // 元のシンプルな onChange に戻す
                   onKeyDown={
                     (e) => {
                       if (e.key !== 'Enter') return
-                      if (e.shiftKey) return   
-                      if(isComposing) return; // 追加: IME中は無視
+                      if (e.shiftKey) return
+                      if (isComposing) return; // 追加: IME中は無視
                       e.preventDefault(); // 改行を防止
                       handleSend();
                     }
                   }
                   onCompositionStart={() => setIsComposing(true)} // IME変換開始
                   onCompositionEnd={() => setIsComposing(false)}  // IME変換終了
-                  placeholder={"がんばったこと、話してね！"} 
+                  placeholder={"がんばったこと、話してね！"}
                   maxLength={200}
-                  
+
                   // padding-top を最小限にし、上にmarginをかけて宛名の下に配置
-                  className="w-full bg-#fff0cd resize-none p-3 pt-0 leading-[2.5em] [background-image:linear-gradient(180deg,#9C6924_1px,transparent_1px)] [background-size:100%_2.5em] [word-wrap:break-word] text-xl self-end font-bold overflow-y-auto focus:outline-none focus:ring-0 font-kiwi-maru letter-scroll"              
+                  className="w-full bg-#fff0cd resize-none p-3 pt-0 leading-[2.5em] [background-image:linear-gradient(180deg,#9C6924_1px,transparent_1px)] [background-size:100%_2.5em] [word-wrap:break-word] text-xl self-end font-bold overflow-y-auto focus:outline-none focus:ring-0 font-kiwi-maru letter-scroll cursor-pencil"
                   style={{
                     // fontFamily: 'UserFont, sans-serif',
                     minHeight: '2.5em', /* 1行分の高さ */
@@ -367,11 +367,11 @@ const handleTextChange = (e) => {
                     paddingTop: '1em',
                     // 線の位置調整を維持
                     backgroundPositionY: '12px',
-                    
+
                   }}
                 />
               </div>        {/* 送信ボタン */}
-        {/* <button
+              {/* <button
           onClick={handleSend}
           disabled={!text.trim()}
           className={`
@@ -386,29 +386,29 @@ const handleTextChange = (e) => {
           <FaPaperPlane />
         </button> */}
 
-        {/* **統合されたボタン** */}
-        <button
-          onClick={buttonHandler}
-          disabled={isButtonDisabled} // 送信中のみ無効化
-          className={buttonClasses}
-        >
-          {/* 条件に応じてアイコンをレンダリング */}
-          {React.createElement(buttonIcon)}
-        </button>
+              {/* **統合されたボタン** */}
+              <button
+                onClick={buttonHandler}
+                disabled={isButtonDisabled} // 送信中のみ無効化
+                className={buttonClasses}
+              >
+                {/* 条件に応じてアイコンをレンダリング */}
+                {React.createElement(buttonIcon)}
+              </button>
 
-      </div>
-   
-      {/* 文字数カウント */}
-      {text && (
-        <div className="mt-3 mr-16 text-right">
-          <span className="text-sm text-gray-500">{text.length}/200文字</span>
+            </div>
+
+            {/* 文字数カウント */}
+            {text && (
+              <div className="mt-3 mr-16 text-right">
+                <span className="text-sm text-gray-500">{text.length}/200文字</span>
+              </div>
+            )}
+
+
+          </div>
         </div>
-      )}
-
-
       </div>
-    </div>
-    </div>
     </>
   )
 }
