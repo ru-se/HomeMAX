@@ -32,19 +32,13 @@ module.exports = {
 
     // letters テーブルに mood カラムが無い場合は select から外す必要があります
     getComplimentHistory: async (userId, filters = {}) => {
+        // 1. まず日記データと手紙の内容を取得 (Join reactions はリレーション依存のため手動で行う)
         let query = supabase
             .from('homemax') // public.homemax
             .select(`
                 *,
                 letters (
                     message
-                ),
-                reactions (
-                    reaction_id,
-                    guest_name,
-                    stamp_type,
-                    message,
-                    created_at
                 )
             `)
             .eq('user_id', userId)
@@ -61,8 +55,52 @@ module.exports = {
                 .lte('created_at', endDate.toISOString());
         }
 
-        const { data, error } = await query;
+        const { data: historyData, error } = await query;
         if (error) throw error;
-        return data;
+        if (!historyData || historyData.length === 0) return [];
+
+        try {
+            // Debug: Check the structure of the first item
+            // console.log("[DEBUG] First History Item Keys:", Object.keys(historyData[0]));
+
+            // ID解決: happiness_id または id を使用
+            // homemaxテーブルのPKが happiness_id なのか id なのか、あるいは両方あるのか明確にするため両方チェック
+            const happinessIds = historyData.map(h => h.happiness_id || h.id).filter(id => id != null);
+
+            // console.log("[DEBUG] Target IDs for Reactions:", happinessIds);
+
+            if (happinessIds.length === 0) {
+                return historyData.map(item => ({ ...item, reactions: [] }));
+            }
+
+            // 2. 該当するリアクションを取得
+            const { data: reactionsData, error: rError } = await supabase
+                .from('reactions')
+                .select('*')
+                .in('happiness_id', happinessIds)
+                .order('created_at', { ascending: true });
+
+            if (rError) {
+                console.error("Reactions fetch error:", rError);
+                return historyData.map(item => ({ ...item, reactions: [] }));
+            }
+
+            // console.log("[DEBUG] Fetched Reactions Count:", reactionsData ? reactionsData.length : 0);
+
+            // 3. マージ
+            const historyWithReactions = historyData.map(item => {
+                const targetId = item.happiness_id || item.id;
+                const itemReactions = reactionsData
+                    ? reactionsData.filter(r => String(r.happiness_id) === String(targetId))
+                    : [];
+                return { ...item, reactions: itemReactions };
+            });
+
+            return historyWithReactions;
+
+        } catch (mergeError) {
+            console.error("Merge error:", mergeError);
+            return historyData;
+        }
     }
 };
