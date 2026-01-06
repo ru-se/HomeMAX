@@ -31,7 +31,7 @@ exports.signup = async (req, res) => {
                     res.cookie('token', authData.session.access_token, {
                         httpOnly: true,
                         secure: process.env.NODE_ENV === 'production',
-                        sameSite: 'lax',
+                        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Production(Render)ではCross-Siteになるためnone必須
                         maxAge: 24 * 60 * 60 * 1000
                     });
                 }
@@ -88,7 +88,7 @@ exports.login = async (req, res) => {
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             maxAge: 24 * 60 * 60 * 1000
         });
 
@@ -145,7 +145,7 @@ exports.loginTwitter = async (req, res) => {
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: 'twitter',
             options: {
-                redirectTo: 'http://localhost:5173/auth/callback',
+                redirectTo: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth/callback`,
                 skipBrowserRedirect: false,
             },
         });
@@ -163,7 +163,7 @@ exports.loginGoogle = async (req, res) => {
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                redirectTo: 'http://localhost:5173/auth/callback', // フロントエンドのCallback URL
+                redirectTo: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth/callback`, // フロントエンドのCallback URL
                 queryParams: {
                     access_type: 'offline',
                     prompt: 'consent',
@@ -214,17 +214,17 @@ exports.oauthCallback = async (req, res) => {
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    window.location.href = 'http://localhost:5173/home';
+                    window.location.href = '${process.env.FRONTEND_URL || 'http://localhost:5173'}/home';
                 } else {
-                    window.location.href = 'http://localhost:5173/login?error=session_failed';
+                    window.location.href = '${process.env.FRONTEND_URL || 'http://localhost:5173'}/login?error=session_failed';
                 }
             })
             .catch(err => {
                 console.error(err);
-                window.location.href = 'http://localhost:5173/login?error=server_error';
+                window.location.href = '${process.env.FRONTEND_URL || 'http://localhost:5173'}/login?error=server_error';
             });
         } else {
-            window.location.href = 'http://localhost:5173/login?error=no_token';
+            window.location.href = '${process.env.FRONTEND_URL || 'http://localhost:5173'}/login?error=no_token';
         }
     </script>
 </body>
@@ -235,7 +235,7 @@ exports.oauthCallback = async (req, res) => {
 
     } catch (err) {
         console.error("OAuth Callback Error:", err);
-        res.redirect('http://localhost:5173/login?error=server_error');
+        res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}/login?error=server_error`);
     }
 };
 
@@ -273,7 +273,7 @@ exports.setSession = async (req, res) => {
         res.cookie('token', access_token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             maxAge: 24 * 60 * 60 * 1000
         });
 

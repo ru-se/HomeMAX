@@ -17,7 +17,8 @@ const app = express();
 app.use(cors({
   origin: [
     'http://localhost:5173',
-    'https://homemax-frontend.onrender.com'
+    'https://homemax-frontend.onrender.com',
+    process.env.FRONTEND_URL // 環境変数からも読み込めるように追加
   ],
   credentials: true
 }));
